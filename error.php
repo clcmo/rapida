@@ -1,7 +1,11 @@
 <?php
 	/**
-	 *	Página de visualização do erro ocorrido
-	 */
+     * The error page for our theme.
+     *
+     * Displays all of the brand menu content and index
+     *
+     * @package Bulma by Milla
+     */
 
 	include('header-index.php');
 
