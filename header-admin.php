@@ -9,7 +9,7 @@
 	include('header.php');
 	session_start();
 ?>
-<section class="hero is-info is-medium is-white">
+<section class="hero is-info is-medium">
     <div class="container has-text-centered">
         <?php echo $Load->HeroMenu(); ?>
     </div>
