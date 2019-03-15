@@ -210,7 +210,7 @@
 	        $menu = array();
 	        $menu[1] = '
 	        <div class="hero-head">
-	        	<nav class="navbar " role="navigation" aria-label="main navigation">
+	        	<nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
 				  	<div class="navbar-brand">
 					    <a class="navbar-item is-logo" href="'.SERVER.''.$home.'">rÁpidA</a>
 					    <div class="navbar-burger burger" data-target="navMenubd-example">
