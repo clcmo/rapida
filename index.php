@@ -24,6 +24,4 @@
                 </div>
             </div>
         </div>
-<?php 
-
-    include('footer-index.php'); ?>
+<?php include('footer-index.php'); ?>
