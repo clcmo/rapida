@@ -18,8 +18,8 @@
         <link href="<?php echo SERVER; ?>assets/brand/favicon.ico" rel="icon" type="image/png">
         <!-- Theme CSS -->
         <link type="text/css" href="<?php echo SERVER; ?>assets/style.css" rel="stylesheet">
-        <link type="text/css" href="<?php echo SERVER; ?>assets/bulma-pageloader/dist/css/bulma-pageloader.min.css" rel="stylesheet">
-        <link type="text/css" href="<?php echo SERVER; ?>assets/bulma-pageloader/src/sass/index.sass" rel="stylesheet">
+        <link type="text/css" href="<?php echo SERVER; ?>assets/node_modules/bulma-pageloader/dist/css/bulma-pageloader.min.css" rel="stylesheet">
+        <link type="text/css" href="<?php echo SERVER; ?>assets/node_modules/bulma-pageloader/src/sass/index.sass" rel="stylesheet">
         <!-- JS -->
         <script src="assets/js/menu.js"></script>
     </head>
