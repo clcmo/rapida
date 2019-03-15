@@ -1,4 +1,11 @@
 <?php
+    /**
+     * The main page for our theme.
+     *
+     * Displays all of the brand menu content and index
+     *
+     * @package Bulma by Milla
+     */
 	include ('header-admin.php');
 ?>
 <div class="columns">
