@@ -9,7 +9,7 @@
     $redirect_url = parse_url($_SERVER["REDIRECT_URL"]);
     $end_of_path = strrchr($redirect_url["path"], "/");
 
-    switch(getenv("REDIRECT_STATUS")) {
+    /*switch(getenv("REDIRECT_STATUS")) {
 	    # "400 - Bad Request"
 	    case 400:
 	        $background = 'bg-facebook';
@@ -49,14 +49,14 @@
 	        $exclaim = 'DESCULPE!';
 	        $explain = 'Alguém me desligou da tomada.';
 	    break;
-	}
+	}*/
 ?>
 
 	<div class="hero-body">
 	    <div class="container has-text-centered">
 	        <div class="column is-6 is-offset-3">
-	            <h1 class="title is-logo is-large"><?php echo $exclaim; ?></h1>
-	            <h2 class="subtitle"><?php echo $explain; ?></h2>
+	            <h1 class="title is-logo is-large">Erro <?php echo getenv("REDIRECT_STATUS"); ?></h1>
+	            <h2 class="subtitle">Um erro ocorreu durante a sua navegação.</h2>
 	        </div>
 	    </div>
 	</div>
