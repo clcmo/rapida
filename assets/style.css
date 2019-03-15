@@ -6,7 +6,7 @@
 */
 
 /* IMPORT URL */
-@import url('bulma/css/bulma.min.css');
+@import url('node_modules/bulma/css/bulma.min.css');
 @import url('fonts/fontawesome/css/all.min.css');
 @import url('nucleo/css/nucleo.css');
 @import url('https://fonts.googleapis.com/css?family=Major+Mono+Display|Montserrat:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&subset=latin-ext');
