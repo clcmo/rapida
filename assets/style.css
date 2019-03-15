@@ -23,7 +23,9 @@
 
 /* BODY */
 
-body { font-family: 'Montserrat', sans-serif; }
+body { 
+  font-family: 'Montserrat', sans-serif;
+}
 hr { background-color: #01504a5e; }
 input { font-weight: 300; }
 p { font-weight: 700; }
@@ -35,7 +37,7 @@ p { font-weight: 700; }
   background-size: cover;
 }
 
-.hero.is-info {
+.hero.is-info, .navbar.is-fixed-top {
   background: linear-gradient(
     rgba(0, 0, 0, 0.5),
     rgba(0, 0, 0, 0.5)
@@ -101,6 +103,7 @@ p { font-weight: 700; }
 .subtitle.is-small { font-size: 1rem; }
 
 /* CONTENT */
+section {padding: 1rem; }
 .content p { font-weight: normal; }
 
 /* AVATAR */
