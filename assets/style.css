@@ -93,9 +93,10 @@ body {
 /** CONTENT */
 .title.is-6 .title.is-mega-menu-title{ color: #9d9d9d; }
 
-.section.is-blog {
-  background: #333;
+.section {
+  padding: 5rem 1.5rem;
 }
+.section p { padding: 0.8em; }
 
 
 /** FOOTER */
