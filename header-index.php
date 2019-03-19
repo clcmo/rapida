@@ -9,7 +9,7 @@
 	include('header.php');
 	session_start();
 ?>
-<section class="hero is-info is-fullheight">
+<section class="hero is-fullheight">
     <div class="container has-text-centered">
         <?php echo $Load->HeroMenu(); ?>
     <div class="hero-body">
