@@ -19,5 +19,35 @@
 			break;
 		}
 	}
-	$type_table = $Tables->Found_Item('type', $name_page);
+
+	$sql = $Tables->LoadFrom($script);
+    $query = $PDO->query($sql) or die ($PDO);
+
+	while($row = $query->fetch(PDO::FETCH_OBJ)){
+		$type_table = $Tables->Found_Item('type', $name_page);
+		switch ($row->$type_table) {
+			case 1: 
+				$button_title_2 = 'Solicitação'; 
+			break;
+			case 2: 
+				$button_title_2 = 'Revisão'; 
+			break;
+			case 3: 
+				$button_title_2 = 'Matrícula'; 
+			break;
+			case 4: 
+				$button_title_2 = 'Ocorrência'; 
+			break;
+			case 5: 
+				$button_title_2 = 'Trancamento'; 
+			break;
+			case 6: 
+				$button_title_2 = 'Histórico'; 
+			break;
+			case 7: 
+				$button_title_2 = 'Outros'; 
+			break;
+		}
+	}
+	$titulo = 'Notificações';
 	include('main.php');
