@@ -30,6 +30,7 @@
 		$edit_link = $name_page.'?id='.$row->$id;
 		
 		$titulo = $row->$name_table;
+		$name_cou = $row->$name_table;
 
 		$foto = isset($row->foto) ? SERVER.'uploads/'.$row->foto : $Load->Gravatar($main_email);
 		$img = isset($foto) ? $foto : $img;
@@ -48,10 +49,16 @@
 		}
 
 		switch ($row->$type_table) {
-			case 1:
+			case 1: 
+				$button_title_2 = 'Ensino Médio';
+				$checked1 = 'checked';
+				$checked2 = '';
 				$tag = 'is-link';
 			break;
-			case 2:
+			case 2: 
+				$button_title_2 = 'Ensino Modular';
+				$checked2 = 'checked';
+				$checked1 = '';
 				$tag = 'is-primary';
 			break;
 			case 3:
