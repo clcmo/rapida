@@ -1,7 +1,7 @@
 <?php
-	//$sql = $Tables->LoadFrom('`teachers`, `users` WHERE teachers.id_usu = users.id_usu AND status_pro = 1 AND status_usu = 1');
-	$sql = $Tables->LoadFrom('`teachers`, `users` WHERE teachers.id_usu = users.id_usu');
-	$query = $PDO->query($sql) or die ($PDO);
-	while($row = $query->fetch(PDO::FETCH_OBJ)){
-		echo '<option>'.$row->nome_usu.'</option>';
-	}
+	$name_page = 'teachers';
+	$name_translated = 'Professor';
+	$script = $name_page.', users WHERE '.$name_page.'.id_use = users.id_use AND status_use = 1';
+	$icon = '<i class="fas fa-user"></i>';
+	$name_table = $Tables->Found_Item('name', 'users');
+	include('main.php');

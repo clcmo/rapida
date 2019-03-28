@@ -1,6 +1,7 @@
 <?php
-	$sql = $Tables->LoadFrom('cursos WHERE status_cur = 1');
-	$query = $PDO->query($sql) or die ($PDO);
-	while($row = $query->fetch(PDO::FETCH_OBJ)){
-		echo '<option>'.$row->nome_cur.'</option>';
-	}
+	$name_page = 'courses';
+	$name_translated = 'Cursos';
+	$script = $name_page.' WHERE status_cou = 1';
+	$name_table = $Tables->Found_Item('name', $name_page);
+	
+	include('main.php');
