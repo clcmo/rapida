@@ -40,6 +40,6 @@
 <div class="box content">
 	<?php
 		echo $Load->HeroMessage(LINK, 'Gerenciamento de cursos e disciplinas', 'Visualização da disciplinas cadastradas').'<hr/>'; 
-		//include ('load/load-courses-disciplines.php'); ?>
+		include ('load/article/courses-disciplines.php'); ?>
 </div>
 <?php include('footer-admin.php'); ?>

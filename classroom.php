@@ -39,6 +39,6 @@
 <div class="box content">
 	<?php
 		echo $Load->HeroMessage(LINK, 'Turmas', 'Gerenciamento de turmas', 'Visualização das turmas cadastradas').'<hr/>';
-		include('load/article/classroom.php'); ?>
+		include('load/articles/classroom.php'); ?>
 	</div>
 <?php include('footer-admin.php'); ?>

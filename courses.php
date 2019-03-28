@@ -1,6 +1,6 @@
 <?php
 	include('header-admin.php');
-    include('load/courses.php');
+    include('load/pages/courses.php');
 ?>
 <div class="columns">
     <div class="column is-4">
@@ -38,7 +38,7 @@
                     </div>
                 </div>
                 <div class="column is-5">
-                    <?php include('load/table/courses.php'); ?>
+                    <?php include('load/tables/courses.php'); ?>
                 </div>
             </div>
             <div class="columns">
@@ -53,9 +53,7 @@
     </section>
     <p class="subtitle is-6">
         <?php
-            $error = array();
-            if(isset($_POST['save'])) {
-
+            if(isset($_POST['save']) || isset($_POST['edit'])){
                 $name_cou = isset($_POST['name_cou']) ? $_POST['name_cou'] : '';
                 $type_cou = isset($_POST['type_cou']) ? $_POST['type_cou'] : '';
 
@@ -76,6 +74,9 @@
                     $name_cou = 'Ensino Médio e '.$name_cou;
                 }
 
+            }
+
+            if(isset($_POST['save'])) {
                 $sql = "INSERT INTO courses (name_cou, type_cou) VALUES (:name_cou , :type_cou)";
                 $stmt = $PDO->prepare($sql);
                 $stmt->bindParam(':name_cou', $name_cou);
@@ -83,33 +84,13 @@
                 $result = $stmt->execute();
                 if ($result){
                     $id = $PDO->lastInsertId();
-                    echo '';
+                    echo 'Curso cadastrado com sucesso. Para editar, entre no <a href="?id='.$id.'">link</a>';
                 } else {
                     echo 'Um erro aconteceu';
                     exit;
                 }
 
             } else if(isset($_POST['edit'])){
-
-                $name_cou = isset($_POST['name_cou']) ? $_POST['name_cou'] : '';
-                $type_cou = isset($_POST['type_cou']) ? $_POST['type_cou'] : '';
-
-                if (empty($name_cou)) {
-                    echo 'Informe o nome do curso.';
-                    exit;
-                }
-
-                $sql = "SELECT name_cou FROM courses";
-                $con = $PDO->query($sql) or die ($PDO);
-                while ($row = $con->fetch(PDO::FETCH_OBJ)){
-                    if ($row->name_cou == $name_cou){
-                        echo 'Curso já está registrado.';
-                    }
-                }
-
-                if($type_cou == 1){
-                    $name_cou = 'Ensino Médio e '.$name_cou;
-                }
 
                 $sql = "UPDATE courses SET name_cou = :name_cou, type_cou = :type_cou WHERE id_cur = ".$id;
                 $stmt = $PDO->prepare($sql);
@@ -118,7 +99,7 @@
                 $result = $stmt->execute();
                 if ($result){
                     $id = $PDO->lastInsertId();
-                    echo '';
+                    echo 'Curso cadastrado com sucesso. Para editar, entre no <a href="?id='.$id.'">link</a>';
                 } else {
                     echo 'Um erro aconteceu';
                     exit;

@@ -1,7 +1,6 @@
 <?php
-	$name_page = 'notifies';
 	include('header-admin.php');
-	include('load/notifies.php');
+	include('load/pages/notifies.php');
 ?>
 <div class="columns">
     <div class="column is-4">

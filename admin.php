@@ -19,8 +19,8 @@
     <div class="columns">
         <div class="column is-6">
             <?php 
-                include('load/table/notifies.php');
-                include('load/table/classroom.php'); 
+                include('load/tables/notifies.php');
+                include('load/tables/classroom.php'); 
             ?>
         </div>
         <div class="column is-6">

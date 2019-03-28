@@ -1,7 +1,6 @@
 <?php
-	$name_page = 'Disciplinas';
 	include('header-admin.php');
-    //include('load\load-disciplines.php');
+    include('load\pages\disciplines.php');
 ?>
 <div class="columns">
     <div class="column is-4">
@@ -9,7 +8,7 @@
     </div>
 </div>
 <div class="box content">
-    <?php echo $Load->HeroMessage(LINK, $name_page, 'Informe os dados para '.$selected_type); ?>
+    <?php echo $Load->HeroMessage(LINK, 'Disciplinas', 'Informe os dados para '.$selected_type); ?>
     <hr/>
     <section class="info-tiles">
 		<form action="" method="post">
@@ -21,32 +20,19 @@
                         	<div class="field">
           						<label class="label">Nome da Disciplina</label>
           						<div class="control has-icons-left has-icons-right">
-          							<input class="input is-link" type="text" placeholder="Informe o nome da disciplina">
+          							<input class="input is-link" type="text" placeholder="<?php echo $name_dis; ?>" value="<?php echo $name_dis; ?>">
           							<span class="icon is-small is-left"><i class="fas fa-user"></i></span>
         							<span class="icon is-small is-right"><i class="fas fa-check"></i></span>
         						</div>
         					</div>
                         </div>
                         <div class="column">
-                            <div class="field">
-                                <label class="label">Curso</label>
-                                <div class="control has-icons-left has-icons-right">
-                                    <?php include('load/select/courses.php'); ?>
-                                </div>
-                            </div>
+                            <?php include('load/options/courses.php'); ?>
                         </div>
                     </div>
                     <div class="columns">
                         <div class="column">
-                            <div class="field">
-                                <label class="label">Nome do Professor</label>
-                                <div class="control has-icons-left">
-                                    <div class="select is-hovered is-link">
-                                        <select><?php include('load/options/teachers.php'); ?></select>
-                                    </div>
-                                    <span class="icon is-small is-left"><i class="fas fa-user"></i></span>
-                                </div>
-                            </div>
+                            <?php include('load/options/teachers.php'); ?>
                         </div>
                         <div class="column">
                             <div class="field">
@@ -109,22 +95,7 @@
                     </div>
                 </div>
                 <div class="column is-5">
-                	<div class="card events-card">
-                        <header class="card-header">
-                            <p class="card-header-title">Disciplinas Cadastradas</p>
-                            <a href="" class="card-header-icon" aria-label="more options"><span class="icon"><i class="fa fa-angle-down" aria-hidden="true"></i></span></a>
-                        </header>
-                        <div class="card-table">
-                            <div class="content">
-                                <table class="table is-fullwidth is-striped">
-                                    <tbody>
-                                        <?php include('load/table/disciplines.php'); ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <footer class="card-footer"><a href="" class="card-footer-item">Ver Todos</a></footer>
-                    </div>
+                    <?php include('load/tables/disciplines.php'); ?>
                 </div>
             </div>
             <div class="columns">

@@ -1,13 +1,11 @@
 <?php
-	$name_page = 'grade';
 	include('header-admin.php');
-	include('load/load-schedule-grid.php');
 ?>
 <div class="columns">
-	<div class="column is-3">
-		<div class="tabs is-left"><?php echo $Initial->Navegation(LINK, 'Grade'); ?></div>
-	</div>
-	<div class="column is-9">
+    <div class="column is-4">
+        <div class="tabs is-left"><?php echo $Load->MainNavegation(LINK, 'Grade'); ?></div>
+    </div>
+    <div class="column">
 		<div class="tabs is-right">
 			<ul>
 				<li class="is-active">
@@ -45,42 +43,7 @@
 	</div>
 </div>
 <div class="box content">
-	<?php echo $User->ShowHero(LINK, $name_page, 'Grade de Horários', 'Visualização da grade de horários para '.YEAR); ?>
+	<?php echo $Load->HeroMessage(LINK, 'Grade de Horários', 'Visualização da grade de horários para '.YEAR); ?>
 	<hr />
-	<table>
-		<thead>
-			<tr>
-				<th>Aula</th>
-				<th>Horário</th>
-			    <th>Segunda</th>
-			    <th>Terça</th>
-			    <th>Quarta</th>
-			    <th>Quinta</th>
-			    <th>Sexta</th>
-			    <th>Sábado</th>
-      		</tr>
-  		</thead>
-		<tbody>
-			<tr>
-				<th>1</th>
-				<th>07:30 - 08:20</th>
-				<td>Nome da Disciplina</td>
-				<td>Nome da Disciplina</td>
-				<td>Nome da Disciplina</td>
-				<td>Nome da Disciplina</td>
-				<td>Nome da Disciplina</td>
-				<td>Nome da Disciplina</td>
-			</tr>
-			<tr>
-				<th>2</th>
-				<th>08:20 - 09:10</th>
-				<td>Nome da Disciplina</td>
-				<td>Nome da Disciplina</td>
-				<td>Nome da Disciplina</td>
-				<td>Nome da Disciplina</td>
-				<td>Nome da Disciplina</td>
-				<td>Nome da Disciplina</td>
-			</tr>
-		</tbody>
-	</table>
+	<?php include('load/schedule-grid.php'); ?>
 </div>
