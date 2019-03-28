@@ -1,31 +1,41 @@
 <?php
 	//Para Visualização
 	//Definição Global de Variáveis
-	$selected_type = 'cadastrar';
 	$color = 'is-black';
 	$title_message = $name_page;
-    $type_button = 'save';
 
 	//Para Paginação
-	$vf = 10;
+	//Mover para a pagina main de Tabelas e Artigos
+	/*$vf = 10;
 	$pg = isset($_GET['pg']) ? $_GET['pg'] : '';
 	$pc = (!$pg) ? 1 : $pg;
 	$vi = $pc - 1;
-	$vi = $vi * $vf;
+	$vi = $vi * $vf;*/
 
 	//Alterar valores em caso de Get[id]
-	if(isset($_GET['id'])){
-		//$script = $script.' AND '.ID_TABLE.' = '.$_GET['id'];
-		$selected_type = 'editar';
-		$type_button = 'edit';
+	switch (isset($_GET['id'])) {
+		case true:
+			$script .= $id_table.' = '.$_GET['id'];
+			$selected_type = 'editar';
+			$type_button = 'edit';
+
+			//chamar script sql
+			$sql = $Tables->LoadFrom($script);
+			$query = $PDO->query($sql) or die ($PDO);
+			$cont = $Tables->CountViewTable($script);
+		break;
+		
+		case false:
+			//$script .=' LIMIT '.$vi.','.$vf;
+			$selected_type = 'cadastrar';
+			$type_button = 'save';
+			$script = $sql = $query = '';
+		break;
 	}
+	
+	
 
-	//chamar script sql
-	$sql = $Tables->LoadFrom($script.' LIMIT '.$vi.','.$vf);
-	$query = $PDO->query($sql) or die ($PDO);
-	$cont = $Tables->CountViewTable($script.' LIMIT '.$vi.','.$vf);
-
-	while($row = $query->fetch(PDO::FETCH_OBJ)){
+	/*while($row = $query->fetch(PDO::FETCH_OBJ)){
 		$id = ID_TABLE;
 		$edit_link = $name_page.'?id='.$row->$id;
 		
@@ -67,4 +77,4 @@
 			default:
 			break;
 		}
-	}
+	}*/
