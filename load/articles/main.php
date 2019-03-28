@@ -1,5 +1,5 @@
 <?php
-
+	//Para Paginação
 	$vf = 10;
 	$pg = isset($_GET['pg']) ? $_GET['pg'] : '';
 	$pc = (!$pg) ? 1 : $pg;
@@ -12,15 +12,21 @@
     $cont = $Tables->CountViewTable($script.' LIMIT '.$vi.', '.$vf);
 
     while($row = $query->fetch(PDO::FETCH_OBJ)){
-		$id = $Tables->Found_Item('id', $name_page);;
+		$id = $Tables->Found_Item('id', $name_page);
 		$edit_link = $name_page.'?id='.$row->$id;
+
+		$link = ($name_page !='users') ? 'profile?id='.$row->id : $edit_link;
+		$user = $row->login;
 
 		$titulo = $row->$name_table;
 
-		//$foto = isset($row->foto) ? SERVER.'uploads/'.$row->foto : $Load->Gravatar($main_email);
-		$img = isset($row->foto) ? $foto : $img;
+		$photo = isset($row->photo) ? '<img class="is-rounded" src="'.$row->photo.'">' : '<img class="is-rounded" src="'.$Load->Gravatar($main_email).'">';
+		$img = isset($photo) ? $photo : $img;
 
 		$status_table = $Tables->Found_Item('status', $name_page);
+		$action_link = ($status_table) ? 'deactivate?t='.$name_page.'?id='.$row->$id : 'activate?t='.$name_page.'?id='.$row->$id;
+		$action_color = ($status_table) ? 'danger' : 'success';
+		$action_button = ($status_table) ? '<i class="fas fa-minus-circle"></i>' : '<i class="fas fa-check-square">';
 	
 		echo '
 			<article class="post">

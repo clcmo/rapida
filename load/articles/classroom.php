@@ -1,21 +1,23 @@
 <?php
 	$name_page = 'classroom';
 	$script = $name_page.', courses WHERE '.$name_page.'.id_cou = courses.id_cou';
+	$img = '<i class="fas fa-users" style="font-size: 3rem;"></i>';
 
-	$sql = $Tables->LoadFrom($script);
-	$query = $PDO->query($sql) or die ($PDO);
+	$id = $Tables->Found_Item('id', $name_page);
+	$name_table = $Tables->Found_Item('name', 'courses');
+	$type_table = $Tables->Found_Item('type', 'courses');
 
-	while($row = $query->fetch(PDO::FETCH_OBJ)){
-		$img = '<i class="fas fa-users" style="font-size: 3rem;"></i>';
-		$name_table = $Tables->Found_Item('name', 'courses');
-		$type_table = $Tables->Found_Item('type', 'courses');
+	include('main.php');
 
+
+
+	/*while($row = $query->fetch(PDO::FETCH_OBJ)){
 		$message = 'Oi';
 		$link = $user = $action_link = $action_color = $action_button = '';
-	}
+	}*/
 	//$script = $name_page.', courses, students, users WHERE '.$name_page.'id_cla = '.$_GET['id'].' AND '.$name_page.'.id_cou = courses.id_cou AND students.id_cla = '.$name_page.'.id_cla AND students.id_use = users.id_use';
-	$second_script = 'courses';
-	include('main.php');
+	//$second_script = 'courses';
+	
 
 	/*
 	include('main.php');
