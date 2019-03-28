@@ -1,9 +1,16 @@
 <?php
-    $name_page = 'classroom';
-    $script = $name_page.', courses WHERE '.$name_page.'.id_cou = courses.id_cou';
+	$name_page = 'classroom';
+	$script = $name_page.', courses WHERE '.$name_page.'.id_cou = courses.id_cou';
+	$titulo = 'Turmas';
+	$icon = '<i class="fas fa-users"></i>';
+
+	$id = $Tables->Found_Item('id', $name_page);
+	$type_table = $Tables->Found_Item('type', 'courses');
+
+	include('main.php');
+
+/*
     $button_title = 'Ver Alunos';
-    $type_table = $Tables->Found_Item('type', 'courses');
-    $titulo = 'Turmas';
 
     $sql = $Tables->LoadFrom($script);
     $query = $PDO->query($sql) or die ($PDO);
@@ -17,5 +24,4 @@
 				$button_title_2 = 'Ensino Modular'; 
 			break;
 		}
-	}
-    include('main.php');
+	}*/
