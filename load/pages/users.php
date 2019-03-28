@@ -13,14 +13,16 @@
 			$query = $PDO->query($sql) or die ($PDO);
 
 			while($row = $query->fetch(PDO::FETCH_OBJ)){
-				$ano_cad = ($row->signup_date) ? date('Y', strtotime($row->signup_date)) : '';
-				$data_cad = ($row->signup_date) ? date('d/m/Y', strtotime($row->signup_date)) : '';
-				$hora_cad = ($row->signup_date) ? date('H:i:s', strtotime($row->signup_date)): '';
+				$birthday_date = ($row->birthday_date) ? date('d/m/Y', strtotime($row->birthday_date)) : '';
+				$birthday_year = date('Y', strtotime($row->birthday_date));
+				$age = date(YEAR-$birthday_year);
+
+				$signup_date = ($row->signup_date) ? date('d/m/Y', strtotime($row->signup_date)) : '';
+				$signup_year = date('Y', strtotime($row->signup_date));
+				$signup_time = date('H:i:s',strtotime($row->signup_date))
 
 				$login = ($row->login) ? $row->login : '';
 				$email = ($row->email) ? $row->email : '';
-
-				$photo = ($row->photo) ? SERVER.'uploads/'.$row->photo : $Load->Gravatar($main_email);
 				
 				$cep = ($row->cep) ? $row->cep : '';
 				$address = ($row->address) ? $row->address : '';
@@ -32,10 +34,6 @@
 				$rg = ($row->rg) ? $row->rg : '';
 				$cpf = ($row->cpf) ? $row->cpf : '';
 				$phone = ($row->phone) ? $row->phone : '';
-
-				$name_use = ($row->name_use) ? $row->name_use : '';
-				$birthday_date = ($row->birthday_date) ? $row->birthday_date : '';
-				$ano_nasc = ($row->birthday_date) ? date('Y', strtotime($row->birthday_date)) : '';
 				$id_use = $row->id_use;
 
 

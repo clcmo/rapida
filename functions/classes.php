@@ -27,8 +27,8 @@
 	    //6.2.2 - Contar dados exixtentes de uma tabela através do string informado
 	    function LoadCountFrom($str){
 	      	$Tables = new Tables;
-	      	define ('ID_TABLE', $Tables->Found_Item('id', $str));
-	      	return "SELECT count(".ID_TABLE.") as qt from ".$str;
+	      	//define ('ID_TABLE', $Tables->Found_Item('id', $str));
+	      	return "SELECT count(".$Tables->Found_Item('id', $str).") as qt from ".$str;
 	    }
 
 	    //6.3 - Cria o Hash da Senha, usando MD5 e SHA-1

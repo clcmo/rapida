@@ -1,5 +1,8 @@
 <?php
-	include('main.php');
+	$script = $name_page = 'users';
+	$name_table = $Tables->Found_Item('name', $name_page);
+
+	/*include('main.php');
 	
 	$cont = $Tables->CountViewTable($name_page);
 	$sql = $Tables->LoadFrom($name_page.' LIMIT '.$vi.','.$vf);
