@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Mar 14, 2019 at 10:55 PM
+-- Generation Time: Mar 29, 2019 at 06:11 PM
 -- Server version: 5.7.19
 -- PHP Version: 7.1.9
 
@@ -61,25 +61,27 @@ CREATE TABLE IF NOT EXISTS `courses` (
   `name_cou` varchar(50) NOT NULL,
   `status_cou` int(1) NOT NULL DEFAULT '1',
   `type_cou` int(1) NOT NULL DEFAULT '1',
+  `period` varchar(1) NOT NULL,
   PRIMARY KEY (`id_cou`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `courses`
 --
 
-INSERT INTO `courses` (`id_cou`, `name_cou`, `status_cou`, `type_cou`) VALUES
-(1, 'Ensino Médio e Administração', 1, 1),
-(2, 'Ensino Médio e Logistica', 1, 1),
-(3, 'Ensino Médio e Contabilidade', 1, 1),
-(4, 'Desenvolvimento de Sistemas', 1, 2),
-(5, 'Recursos Humanos', 1, 2),
-(6, 'Enfermagem', 1, 2),
-(8, 'Segurança do Trabalho', 1, 2),
-(9, 'Jogos Digitais', 2, 2),
-(10, 'Paleontologia', 2, 2),
-(11, 'Culinária', 2, 2),
-(12, 'Informática', 2, 2);
+INSERT INTO `courses` (`id_cou`, `name_cou`, `status_cou`, `type_cou`, `period`) VALUES
+(1, 'Ensino Médio e Administração', 1, 1, ''),
+(2, 'Ensino Médio e Logistica', 1, 1, ''),
+(3, 'Ensino Médio e Contabilidade', 1, 1, ''),
+(4, 'Desenvolvimento de Sistemas', 1, 2, ''),
+(5, 'Recursos Humanos', 1, 2, ''),
+(6, 'Enfermagem', 1, 2, ''),
+(8, 'Segurança do Trabalho', 1, 2, ''),
+(9, 'Jogos Digitais', 2, 2, ''),
+(10, 'Paleontologia', 2, 2, ''),
+(11, 'Culinária', 2, 2, ''),
+(12, 'Informática', 2, 2, ''),
+(13, 'Ensino Médio e Ciências Contábeis', 1, 1, '');
 
 -- --------------------------------------------------------
 
@@ -90,24 +92,24 @@ INSERT INTO `courses` (`id_cou`, `name_cou`, `status_cou`, `type_cou`) VALUES
 DROP TABLE IF EXISTS `disciplines`;
 CREATE TABLE IF NOT EXISTS `disciplines` (
   `id_dis` int(11) NOT NULL AUTO_INCREMENT,
-  `nome_dis` varchar(50) NOT NULL,
-  `id_cur` int(11) NOT NULL,
-  `id_pro` int(11) NOT NULL,
-  `periodo` varchar(1) NOT NULL,
-  `sala` varchar(25) NOT NULL,
-  `horario_inicio` time NOT NULL,
-  `horario_fim` time NOT NULL,
+  `name_dis` varchar(50) NOT NULL,
+  `id_cou` int(11) NOT NULL,
+  `id_tea` int(11) NOT NULL,
+  `period` varchar(1) NOT NULL,
+  `classroom` varchar(25) NOT NULL,
+  `time_start` time NOT NULL,
+  `time_end` time NOT NULL,
   `status_dis` int(1) NOT NULL,
   PRIMARY KEY (`id_dis`),
-  KEY `fk_cur` (`id_cur`),
-  KEY `fk_pro` (`id_pro`)
+  KEY `fk_cur` (`id_cou`),
+  KEY `fk_pro` (`id_tea`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `disciplines`
 --
 
-INSERT INTO `disciplines` (`id_dis`, `nome_dis`, `id_cur`, `id_pro`, `periodo`, `sala`, `horario_inicio`, `horario_fim`, `status_dis`) VALUES
+INSERT INTO `disciplines` (`id_dis`, `name_dis`, `id_cou`, `id_tea`, `period`, `classroom`, `time_start`, `time_end`, `status_dis`) VALUES
 (1, 'Teorias da Administração I', 1, 1, 'M', 'Sala 1', '07:40:00', '09:15:00', 1);
 
 -- --------------------------------------------------------
@@ -189,19 +191,19 @@ CREATE TABLE IF NOT EXISTS `parents-students` (
 
 DROP TABLE IF EXISTS `students`;
 CREATE TABLE IF NOT EXISTS `students` (
-  `id_alu` int(11) NOT NULL AUTO_INCREMENT,
-  `id_usu` int(11) NOT NULL,
-  `id_tur` int(11) NOT NULL,
-  PRIMARY KEY (`id_alu`),
-  KEY `id_usu` (`id_usu`),
-  KEY `id_tur` (`id_tur`)
+  `id_stu` int(11) NOT NULL AUTO_INCREMENT,
+  `id_use` int(11) NOT NULL,
+  `id_cla` int(11) NOT NULL,
+  PRIMARY KEY (`id_stu`),
+  KEY `id_usu` (`id_use`),
+  KEY `id_tur` (`id_cla`)
 ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `students`
 --
 
-INSERT INTO `students` (`id_alu`, `id_usu`, `id_tur`) VALUES
+INSERT INTO `students` (`id_stu`, `id_use`, `id_cla`) VALUES
 (1, 1, 1),
 (2, 3, 1);
 
@@ -213,19 +215,19 @@ INSERT INTO `students` (`id_alu`, `id_usu`, `id_tur`) VALUES
 
 DROP TABLE IF EXISTS `teachers`;
 CREATE TABLE IF NOT EXISTS `teachers` (
-  `id_pro` int(11) NOT NULL AUTO_INCREMENT,
-  `id_usu` int(11) NOT NULL,
-  `area_pro` varchar(25) NOT NULL,
-  `status_pro` int(1) NOT NULL,
-  PRIMARY KEY (`id_pro`),
-  KEY `fk_usu` (`id_usu`)
+  `id_tea` int(11) NOT NULL AUTO_INCREMENT,
+  `id_use` int(11) NOT NULL,
+  `area_tea` varchar(25) NOT NULL,
+  `status_tea` int(1) NOT NULL,
+  PRIMARY KEY (`id_tea`),
+  KEY `fk_usu` (`id_use`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `teachers`
 --
 
-INSERT INTO `teachers` (`id_pro`, `id_usu`, `area_pro`, `status_pro`) VALUES
+INSERT INTO `teachers` (`id_tea`, `id_use`, `area_tea`, `status_tea`) VALUES
 (1, 4, 'Administração', 1);
 
 -- --------------------------------------------------------
