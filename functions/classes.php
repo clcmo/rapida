@@ -256,10 +256,10 @@
 	        											<div class="navbar-dropdown ">
 	        												<a class="dropdown-item " href="'.SERVER.'courses">Cursos</a>
 	        												<a class="dropdown-item " href="'.SERVER.'disciplines">Disciplinas</a>
-	        												<a class="dropdown-item " href="'.SERVER.'schedule-grid">Grade de Horários</a>
+	        												<!--<a class="dropdown-item " href="'.SERVER.'schedule-grid">Grade de Horários</a>-->
 	        											</div>
 	        										</div>
-													<a class="navbar-item" href="'.SERVER.'events"><i class="fas fa-graduation-cap"></i>&nbsp;Eventos</a>';
+													<!--<a class="navbar-item" href="'.SERVER.'events"><i class="fas fa-graduation-cap"></i>&nbsp;Eventos</a>-->';
     										break;
 
 											case 3:
@@ -365,7 +365,7 @@
                             <ul>
                                 <li><a href="'.SERVER.'courses">Curso</a></li>
                                 <li><a href="'.SERVER.'disciplines">Disciplina</a></li>
-                                <li><a href="'.SERVER.'schedule-grid">Grade de Horários</a></li>
+                                <!--<li><a href="'.SERVER.'schedule-grid">Grade de Horários</a></li>-->
                             </ul>
                         </li>
                         <li>
