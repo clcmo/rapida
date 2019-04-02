@@ -29,7 +29,7 @@
 		case false:
 			$name_cou = 'Informe o nome do curso';
 			$checked2 = '';
-			$checked1 = 'checked';
+			$checked1 = '';
 			$selected_type = 'cadastrar';
 			$type_button = 'save';
 		break;
