@@ -47,11 +47,11 @@
                                             <option value="Sala 5">Sala 5</option>
                                             <option value="Sala 6">Sala 6</option>
                                             <option value="Laboratorio 1">Laboratório 1</option>
-                                            <option value="Laboratorio 1">Laboratório 2</option>
-                                            <option value="Laboratorio 1">Laboratório 3</option>
-                                            <option value="Laboratorio 1">Laboratório 4</option>
-                                            <option value="Laboratorio 1">Laboratório 5</option>
-                                            <option value="Laboratorio 1">Laboratório 6</option>
+                                            <option value="Laboratorio 2">Laboratório 2</option>
+                                            <option value="Laboratorio 3">Laboratório 3</option>
+                                            <option value="Laboratorio 4">Laboratório 4</option>
+                                            <option value="Laboratorio 5">Laboratório 5</option>
+                                            <option value="Laboratorio 6">Laboratório 6</option>
                                         </select>
                                     </div>
                                     <span class="icon is-small is-left"><i class="fas fa-chalkboard-teacher"></i></span>
