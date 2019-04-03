@@ -25,10 +25,27 @@
 
 		switch ($name_page) {
 			case 'classroom':
-				$link = $edit_link;
+				$link = 'courses?id='.$row->$id;
 				//$name_page.', courses, students, users WHERE '.$name_page.'.id_cla = '.$row->$id.' AND '.$name_page.'.id_cou = courses.id_cou AND students.id_cla = '.$name_page.'.id_cla AND students.id_use = users.id_use
 				$cont_class = $Tables->CountViewTable($script);
-				$message = 'Número de Alunos: '.$row->students.'</br>Período: '.$row->period.'<br/>Curso: ';
+				switch ($row->period) {
+					case 'M':
+						$period = 'Manhã';
+					break;
+
+					case 'T':
+						$period = 'Tarde';
+					break;
+						
+					case 'N':
+						$period = 'Noite';
+					break;
+
+					case 'I':
+						$period = 'Integral';
+					break;
+				}
+				$message = 'Número de Alunos: '.$row->students.'</br>Período: '.$period.'<br/>Curso: ';
 				$user = $titulo;
 			break;
 
@@ -106,18 +123,6 @@
 
 				$message = 'Idade: '.$age.'<br/>'.$tipo.' desde '.$signup_year.'<br/> Login: ';
 			break;
-
-
-			/*case 'students':
-				$link = 'profile?id='.$row->$id;
-				$message = 'Login: ';
-				$user = $row->login;
-			break;
-			case 'teachers':
-				$link = 'profile?id='.$row->$id;
-				$message = 'Login: ';
-				$user = $row->login;
-			break;*/
 		}
 
 		echo '
