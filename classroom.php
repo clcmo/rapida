@@ -1,5 +1,6 @@
 <?php
 	include('header-admin.php');
+	include('load/pages/courses.php');
 ?>
 <div class="columns">
 	<div class="column is-4">
@@ -37,8 +38,10 @@
 	</div>
 </div>
 <div class="box content">
+	<!--Criar formato onde, a partir da seleção da turma, a página seja automaticamente redirecionada -->
+	<?php include('load/options/courses.php'); ?>
 	<?php
-		echo $Load->HeroMessage(LINK, 'Turmas', 'Gerenciamento de turmas', 'Visualização das turmas cadastradas').'<hr/>';
-		include('load/articles/classroom.php'); ?>
+		echo $Load->HeroMessage(LINK, 'Turmas', 'Visualização da Turma de '.$name_cou).'<hr/>';
+		include('load/classroom.php'); ?>
 	</div>
 <?php include('footer-admin.php'); ?>
