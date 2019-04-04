@@ -1,0 +1,112 @@
+---
+---
+
+@import "../_sass/variables";
+
+@import "../_sass/bootstrap/mixins/gradients";
+@import "../_sass/_syntax-highlighting";
+
+#content {
+	order: 2;
+}
+
+header, footer {
+	margin: 1rem;
+}
+
+nav {
+	order: 1;
+}
+
+.filename {
+	font-size: $font-size-root * 0.7;
+	color: #870000;
+	background-color: $code-bg;
+	font-family: $font-family-monospace;
+}
+
+.parameter,
+.smallblock {
+	font-size: $font-size-root * 0.7;
+	color: #000088;
+	background-color: $code-bg;
+	font-family: $font-family-monospace;
+}
+
+figure.highlight {
+
+	background-color: $code-bg;
+	padding: .5rem;
+
+	pre {
+		padding: 0;
+	}
+
+}
+
+dd {
+  margin-left: 40px;
+}
+
+#content {
+	a {
+		text-decoration: underline;
+		&:hover {
+			text-decoration: none;
+		}
+	}
+}
+
+code {
+    padding: .1rem .3rem;
+}
+
+pre {
+	padding: .5rem;
+}
+
+nav > .list-group .list-group-item:first-child {border-top-right-radius: 0;border-top-left-radius: 0;}
+nav > .list-group .list-group-item {border-width: 1px 0;}
+nav > .list-group {margin-bottom: 0;}
+nav .list-group-item {border-radius:0;}
+
+nav .list-group .list-group {margin: 0;margin-top: 10px;}
+nav .list-group-item li.list-group-item {margin: 0 -15px;border-top: 1px solid #ddd !important;border-bottom: 0;padding-left: 30px;}
+nav .list-group-item li.list-group-item:last-child {padding-bottom: 0;}
+
+nav div.list-group div.list-group{margin: 0;}
+nav div.list-group .list-group a.list-group-item {border-top: 1px solid #ddd !important;border-bottom: 0;padding-left: 30px;}
+nav .list-group-item li.list-group-item {border-top: 1px solid #DDD !important; padding-top: 0; padding-bottom: 0;}
+
+nav ul.list-group {
+	ul.list-group {
+		display: none;
+	}
+}
+
+nav ul.list-group {
+	li.list-group-item {
+		a.heading {
+			padding-left: 6px;
+			&:before {
+				display: block;
+				width: 16px;
+				height: 16px;
+				content: '▶';
+				float: left;
+				font-size: 80%;
+			}
+		}
+		&.open {
+			>a.heading:before {
+				content: '▼';
+			}
+			>ul.list-group {
+				display: block;
+			}
+		}
+	}
+}
+
+@import "../_sass/header-links";
+
