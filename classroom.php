@@ -42,6 +42,6 @@
 	<?php include('load/options/courses.php'); ?>
 	<?php
 		echo $Load->HeroMessage(LINK, 'Turmas', 'Visualização da Turma de '.$name_cou).'<hr/>';
-		include('load/classroom.php'); ?>
+		include('load/supertables/classroom.php'); ?>
 	</div>
 <?php include('footer-admin.php'); ?>
