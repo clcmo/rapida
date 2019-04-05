@@ -25,7 +25,7 @@
 	</div>
 </div>
 <div class="box content">
-	<?php echo $Load->HeroMessage(LINK, 'Notificações', 'Visualização das notificações cadastradas'); ?>
+	<?php echo $Load->HeroMessage(LINK, 'Notificações', 'Informe os dados para '.$selected_type); ?>
 	<hr/>
 	<section class="info-tiles">
 		<form action="" method="post">
@@ -37,7 +37,7 @@
                         	<div class="field">
           						<label class="label">Título</label>
           						<div class="control has-icons-left has-icons-right">
-          							<input class="input is-link" type="text" name="name_not" placeholder="Informe o título da notificação" value="<?php echo $titulo; ?>">
+          							<input class="input is-link" type="text" name="name_not" placeholder="Informe o título da notificação" value="<?php echo $name_not; ?>">
           							<span class="icon is-small is-left"><i class="fas fa-user"></i></span>
         							<span class="icon is-small is-right"><i class="fas fa-check"></i></span>
         						</div>
@@ -76,7 +76,7 @@
                     </div>
                 </div>
                 <div class="column is-5">
-                	<?php include('load/table/notifies.php'); ?>
+                	<?php include('load/tables/notifies.php'); ?>
                 </div>
             </div>
             <div class="columns">
