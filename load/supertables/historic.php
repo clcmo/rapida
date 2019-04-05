@@ -1,4 +1,7 @@
 <?php
+	$name_page = 'historic';
+	include ('main.php');
+/*
 	$id = (isset($_GET['id'])) ? $_GET['id'] : '';
 
 	$name_page = 'classroom';
@@ -43,4 +46,4 @@
 			}
 		echo'
 			<tbody>
-		</table>';
+		</table>';*/
