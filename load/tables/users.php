@@ -1,7 +1,8 @@
 <?php
-	//include('load/main.php');
-
-	$sql = $Tables->LoadFrom('usuarios LIMIT '.$vi.','.$vf);
+	$name_page = 'users';
+	include('main.php');
+/*
+	$sql = $Tables->LoadFrom('users LIMIT '.$vi.','.$vf);
 	$query = $PDO->query($sql) or die ($PDO);
 	while($row = $query->fetch(PDO::FETCH_OBJ)){
 		$foto = ($row->foto) ? SERVER.'uploads/'.$row->foto : $Load->Gravatar($row->email_usu);
@@ -23,4 +24,4 @@
             <td width="5%"><a href="'.SERVER.'profile?id='.$row->id_usu.'" class="button is-link is-small"><i class="fas fa-pencil-alt"></i></a></td>
             <td width="5%">'.$button.'</td>
         </tr>';
-	}
+	}*/
