@@ -1,34 +1,27 @@
 <?php
-	/**
-	 * The profile for our theme.
-	 *
-	 * Displays all of the brand menu section
-	 *
-	 * @package Bulma by Milla
-	 */
 	include('header-admin.php');
-	include('load/profile.php');
+	include('load/pages/users.php');
 ?>
 <div class="columns">
-    <div class="column is-4">
-        <div class="tabs is-left"><?php echo $Load->MainNavegation(LINK, 'Perfil'); ?></div>
+    <div class="column is-3">
+        <div class="tabs is-left"><?php echo $Load->MainNavegation(LINK, ucfirst('perfil')); ?></div>
     </div>
 </div>
-
 <div class="box content">
-	<?php echo $Load->HeroMessage(LINK, $name_use, $type.' desde '.$year); ?>
-	<hr />
+	<?php
+		echo $Load->HeroMessage(LINK, ucfirst('perfil'), 'Informe os dados para '.$selected_type); ?>
+	<hr/>
 	<section class="info-tiles">
 		<form action="#" method="post">
 			<div class="columns">
-                <div class="column is-7">
-					<p class="title is-small">Dados do <?php echo ucfirst($type); ?></p>
+                <div class="column is-6">
+					<p class="title is-small">Dados do <?php echo ucfirst($tipo); ?></p>
 					<div class="columns">
 						<div class="column">
 							<div class="field">
   								<label class="label">Nome</label>
   								<div class="control has-icons-left has-icons-right">
-  									<input class="input is-link" type="text" placeholder="<?php echo $name_use; ?>" name="name_use">
+  									<input class="input is-link" type="text" placeholder="<?php echo $name_use; ?>" value="<?php echo $name_use; ?>" name="name_use">
   									<span class="icon is-small is-left"><i class="fas fa-user"></i></span>
 									<span class="icon is-small is-right"><i class="fas fa-check"></i></span>
 								</div>
@@ -38,7 +31,7 @@
                         	<div class="field">
   								<label class="label">E-mail</label>
 								<div class="control has-icons-left has-icons-right">
-									<input class="input is-link" type="text" placeholder="<?php echo $email; ?>" value="" name="email">
+									<input class="input is-link" type="text" placeholder="<?php echo $email; ?>" name="email" value="<?php echo $email; ?>">
 									<span class="icon is-small is-left"><i class="fas fa-user"></i></span>
 									<span class="icon is-small is-right"><i class="fas fa-check"></i></span>
 								</div>
@@ -51,7 +44,7 @@
 							<div class="field">
   								<label class="label">Senha</label>
   								<div class="control has-icons-left has-icons-right">
-  									<input class="input is-link" type="password" placeholder="" name="senha">
+  									<input class="input is-link" type="password" value="" placeholder="" name="password">
   									<span class="icon is-small is-left"><i class="fas fa-lock"></i></span>
 									<span class="icon is-small is-right"><i class="fas fa-check"></i></span>
 								</div>
@@ -69,7 +62,7 @@
 							<div class="field">
   								<label class="label">Data de Nascimento</label>
   								<div class="control has-icons-left has-icons-right">
-  									<input class="input is-link" type="date" placeholder="<?php echo $data_nasc; ?>" name="data_nasc" value="<?php echo $data_nasc; ?>">
+  									<input class="input is-link" type="date" placeholder="<?php echo $birthday_date; ?>" value="<?php echo $birthday_date; ?>" name="birthday_date">
   									<span class="icon is-small is-left"><i class="fas fa-user"></i></span>
 									<span class="icon is-small is-right"><i class="fas fa-check"></i></span>
 								</div>
@@ -79,7 +72,7 @@
 							<div class="field">
   								<label class="label">RG</label>
   								<div class="control has-icons-left has-icons-right">
-  									<input class="input is-link" type="text" placeholder="" name="rg">
+  									<input class="input is-link" type="text" placeholder="<?php echo $rg; ?>" value="<?php echo $rg; ?>" name="rg">
   									<span class="icon is-small is-left"><i class="fas fa-user"></i></span>
 									<span class="icon is-small is-right"><i class="fas fa-check"></i></span>
 								</div>
@@ -91,7 +84,7 @@
                         	<div class="field">
   								<label class="label">CPF</label>
   								<div class="control has-icons-left has-icons-right">
-  									<input class="input is-link" type="text" placeholder="" name="cpf">
+  									<input class="input is-link" type="text" placeholder="<?php echo $cpf; ?>" value="<?php echo $cpf; ?>" name="cpf">
   									<span class="icon is-small is-left"><i class="fas fa-user"></i></span>
 									<span class="icon is-small is-right"><i class="fas fa-check"></i></span>
 								</div>
@@ -101,7 +94,7 @@
                         	<div class="field">
   								<label class="label">Telefone</label>
   								<div class="control has-icons-left has-icons-right">
-  									<input class="input is-link" type="text" placeholder="" name="telefone">
+  									<input class="input is-link" type="text" placeholder="<?php echo $phone; ?>" value="<?php echo $phone; ?>" name="phone">
   									<span class="icon is-small is-left"><i class="fas fa-mobile"></i></span>
 									<span class="icon is-small is-right"><i class="fas fa-check"></i></span>
 								</div>
@@ -109,13 +102,13 @@
                         </div>
                     </div>
                     <hr />
-                    <p class="title is-small">Dados Residenciais do <?php echo ucfirst($type); ?></p>
+                    <p class="title is-small">Dados Residenciais do <?php echo ucfirst($tipo); ?></p>
                     <div class="columns">
 						<div class="column">
 							<div class="field">
   								<label class="label">CEP</label>
 								<div class="control has-icons-left has-icons-right">
-									<input class="input is-link" type="text" placeholder="<?php echo $cep_res; ?>" value="" name="cep_res">
+									<input class="input is-link" type="text" placeholder="<?php echo $cep; ?>" value="<?php echo $cep; ?>" name="cep">
 									<span class="icon is-small is-left"><i class="fas fa-user"></i></span>
 									<span class="icon is-small is-right"><i class="fas fa-check"></i></span>
 								</div>
@@ -126,7 +119,7 @@
                         	<div class="field">
   								<label class="label">Endereço</label>
   								<div class="control has-icons-left has-icons-right">
-  									<input class="input is-link" type="text" placeholder="<?php echo $end_res; ?>" name="end_res">
+  									<input class="input is-link" type="text" placeholder="<?php echo $address; ?>" value="<?php echo $address; ?>" name="address">
   									<span class="icon is-small is-left"><i class="fas fa-user"></i></span>
 									<span class="icon is-small is-right"><i class="fas fa-check"></i></span>
 								</div>
@@ -138,7 +131,7 @@
 							<div class="field">
   								<label class="label">Número</label>
 								<div class="control has-icons-left has-icons-right">
-									<input class="input is-link" type="number" placeholder="<?php echo $num_res; ?>" value="" name="num_res">
+									<input class="input is-link" type="number" placeholder="<?php echo $number; ?>" value="<?php echo $number; ?>" name="number">
 									<span class="icon is-small is-left"><i class="fas fa-user"></i></span>
 									<span class="icon is-small is-right"><i class="fas fa-check"></i></span>
 								</div>
@@ -149,7 +142,7 @@
                         	<div class="field">
   								<label class="label">Bairro</label>
   								<div class="control has-icons-left has-icons-right">
-  									<input class="input is-link" type="text" placeholder="<?php echo $bai_res; ?>" name="bai_res">
+  									<input class="input is-link" type="text" placeholder="<?php echo $neighborhood; ?>" value="<?php echo $neighborhood; ?>" name="neighborhood">
   									<span class="icon is-small is-left"><i class="fas fa-user"></i></span>
 									<span class="icon is-small is-right"><i class="fas fa-check"></i></span>
 								</div>
@@ -161,7 +154,7 @@
 							<div class="field">
   								<label class="label">Cidade</label>
 								<div class="control has-icons-left has-icons-right">
-									<input class="input is-link" type="text" placeholder="<?php echo $cid_res; ?>" value="" name="cid_res">
+									<input class="input is-link" type="text" placeholder="<?php echo $city; ?>" value="<?php echo $city; ?>" name="city">
 									<span class="icon is-small is-left"><i class="fas fa-user"></i></span>
 									<span class="icon is-small is-right"><i class="fas fa-check"></i></span>
 								</div>
@@ -172,7 +165,7 @@
                         	<div class="field">
   								<label class="label">Estado</label>
   								<div class="control has-icons-left has-icons-right">
-  									<input class="input is-link" type="text" placeholder="<?php echo $uf; ?>" name="uf">
+  									<input class="input is-link" type="text" placeholder="<?php echo $state; ?>" value="<?php echo $state; ?>" name="state">
   									<span class="icon is-small is-left"><i class="fas fa-user"></i></span>
 									<span class="icon is-small is-right"><i class="fas fa-check"></i></span>
 								</div>
@@ -180,14 +173,15 @@
                         </div>
                     </div>
                 </div>
-				<div class="column is-5">
+				<div class="column is-6">
 					<div class="columns">
 						<div class="column is-6">
+							<!--Mudar para Gravatar-->
 							<label class="label">Foto</label>
 							<div class="field">
 		  						<div class="file is-centered is-boxed is-link has-name is-small">
 		    						<label class="file-label">
-		      							<input class="file-input" type="file" name="foto">
+		      							<input class="file-input" type="file" name="photo">
 		      							<span class="file-cta">
 		        							<span class="file-icon"><i class="fas fa-upload"></i></span>
 		        							<span class="file-label">Carregar Foto…</span>
@@ -203,17 +197,27 @@
 		  				</div>
 		  			</div>
 					<hr/>
-					<p class="title is-small">Informações</p>
-					<p><strong>Login: </strong>@<a href="profile?id=<?php echo $id; ?>"><?php echo $login; ?></a></p>
-					<p><strong><?php echo $type; ?></strong> da área de <?php echo $area; ?></p>
-					<p><strong>Data do Cadastro:</strong> <?php echo $signup_date; ?>
-					<hr/>
-					<?php echo $data; ?>
+					<div class="card events-card">
+                        <header class="card-header">
+                            <p class="card-header-title">Usuários Cadastrados</p>
+                            <a href="" class="card-header-icon" aria-label="more options"><span class="icon"><i class="fa fa-angle-down" aria-hidden="true"></i></span></a>
+                        </header>
+                        <div class="card-table">
+                            <div class="content">
+                                <table class="table is-fullwidth is-striped">
+                                    <tbody>
+                                        <?php include('load/table/users.php'); ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <footer class="card-footer"><a href="" class="card-footer-item">Ver Todos</a></footer>
+                    </div>
 				</div>
 			</div>
 			<div class="columns">
 				<div class="column">
-					<input class="button is-block is-success is-large is-fullwidth" type="submit" name="save" value="Salvar" />
+					<input class="button is-block is-success is-large is-fullwidth" type="submit" name="<?php echo $type_button; ?>" value="Salvar" />
 				</div>
 				<div class="column">
 					<input class="button is-block is-danger is-large is-fullwidth" type="button" name="cancel" value="Cancelar" />
@@ -230,9 +234,13 @@
         location.reload();
     }
 </script>
+</div>
 <?php
-	if(isset($_POST['save'])) {
+	if(isset($_POST['save']) || isset($_POST['edit'])){
 
 	}
+
+	if(isset($_POST['save'])){} elseif(isset($_POST['edit'])){}
+
 	include('footer-admin.php');
 ?>
