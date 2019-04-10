@@ -99,6 +99,20 @@ body {
 .section p { padding: 0.8em; }
 
 
+/* AVATAR */
+
+.avatar {
+  margin-left: 30%;
+}
+
+.image.is-256x256 {
+  width: 256px;
+  height: 256px;
+}
+
+/* LOGIN */
+.box { margin-top: 5rem; }
+
 /** FOOTER */
 .bulma {
   max-height: 2rem;
