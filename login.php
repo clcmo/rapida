@@ -7,13 +7,13 @@
    * @package Bulma by Milla
    */
   include('header-index.php');
-  include('load/login.php');
+  include('load/pages/login.php');
 ?>
   <div class="column is-4 is-offset-4">
     <h3 class="title is-medium">Login</h3>
     <p class="subtitle">Insira os dados para continuar.</p>
     <div class="box">
-      <figure class="avatar"><img src="<?php echo $picture; ?>"></figure>
+      <figure class="image is-128x128 avatar"><img class="is-rounded" src="<?php echo $picture; ?>"></figure>
       <form method="post" action="">
         <div class="field"><div class="control"><input class="input is-large" type="email" name="email" placeholder="<?php echo $placeholder; ?>" value="<?php echo $email; ?>" autofocus=""></div></div>
         <div class="field"><div class="control"><input class="input is-large" type="password" name="password" placeholder="Sua Senha"></div></div>
@@ -69,5 +69,5 @@
         }
       ?>
     </p>
-  </div>
+  </div>x
 <?php include('footer-index.php'); ?>
