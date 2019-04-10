@@ -11,12 +11,6 @@
 		  	<ul>
 		    	<li class="is-active">
 		      		<a>
-		        		<span class="icon is-small"><i class="fas fa-search" aria-hidden="true"></i></span>
-		        		<span><input class="input" type="search" placeholder="Procurar..."></span>
-		      		</a>
-		    	</li>
-		    	<li>
-		      		<a>
 		        		<span class="icon is-small"><i class="fas fa-chalkboard" aria-hidden="true"></i></span>
 		        		<span>Todos</span>
 		      		</a>
