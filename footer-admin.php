@@ -3,7 +3,7 @@
 </section>
 <footer class="footer">
 	<div class="container">
-		<?php echo $Load->FooterMenu(); ?>
+		<?php echo $Load->FooterMenu(LINK); ?>
 		<div class="content has-text-centered">
 			<div class="columns is-mobile is-centered">
 				<div class="field is-grouped is-grouped-multiline"><?php echo FOOTER; ?></div>
