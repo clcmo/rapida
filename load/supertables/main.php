@@ -1,5 +1,4 @@
 <?php
-	$id = (isset($_GET['id'])) ? $_GET['id'] : '';
 	switch ($name_page) {
         case 'classroom':
         	$th = '
@@ -28,12 +27,9 @@
 		break;
 	}
 
-	$vi = 0;
-	$vf = 5;
 	$script = (LINK != $name_page.'#show_all') ? $script : $script.' LIMIT '.$vi.','.$vf;
+    $con 	= $PDO->query($Tables->LoadFrom($script)) or die ($PDO);
 
-	$sql = $Tables->LoadFrom($script);
-    $query = $PDO->query($sql) or die ($PDO);
     $id = $Tables->Found_Item('id', $name_page);
     $name_table = $Tables->Found_Item('name', $name_page);
 
@@ -43,16 +39,16 @@
                 <tr>'.$th.'</tr>
 			</thead>
             <tbody>';							
-			while($row = $query->fetch(PDO::FETCH_OBJ)){
+			while($row = $con->fetch(PDO::FETCH_OBJ)){
 				$name_use = $row->name_use;
-				$pic = ($row->photo != null) ? SERVER.'uploads/'.$row->photo : $Load->Gravatar($row->email);
+				$photo = ($row->photo != null) ? SERVER.'uploads/'.$row->photo : $Load->Gravatar($row->email);
 				switch ($name_page) {
 					case 'classroom':
 						
 						$signup_date = date('d/m/Y', strtotime($row->signup_date));
 						$birthday_date = date('d/m/Y', strtotime($row->birthday_date));
 
-						$col_1 = '<p class="image is-64x64"><img class="is-rounded" src="'.$pic.'">';
+						$col_1 = '<p class="image is-64x64"><img class="is-rounded" src="'.$photo.'">';
 					    $col_2 = $name_use;
 					    $col_3 = $row->id_use;
 					    $col_4 = $signup_date;
@@ -62,8 +58,9 @@
 					    $col_8 = $col_9 = $col_10 = '';
 					break;
 
+					#criar tabela e acrescentar notas, faltas, abonos, formula da avaliação e média final
 					case 'historic':
-						$col_1 = '<p class="image is-64x64"><img class="is-rounded" src="'.$pic.'">';
+						$col_1 = '<p class="image is-64x64"><img class="is-rounded" src="'.$photo.'">';
 					    $col_2 = $name_use;
 					    $col_3 = '10';
 					    $col_4 = '7';

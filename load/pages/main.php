@@ -39,6 +39,7 @@
 		break;
 
 		case 'users':
+
 		break;
 	}
 
@@ -48,7 +49,6 @@
 	switch ($id) {
 		case true:
 			$script.= $id_table.' = '.$id;
-			//chamar script sql
 			$sql = $Tables->LoadFrom($script);
 			$query = $PDO->query($sql) or die ($PDO);
 			$cont = $Tables->CountViewTable($script);
@@ -67,7 +67,6 @@
 					break;
 				}
 			}
-
 			$selected_type = 'editar';
 			$type_button = 'edit';
 		break;

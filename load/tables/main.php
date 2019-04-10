@@ -1,11 +1,12 @@
 <?php
+	$script = $name_page;
 	switch ($name_page) {
         case 'classroom':
         	$th = '
                     <th></th>
 					<th>Nome do Curso</th>
 					<th>Tipo de Curso</th>';
-			$script = $name_page.', courses WHERE '.$name_page.'.id_cou = courses.id_cou';
+			$script .= ', courses WHERE '.$name_page.'.id_cou = courses.id_cou';
 			$titulo = 'Turmas';
 			$icon = '<i class="fas fa-users"></i>';
 			$type_table = $Tables->Found_Item('type', 'courses');
@@ -17,7 +18,7 @@
 					<th>Tipo de Curso</th>
 					<th>Período</th>';
 					$titulo = 'Cursos';
-			$script = $name_page;
+			#$script = $name_page;
 			$titulo = 'Cursos';
 			$icon = '<i class="fas fa-pencil-alt"></i>';
 			
@@ -28,11 +29,12 @@
 				<th>Nome</th>
 				<th>Nome do Curso</th>
 				<th>Professor</th>';
-			$script = $name_page.', `courses`, `teachers`, `users` WHERE disciplines.id_cou = courses.id_cou AND disciplines.id_tea = teachers.id_tea AND teachers.id_use = users.id_use';
+			$script .= ', `courses`, `teachers`, `users` WHERE disciplines.id_cou = courses.id_cou AND disciplines.id_tea = teachers.id_tea AND teachers.id_use = users.id_use';
 			$titulo = 'Disciplinas';
 			$icon = '<i class="fas fa-chalkboard"></i>';
 			$type_table = $Tables->Found_Item('type', 'courses');
 		break;
+
 		case 'notifies':
 			$th = '
 				<th></th>
@@ -41,12 +43,12 @@
 				<th>Nome do Usuário</th>';
 
 			$sql = $Tables->LoadFrom('users WHERE id_use = '.$_SESSION['id'].' AND status_use = 1 LIMIT 1');
-			$query = $PDO->query($sql) or die ($PDO);
+			$con = $PDO->query($sql) or die ($PDO);
 	
-			$script = $name_page.', users WHERE users.id_use = '.$name_page.'.id_use';
+			$script .= ', users WHERE users.id_use = '.$name_page.'.id_use';
 			$titulo = 'Notificações';
 			$icon = '<i class="fas fa-bell"></i>';
-			while($row = $query->fetch(PDO::FETCH_OBJ)){
+			while($row = $con->fetch(PDO::FETCH_OBJ)){
 				switch ($row->type_use){
 					case 1:
 					case 3:
@@ -63,12 +65,10 @@
 		break;
 	}
 
-	$vi = 0;
-	$vf = 5;
 	$script = (LINK != $name_page.'#show_all') ? $script : $script.' LIMIT '.$vi.','.$vf;
+    $con = $PDO->query($Tables->LoadFrom($script)) or die ($PDO);
+    $cont = $Tables->CountViewTable($script);
 
-	$sql = $Tables->LoadFrom($script);
-    $query = $PDO->query($sql) or die ($PDO);
     $id = $Tables->Found_Item('id', $name_page);
     $name_table = $Tables->Found_Item('name', $name_page);
 
@@ -85,7 +85,7 @@
                     		<tr>'.$th.'</tr>
 						</thead>
                     	<tbody>';							
-					    while($row = $query->fetch(PDO::FETCH_OBJ)){
+					    while($row = $con->fetch(PDO::FETCH_OBJ)){
 					    	$status_table = $Tables->Found_Item('status', $name_page);
 					    	switch ($row->$status_table) {
 								case 1:
@@ -196,6 +196,12 @@
 					    		break;
 
 					    		case 'users':
+					    			$photo = ($row->photo) ? SERVER.'uploads/'.$row->photo : $Load->Gravatar($row->email);
+					    			$col_1 = '<a href="'.SERVER.'profile?id='.$row->id_usu.'" class="button is-link is-small"><i class="fas fa-pencil-alt"></i></a>';
+					    			$col_2 = '<figure class="image is-32x32"><img class="is-rounded" src="'.$photo.'">';
+					    			$col_3 = $row->$name_table;
+					    			$col_4 = '<a href="'.$action_link.'" class="button is-'.$action_color.' is-small">'.$action_button.'</a>';
+					    			$col_5 = '';
 					    		break;
 					    	}
 
@@ -213,6 +219,7 @@
                         </table>
                     </div>
                 </div>
-                <footer class="card-footer"></footer>
-                <!--<footer class="card-footer"><a href="'.$name_page.'#show_all" class="card-footer-item">Ver Todas</a></footer>-->
+                <footer class="card-footer">
+                	<a class="card-footer-item">Exibindo '.$cont.' de '.$cont.' resultados.</a>
+                </footer>
             </div>';

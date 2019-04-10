@@ -1,15 +1,7 @@
 <?php
-	//Para Paginação
-	$vf = 10;
-	$pg = isset($_GET['pg']) ? $_GET['pg'] : '';
-	$pc = (!$pg) ? 1 : $pg;
-	$vi = $pc - 1;
-	$vi = $vi * $vf;
-
 	$script .=' LIMIT '.$vi.', '.$vf;
 
-	$sql = $Tables->LoadFrom($script);
-    $query = $PDO->query($sql) or die ($PDO);
+    $query = $PDO->query($Tables->LoadFrom($script)) or die ($PDO);
     $cont = $Tables->CountViewTable($script);
 
     while($row = $query->fetch(PDO::FETCH_OBJ)){
