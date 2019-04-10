@@ -76,7 +76,7 @@
                     </div>
                 </div>
                 <div class="column is-5">
-                	<?php include('load/tables/notifies.php'); ?>
+                	<?php include('load/tables/main.php'); ?>
                 </div>
             </div>
             <div class="columns">
