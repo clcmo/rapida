@@ -5,7 +5,7 @@
 /fuel/vendor
 
 # the fuelphp document
-/docs/
+#/docs/
 
 # you may install these packages with `oil package`.
 # http://fuelphp.com/docs/packages/oil/package.html
