@@ -20,6 +20,7 @@
     define('TITLE_HEAD',  TITLE.' | '.DESC);
 	define('AUTHOR',     'Camila L. Oliveira');
     define('AUTHOR_URL', 'http://projetos.camilaloliveira.com/');
+    $home = (!$Login->IsLogged()) ? 'index' : 'admin';
     define('FOOTER',     'Copyright &copy; '.YEAR.'&nbsp;<a href="'.AUTHOR_URL.'" class="text-bold" style="text-decoration: none" target="_blank"><img class="bulma" src="'.SERVER.'assets/brand/logo_milla_b.png"></a>. Todos os direitos reservados.');
 
     # 4 - Definição de Conexão
@@ -37,6 +38,8 @@
 
     # 6 - Definições de Inserção/Edição
     $id = (isset($_GET['id'])) ? $_GET['id'] : (isset($_SESSION['id'])) ? $_SESSION['id'] : '';
+    $email = isset($_GET['email']) ? $_GET['email'] : '';
+    $placeholder = isset($_GET['email']) ? $_GET['email'] : 'Informe seu email';
     switch ($id) {
         case true:
             $selected_type = 'editar';
