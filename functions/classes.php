@@ -56,7 +56,7 @@
 	    	$Tables = new Tables;
 	    	$PDO = $Load->DataBase();
 	    	$q = isset($_GET['q']) ? $_GET['q'] : '';
-	    	$con = $PDO->prepare($$Tables->LoadCountFrom($str)." WHERE ".$con." LIKE %".$q."% ORDER BY ".$con) or die ($PDO);
+	    	$con = $PDO->prepare($Tables->LoadCountFrom($str)." WHERE ".$con." LIKE %".$q."% ORDER BY ".$con) or die ($PDO);
 	    	$qt = count($con);
 	    	return $qt;
 	    }
@@ -84,18 +84,7 @@
         	return (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] != true) ? false : true;
         }
 
-        # 2 - Retorna a foto do usuário (Pode ser substituído pelo Gravatar)
-        function LockPic(){
-            $Load = new Load;
-            $PDO = $Load->DataBase();
-            $con = $PDO->query('SELECT photo FROM users WHERE id_use = '.$_SESSION['id']) or die ($PDO);
-            while($row = $con->fetch(PDO::FETCH_OBJ)) {
-                $photo = $row->photo;
-            }
-            return $photo;
-        }
-
-        #3 - Checa se o usuário está logado e redireciona para uma das páginas
+        #2 - Checa se o usuário está logado e redireciona para uma das páginas
         function Check(){
         	$Login = new Login;
         	$link = (!$Login->IsLogged()) ? 'index' : 'admin';
@@ -140,26 +129,44 @@
 	    	return substr(str_shuffle($password), 0, $size);	# retorna a senha embaralhada com "str_shuffle" com o tamanho definido pela variável $tamanho
 		}
 
-	    # 5 - Exibe a imagem gravada no site Gravatar.com para o avatar do usuário
-		function Gravatar($email, $s = 80, $d = 'mp', $r = 'g', $img = false, $atts = array()) {
-		    $url = 'https://www.gravatar.com/avatar/';
-		    $url .= md5(strtolower(trim($email)));
-		    $url .= "?s=$s&d=$d&r=$r";
-		    if ($img) {
-		        $url = '<img src="'.$url.'"';
-		        foreach ($atts as $key => $val)
-		            $url .= ' '.$key.'="'.$val.'"';
-		        $url .= ' />';
-		    }
-		    return $url;
+		# 5 - Exibe a imagem gravada no BD ou a imagem gravada no site Gravatar.com
+		function Gravatar($s = 80, $d = 'mp', $r = 'g', $img = false, $atts = array()){
+			$Login = new Login;
+			switch ($Login->IsLogged()){
+				case false:
+					$email = isset($_GET['email']) ? $_GET['email'] : 'someone@somewhere.com';
+					$photo = '';
+				break;
+				case true:
+					$Load = new Load;
+					$PDO = $Load->DataBase();
+					$con = $PDO->query('SELECT photo, email FROM users WHERE id_use = '.$_SESSION['id']) or die ($PDO);
+					while($row = $con->fetch(PDO::FETCH_OBJ)) {
+						$email = $row->email;
+						$photo = $row->photo;
+					}
+				break;
+			}
+			if(!$photo){
+				$url = 'https://www.gravatar.com/avatar/';
+			    $url .= md5(strtolower(trim($email)));
+			    $url .= "?s=$s&d=$d&r=$r";
+			    if ($img) {
+			    	$url = '<img src="'.$url.'"';
+			        	foreach ($atts as $key => $val)
+			            	$url .= ' '.$key.'="'.$val.'"';
+			        	$url .= ' />';
+			    	}
+			    $photo = $url;
+			}
+            return $photo;
 		}
 
-		# 6 - Gera o Menu de topo se o usuário estiver logado
+		# 6 - Gera o Menu de topo se o usuário estiver logado. Manu irá variar de acordo com o tipo de usuário
 	    function HeroMenu(){
 	    	$Load = new Load;
 	    	$Tables = new Tables;
 	        $Login = new Login;
-	        $home = (!$Login->IsLogged()) ? 'index' : 'admin';
 	        $menu = array();
 	        $menu[1] = '
 	        <div class="hero-head">
@@ -383,3 +390,109 @@
 	}
 	$Load = new Load;
     define('SERVER', $Load->Server());
+
+    # Classe que cataloga as funções referentes as páginas
+    class Pages{
+    	function LoadSamplePage($name_page){
+    		$Tables = new Tables;
+    		$Load = new Load;
+			switch ($name_page) {
+				default:
+					$id = (isset($_GET['id'])) ? $_GET['id'] : (isset($_SESSION['id'])) ? $_SESSION['id'] : '';
+					#puxa a id informada
+
+					#com o nome da página estaremos puxando:
+					$script = $name_page;
+					#script sql
+					$type_table = $Tables->Found_Item('type', $name_page);
+					#o tipo na tabela informada
+					$status_table = $Tables->Found_Item('status', $name_page);
+					#o status na tabela informada
+					$name_table = $Tables->Found_Item('name', $name_page);
+					#o titulo/nome na tabela informada 
+					$id_table = $Tables->Found_Item('id', $name_page);
+					#o id na tabela informada
+				break;
+
+				case 'courses':
+					$script .= ' WHERE ';
+				break;
+				
+				case 'disciplines':
+					$script .= ', courses WHERE '.$name_page.'.id_cou = courses.id_cou AND ';
+				break;
+
+				case 'login':
+					$script = 'users WHERE ';
+				break;
+
+				case 'notifies':
+					$con = $PDO->query('SELECT type_use FROM users WHERE id_use = '.$_SESSION['id'].'AND status_use = 1 LIMIT 1') or die ($PDO);
+					while($row = $con->fetch(PDO::FETCH_OBJ)){
+						$name_use = $row->name_use;
+						switch ($row->type_use){
+							case 1:
+								#diretor
+							break;
+
+							case 2:
+								#coordenador
+							break;
+
+							case 3:
+								#funcionário
+								$script .= ', users WHERE users.id_use = '.$name_page.'.id_use AND ';
+								$button_title = 'Gerar Documento';
+							break;
+							
+							case 4:
+								#professor
+							break;
+
+							case 5:
+								$script .= ', users WHERE users.id_use = '.$name_page.'.id_use AND users.id_use = '.$_SESSION['id'].' AND ';
+								/*$profile_link = SERVER.'profile';*/
+							break;
+						}
+					}
+				break;
+
+				case 'users':
+					#preparar codigo
+				break;
+			}
+
+			switch ($id) {
+				case true:
+					$script.= $id_table.' = '.$id;
+					$con = $PDO->query($Tables->LoadFrom($script)) or die ($PDO);
+					$cont = $Tables->CountViewTable($script);
+					while($row = $con->fetch(PDO::FETCH_OBJ)){
+						$name_cou = $name_dis = $name_not = $row->$name_table;
+						switch ($row->$type_table) {
+							case 1: 
+								$button_title_2 = 'Ensino Médio';
+								$checked1 = 'checked';
+								$checked2 = '';
+							break;
+							case 2: 
+								$button_title_2 = 'Ensino Modular';
+								$checked2 = 'checked';
+								$checked1 = '';
+							break;
+						}
+						$placeholder = $email = $row->email;
+					}
+				break;
+				
+				case false:
+					$name_cou = $name_dis = $name_not = 'Informe o nome';
+					$checked2 = '';
+					$checked1 = '';
+				break;
+			}
+			$picture = $Load->Gravatar();
+			$placeholder = $email = isset($_GET['email']) ? $_GET['email'] : '';
+		}
+    }
+    $Pages = new Pages;
