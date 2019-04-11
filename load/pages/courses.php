@@ -1,3 +1,3 @@
 <?php
-	$script = $name_page = 'courses'; 
+	$name_page = 'courses'; 
 	include('main.php');
