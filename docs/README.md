@@ -1,3 +1,11 @@
+---
+title: Rapida
+subtitle: Sistemas Academicos
+layout: page
+show_sidebar: true
+---
+
+
 # Rápida: Sistema de Gerenciamento Escolar
 
 ![Logo Rapida](https://raw.githubusercontent.com/clcmo/rapida/master/assets/brand/Logo_Rapida.png)
