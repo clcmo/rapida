@@ -1,1 +1,10 @@
+#General Jekyll Config
+highlighter: rogue
+name: Rapida
+description: Sistemas Academicos
+url: "http://clcmo.github.io/rapida"
+lsi: false
+
+#Setings
+permalink: pretty
 theme: jekyll-theme-cayman
