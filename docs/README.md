@@ -1,6 +1,6 @@
 ---
-title: Bulma Clean Theme
-subtitle: This is the demo site for Bulma Clean Theme
+title: Sobre
+subtitle: Sobre a Rápida
 layout: page
 ---
 # Rápida: Sistema de Gerenciamento Escolar
