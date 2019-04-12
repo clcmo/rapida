@@ -9,3 +9,4 @@ lsi: false
 permalink: pretty
 #theme: bulma-clean-theme
 remote_theme: chrisrhymes/bulma-clean-theme
+theme: jekyll-theme-minimal
