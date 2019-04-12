@@ -7,9 +7,9 @@
    * @package Bulma by Milla
    */
   include('header-index.php');
-  $link = isset($_GET['email']) ? LINK : LINK.'.php';
-  #include('load/pages'.$link);
-  echo $Pages->LoadSamplePage($link);
+  $link = isset($_GET['email']) ? substr(LINK, 0, 6) : LINK;
+  include('load/pages'.$link.'.php');
+  #echo $Pages->LoadSamplePage($link);
 ?>
   <div class="column is-4 is-offset-4">
     <h3 class="title is-medium">Login</h3>
