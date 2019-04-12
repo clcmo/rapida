@@ -10,12 +10,3 @@ permalink: pretty
 #theme: bulma-clean-theme
 remote_theme: chrisrhymes/bulma-clean-theme
 #theme: jekyll-theme-minimal
-
-#Hero
-layout: page
-title: Rápida
-subtitle: Sistemas Academicos
-image: assets/brand/Logo_Rapida.png
-description: The pages meta description
-hero_image: https://unsplash.it/1200/900?random
-hero_height: is-fullheight
