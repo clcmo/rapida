@@ -13,8 +13,10 @@ Para saber mais, conheça nosso código a seguir
 /*[online documentation](#).*/
 
 Baixe o git e instale-o em sua máquina no link:
-/ * [Download Via GitHub Desktop](https://github.com/clcmo/rapida.git) 
-  * [Download Via Zip](https://github.com/clcmo/rapida/archive/0.5.1.1.zip) /
+/
+  * [Download Via GitHub Desktop](https://github.com/clcmo/rapida.git) 
+  * [Download Via Zip](https://github.com/clcmo/rapida/archive/0.5.1.1.zip)
+  /
 
 
 ### Porquê a Rápida? ###
