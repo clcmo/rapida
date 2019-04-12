@@ -1,10 +1,9 @@
-![Logo Rapida](https://raw.githubusercontent.com/clcmo/rapida/master/assets/brand/Logo_Rapida.svg)
+![Logo Rapida](https://raw.githubusercontent.com/clcmo/rapida/master/assets/brand/Logo_Rapida.png)
 
 # Rápida: Sistema de Gerenciamento Escolar #
 ![GitHub (pre-)release](https://img.shields.io/github/release/qubyte/rubidium/all.svg)
 [![GitHub issues](https://img.shields.io/github/issues/clcmo/rapida.svg)](https://github.com/clcmo/rapida/issues)
 [![GitHub license](https://img.shields.io/github/license/clcmo/rapida.svg)](https://github.com/clcmo/rapida)
-![PHP version from PHP-Eye](https://img.shields.io/php-eye/symfony/symfony.svg)
 [![Twitter](https://img.shields.io/twitter/url/https/github.com/clcmo/rapida.svg?style=social)](https://twitter.com/intent/tweet?text=Wow:&url=https%3A%2F%2Fgithub.com%clcmo%2Frapida)
 
 
@@ -33,5 +32,5 @@ Baixe o git e instale-o em sua máquina no link:
 #### Ao longo do desenvolvimento, imagens serão documentadas e exibidas no site oficial da Camila L. Oliveira  ####
 
 #### Desenvolvido por:
-![]![Logo_Camila](https://raw.githubusercontent.com/clcmo/rapida/branch/assets/brand/logo_milla_b.png)(http://projetos.camilaloliveira.com)
+![]![Logo_Camila](https://raw.githubusercontent.com/clcmo/rapida/master/assets/brand/logo_milla_b.png)(http://projetos.camilaloliveira.com)
 
