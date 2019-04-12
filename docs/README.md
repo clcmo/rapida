@@ -1,6 +1,11 @@
-![Logo Rapida](https://raw.githubusercontent.com/clcmo/rapida/master/assets/brand/Logo_Rapida.png)
+---
+title: Bulma Clean Theme
+subtitle: This is the demo site for Bulma Clean Theme
+layout: page
+---
+# Rápida: Sistema de Gerenciamento Escolar
 
-# Rápida: Sistema de Gerenciamento Escolar #
+![Logo Rapida](https://raw.githubusercontent.com/clcmo/rapida/master/assets/brand/Logo_Rapida.png)
 ![GitHub (pre-)release](https://img.shields.io/github/release/qubyte/rubidium/all.svg)
 [![GitHub issues](https://img.shields.io/github/issues/clcmo/rapida.svg)](https://github.com/clcmo/rapida/issues)
 [![GitHub license](https://img.shields.io/github/license/clcmo/rapida.svg)](https://github.com/clcmo/rapida)
