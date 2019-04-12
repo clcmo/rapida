@@ -1,10 +1,11 @@
 # Rápida: Sistema de Gerenciamento Escolar
 
 ![Logo Rapida](https://raw.githubusercontent.com/clcmo/rapida/master/assets/brand/Logo_Rapida.png)
+
 ![GitHub (pre-)release](https://img.shields.io/github/release/qubyte/rubidium/all.svg?style=for-the-badge&logo=appveyor)
 [![GitHub issues](https://img.shields.io/github/issues/clcmo/rapida.svg?style=for-the-badge&logo=appveyor)](https://github.com/clcmo/rapida/issues)
 [![GitHub license](https://img.shields.io/github/license/clcmo/rapida.svg?style=for-the-badge&logo=appveyor)](https://github.com/clcmo/rapida)
-[![Twitter](https://img.shields.io/twitter/url/https/github.com/clcmo/rapida.svg??style=for-the-badge&logo=appveyor)](https://twitter.com/intent/tweet?text=Wow:&url=https%3A%2F%2Fgithub.com%clcmo%2Frapida)
+[![Twitter](https://img.shields.io/twitter/url/https/github.com/clcmo/rapida.svg?style=for-the-badge&logo=appveyor)](https://twitter.com/intent/tweet?text=Wow:&url=https%3A%2F%2Fgithub.com%clcmo%2Frapida)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg?style=for-the-badge&logo=appveyor)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9CF4VHKMUA5TN&source=url)
 
 Este é o sistema acadêmico Rápída. Feito a partir da unisão do <strong>Bulma</strong> com os elementos de PDO, a aplicação tem o intuíto de apresentar aos funcionários, professores, pais e alunos atualizações precisas sobre os rendimentos escolares, frequências, pontos fortes e déficits, além da interação em si.
