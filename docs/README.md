@@ -1,4 +1,4 @@
-![Logo Rapida](..\assets\brand\Logo_rapida.svg)
+![Logo Rapida](https://raw.githubusercontent.com/clcmo/rapida/master/assets/brand/Logo_Rapida.svg)
 
 # Rápida: Sistema de Gerenciamento Escolar #
 ![GitHub (pre-)release](https://img.shields.io/github/release/qubyte/rubidium/all.svg)
@@ -33,5 +33,5 @@ Baixe o git e instale-o em sua máquina no link:
 #### Ao longo do desenvolvimento, imagens serão documentadas e exibidas no site oficial da Camila L. Oliveira  ####
 
 #### Desenvolvido por:
-[][Logo_Camila](..\assets\brand\logo_milla_b.png)(http://projetos.camilaloliveira.com)
+![]![Logo_Camila](https://raw.githubusercontent.com/clcmo/rapida/branch/assets/brand/logo_milla_b.png)(http://projetos.camilaloliveira.com)
 
