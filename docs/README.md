@@ -3,6 +3,7 @@ title: Bulma Clean Theme
 subtitle: This is the demo site for Bulma Clean Theme
 layout: page
 ---
+
 # Rápida: Sistema de Gerenciamento Escolar
 
 ![Logo Rapida](https://raw.githubusercontent.com/clcmo/rapida/master/assets/brand/Logo_Rapida.png)
