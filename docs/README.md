@@ -1,13 +1,3 @@
----
-layout: page
-title: "Rápida"
-subtitle: "Sistemas Acadêmicos"
-image: /path/to/image.jpg
-description: "The pages meta description"
-hero_image: /path/to/hero-image.jpg
-hero_height: is-fullheight
----
-
 ![Logo Rapida](https://raw.githubusercontent.com/clcmo/rapida/master/assets/brand/Logo_Rapida.png)
 
 # Rápida: Sistema de Gerenciamento Escolar #
