@@ -8,14 +8,3 @@ lsi: false
 #Setings
 permalink: pretty
 theme: bulma-clean-theme
-
-defaults:
-  -
-    scope:
-      path: ""
-      type: "posts"
-    values:
-      author: "Author Name"
-      layout: post
-      hero_image: /path/to/hero-image.jpg
-      show_sidebar: true
