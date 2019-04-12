@@ -2,9 +2,7 @@
 title: Rapida
 subtitle: Sistemas Academicos
 layout: page
-show_sidebar: true
 ---
-
 
 # Rápida: Sistema de Gerenciamento Escolar
 
