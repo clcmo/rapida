@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Apr 10, 2019 at 10:56 PM
+-- Generation Time: Apr 15, 2019 at 05:40 PM
 -- Server version: 5.7.19
 -- PHP Version: 7.1.9
 
@@ -290,11 +290,11 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 
 INSERT INTO `users` (`id_use`, `type_use`, `status_use`, `signup_date`, `name_use`, `login`, `password`, `email`, `photo`, `cep`, `address`, `number`, `neighborhood`, `city`, `state`, `rg`, `cpf`, `phone`, `birthday_date`) VALUES
-(1, 2, 3, '2019-03-11 19:40:00', 'Administrador Teste', 'admin', '90b9aa7e25f80cf4f64e990b78a9fc5ebd6cecad', 'admin@demo.com.br', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(2, 1, 5, '2019-03-11 19:40:00', 'Usuário Teste', 'demo', 'a69681bcf334ae130217fea4505fd3c994f5683f', 'demo@demo.com.br', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(3, 1, 5, '2019-03-11 19:40:00', 'Rosana Yuri', 'rosana_yuri', 'fe703d258c7ef5f50b71e06565a65aa07194907f', 'rosana@demo.com.br', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(4, 3, 4, '2019-03-11 19:40:00', 'Anderson Silva', 'prof_anderson', 'a69681bcf334ae130217fea4505fd3c994f5683f', 'anderson@demo.com.br', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(5, 1, 5, '2019-03-11 19:40:00', 'Camila Leite', 'clcmo', 'fe703d258c7ef5f50b71e06565a65aa07194907f', 'camila.leite.oliveira@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+(1, 3, 1, '2019-03-11 19:40:00', 'Administrador Teste', 'admin', 'a69681bcf334ae130217fea4505fd3c994f5683f', 'admin@demo.com.br', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(2, 5, 1, '2019-03-11 19:40:00', 'Usuário Teste', 'demo', 'a69681bcf334ae130217fea4505fd3c994f5683f', 'demo@demo.com.br', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(3, 5, 1, '2019-03-11 19:40:00', 'Rosana Yuri', 'rosana_yuri', 'a69681bcf334ae130217fea4505fd3c994f5683f', 'rosana@demo.com.br', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(4, 4, 1, '2019-03-11 19:40:00', 'Anderson Silva', 'prof_anderson', 'a69681bcf334ae130217fea4505fd3c994f5683f', 'anderson@demo.com.br', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(5, 5, 1, '2019-03-11 19:40:00', 'Camila Leite', 'clcmo', 'a69681bcf334ae130217fea4505fd3c994f5683f', 'camila.leite.oliveira@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 --
 -- Constraints for dumped tables
