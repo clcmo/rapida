@@ -12,12 +12,20 @@
 		    return ($tabs) ? true : false;
 	    }
 
-	    # 2 - Carregar dados de uma tabela através do string informado
-	    function LoadFrom($str){
-	    	return "SELECT * FROM ".$str;
+	    # 2 - Carregar todos os dados (ou específicos) de uma tabela através do string informado
+	    function LoadFrom($item, $as, $str, $limit = array()){
+	    	$sql = 'SELECT '.$item;
+	    	if ($as){
+	    		$sql .= 'AS '.$as;
+	    	}
+	    	$sql .= ' FROM '.$str;
+	    	if($limit){
+	    		$sql .= 'LIMIT '.$limit[1].', '.$limit[2];
+	    	}
+	    	return $sql;
 	    }
 
-	    # 2.1 - Localizar o ID da Tabela
+	    # 2.1 - Localizar uma tabela para carregar seus dados
 	    function Found_Item($item, $str) {
 	    	return $item.'_'.substr($str, 0, 3);
 	    }
@@ -25,7 +33,7 @@
 	    # 2.2 - Contar dados exixtentes de uma tabela através do string informado
 	    function LoadCountFrom($str){
 	      	$Tables = new Tables;
-	      	return "SELECT count(".$Tables->Found_Item('id', $str).") as qt from ".$str;
+	      	return $Tables->LoadFrom('count ('.$Tables->Found_Item('id', $str).')', 'qt', $str);
 	    }
 
 	    # 3 - Cria o Hash da Senha, usando MD5 e SHA-1
@@ -61,7 +69,7 @@
 	    	return $qt;
 	    }
 
-	    # 6 - Deleta um registro do sistema
+	    # 6 - Deleta um registro do sistema // a desenvolver
 	    function DeleteId($str) {
 	    	$Load = new Load;
 	    	$Tables = new Tables;
@@ -79,7 +87,7 @@
 
     # Classe Referente ao Login
   	class Login { 
-        # 1 - Retorna se o usuário
+        # 1 - Retorna se o usuário logou
         function IsLogged() {
         	return (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] != true) ? false : true;
         }
@@ -140,7 +148,7 @@
 				case true:
 					$Load = new Load;
 					$PDO = $Load->DataBase();
-					$con = $PDO->query('SELECT photo, email FROM users WHERE id_use = '.$_SESSION['id']) or die ($PDO);
+					$con = $PDO->query($Tables->LoadFrom('photo, email', null, 'users WHERE id_use = '.$_SESSION['id']), null) or die ($PDO);
 					while($row = $con->fetch(PDO::FETCH_OBJ)) {
 						$email = $row->email;
 						$photo = $row->photo;
@@ -184,7 +192,7 @@
                     		switch ($Login->IsLogged()) {
                     			case true:
     								$PDO = $Load->DataBase();
-    								$con = $PDO->query('SELECT type_use FROM users WHERE id_use LIKE '.$_SESSION['id'].' AND status_use = 1 LIMIT 1') or die ($PDO);
+    								$con = $PDO->query($Tables->LoadFrom('type_use', null, 'users WHERE id_use LIKE '.$_SESSION['id'].' AND status_use = 1', 0, 1)) or die ($PDO);
     								while($row = $con->fetch(PDO::FETCH_OBJ)){
     									switch ($row->type_use) {
     										case 1:
@@ -300,23 +308,21 @@
 			</div>
 			<div class="column is-3">';
     		$PDO = $Load->DataBase();
-    		$con = $PDO->query('SELECT type_use FROM users WHERE id_use LIKE '.$_SESSION['id'].' AND status_use = 1 LIMIT 1') or die ($PDO);
+    		$con = $PDO->query($Tables->LoadFrom('type_use', null, 'users WHERE id_use LIKE '.$_SESSION['id'].' AND status_use = 1', 0, 1)) or die ($PDO);
     		while($row = $con->fetch(PDO::FETCH_OBJ)){
     			switch ($row->type_use) {
-    				case 1:
-    					$menu .= '
-		    				<p class="menu-label">Alunos</p>
-		                    <ul class="menu-list">
-		                    	<li><a href="'.SERVER.'notifies">Solicitar Documentos</a></li>
-		                        <li><a href="'.SERVER.'historic">Visualizar Histórico</a></li>
-		                        <li><a href="#">Rematrícula</a></li>
-		                    </ul>
-		                    </div>
-		                    </div>';
-    				break;
-    				
-    				case 2:
-    					$menu .= '
+    				switch ($row->type_use){
+					case 1:
+						#diretor
+					break;
+
+					case 2:
+						#coordenador
+					break;
+
+					case 3:
+						#funcionário
+						$menu .= '
 		    				<p class="menu-label">Administração</p>
 		                    <ul class="menu-list">
 		                        <li>
@@ -344,10 +350,11 @@
 		                    </ul>
 		                    </div>
 		                    </div>';
-    				break;
-
-    				case 3:
-    					$menu .= '
+					break;
+					
+					case 4:
+						#professor
+						$menu .= '
 		    				<p class="menu-label">Professores</p>
 		                    <ul class="menu-list">
 		                        <li>
@@ -361,16 +368,20 @@
 		                    </ul>
 		                    </div>
 		                    </div>';
-    				break;
-    				
-    				case 4:
-    					# code...
-    				break;
+					break;
 
-    				case 5:
-    					# code...
-    				break;
-    			}
+					case 5:
+						$menu .= '
+		    				<p class="menu-label">Alunos</p>
+		                    <ul class="menu-list">
+		                    	<li><a href="'.SERVER.'notifies">Solicitar Documentos</a></li>
+		                        <li><a href="'.SERVER.'historic">Visualizar Histórico</a></li>
+		                        <li><a href="#">Rematrícula</a></li>
+		                    </ul>
+		                    </div>
+		                    </div>';
+					break;
+				}
     		}
     		return $menu;
     	}
@@ -427,7 +438,7 @@
 				break;
 
 				case 'notifies':
-					$con = $PDO->query('SELECT type_use FROM users WHERE id_use = '.$_SESSION['id'].'AND status_use = 1 LIMIT 1') or die ($PDO);
+					$con = $PDO->query($Tables->LoadFrom('type_use', null, 'users WHERE id_use LIKE '.$_SESSION['id'].' AND status_use = 1', 0, 1)) or die ($PDO);
 					while($row = $con->fetch(PDO::FETCH_OBJ)){
 						$name_use = $row->name_use;
 						switch ($row->type_use){
