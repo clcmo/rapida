@@ -195,6 +195,78 @@
     								$con = $PDO->query($Tables->LoadFrom('type_use', null, 'users WHERE id_use LIKE '.$_SESSION['id'].' AND status_use = 1', 0, 1)) or die ($PDO);
     								while($row = $con->fetch(PDO::FETCH_OBJ)){
     									switch ($row->type_use) {
+					    				switch ($row->type_use){
+											case 1:
+												#diretor
+											break;
+
+											case 2:
+												#coordenador
+											break;
+
+											case 3:
+												#funcionário
+												$menu .= '
+								    				<p class="menu-label">Administração</p>
+								                    <ul class="menu-list">
+								                        <li>
+								                            <a href="courses-disciplines">Cursos e Disciplinas</a>
+								                            <ul>
+								                                <li><a href="'.SERVER.'courses">Curso</a></li>
+								                                <li><a href="'.SERVER.'disciplines">Disciplina</a></li>
+								                                <!--<li><a href="'.SERVER.'schedule-grid">Grade de Horários</a></li>-->
+								                            </ul>
+								                        </li>
+								                        <li>
+								                            <a href="users">Usuários</a>
+								                            <ul>
+								                                <li><a href="'.SERVER.'teachers">Professores</a></li>
+								                                <li><a href="'.SERVER.'employees">Funcionarios</a></li>
+								                                <li>
+								                                	<a href="'.SERVER.'students">Alunos</a>
+																	<ul>
+									                                	<li><a href="'.SERVER.'classroom">Turmas e Alunos</a></li>
+									                            	</ul>
+								                                </li>
+								                            </ul>
+								                        </li>
+								                        <li><a href="'.SERVER.'events">Eventos</a></li>
+								                    </ul>
+								                    </div>
+								                    </div>';
+											break;
+											
+											case 4:
+												#professor
+												$menu .= '
+								    				<p class="menu-label">Professores</p>
+								                    <ul class="menu-list">
+								                        <li>
+								                            <a>Alunos</a>
+								                            <ul>
+								                                <li><a href="'.SERVER.'partial">Adicionar Nota</a></li>
+								                                <li><a href="'.SERVER.'average">Adicionar Média</a></li>
+								                                <li><a href="'.SERVER.'average">Gerenciar</a></li>
+								                            </ul>
+								                        </li>
+								                    </ul>
+								                    </div>
+								                    </div>';
+											break;
+
+											case 5:
+												$menu .= '
+								    				<p class="menu-label">Alunos</p>
+								                    <ul class="menu-list">
+								                    	<li><a href="'.SERVER.'notifies">Solicitar Documentos</a></li>
+								                        <li><a href="'.SERVER.'historic">Visualizar Histórico</a></li>
+								                        <li><a href="#">Rematrícula</a></li>
+								                    </ul>
+								                    </div>
+								                    </div>';
+											break;
+									}
+    									switch ($row->type_use) {
     										case 1:
     											$menu[2] = $menu[1].'
                     							<a class="navbar-item" href="'.SERVER.'#"><i class="fas fa-book-open"></i>&nbsp;Histórico</a>
