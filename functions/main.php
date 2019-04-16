@@ -35,6 +35,7 @@
     $pc = (!$pg) ? 1 : $pg;
     $vi = $pc - 1;
     $vi = $vi * $vf;
+    define('MAX', count(LINK));
 
     # 6 - Definições de Inserção/Edição
     $id = (isset($_GET['id'])) ? $_GET['id'] : (isset($_SESSION['id'])) ? $_SESSION['id'] : '';
