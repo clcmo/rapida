@@ -1,5 +1,5 @@
 <?php 
 	include('header-admin.php');
-	include('');
+	#preparar página para exibição de calendário de eventos
 ?>
-<?php include('footer.php'); ?>
+<?php include('footer-admin.php'); ?>
