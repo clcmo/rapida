@@ -1,10 +1,10 @@
 <?php
 	include('header-admin.php');
-	include('load/pages/users.php');
+	#include('load/pages/users.php');
 ?>
 <div class="columns">
     <div class="column is-3">
-        <div class="tabs is-left"><?php echo $Load->MainNavegation(LINK, ucfirst('usuários')); ?></div>
+        <div class="tabs is-left"><?php echo $Load->MainNavegation(); ?></div>
     </div>
 </div>
 <div class="box content">
