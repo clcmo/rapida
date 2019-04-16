@@ -4,7 +4,7 @@
 ?>
 <div class="columns">
 	<div class="column is-4">
-		<div class="tabs is-left"><?php echo $Load->MainNavegation(LINK, 'Notas'); ?></div>
+		<div class="tabs is-left"><?php echo $Load->MainNavegation(substr(LINK, 0, (MAX-6))); ?></div>
 	</div>
 	<div class="column">
 		<div class="tabs is-right">
@@ -40,6 +40,6 @@
 <div class="box content">
 	<?php
 		echo $Load->HeroMessage(LINK, 'Turmas', 'Visualização das notas de '.$name_use).'<hr/>';
-		include('load/supertables/historic.php'); ?>
+		echo $Pages->LoadSuperTablePage(substr(LINK, 1, (MAX-6))); ?>
 	</div>
 <?php include('footer-admin.php'); ?>
