@@ -4,7 +4,7 @@
 ?>
 <div class="columns">
     <div class="column is-4">
-        <div class="tabs is-left"><?php echo $Load->MainNavegation(LINK, ucfirst('professores')); ?></div>
+        <div class="tabs is-left"><?php echo $Load->MainNavegation(); ?></div>
     </div>
     <div class="column">
     	<div class="tabs is-centered">
