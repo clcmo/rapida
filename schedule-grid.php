@@ -1,10 +1,10 @@
 <?php
 	include('header-admin.php');
-	include('load/pages/courses.php');
+	#include('load/pages/courses.php');
 ?>
 <div class="columns">
     <div class="column is-4">
-        <div class="tabs is-left"><?php echo $Load->MainNavegation(LINK, 'Grade'); ?></div>
+        <div class="tabs is-left"><?php echo $Load->MainNavegation(); ?></div>
     </div>
     <div class="column">
 		<div class="tabs is-right">
