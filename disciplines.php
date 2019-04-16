@@ -1,10 +1,10 @@
 <?php
 	include('header-admin.php');
-    include('load\pages\disciplines.php');
+    #include('load\pages\disciplines.php');
 ?>
 <div class="columns">
     <div class="column is-4">
-        <div class="tabs is-left"><?php echo $Load->MainNavegation(LINK, 'Disciplinas'); ?></div>
+        <div class="tabs is-left"><?php echo $Load->MainNavegation(); ?></div>
     </div>
 </div>
 <div class="box content">
@@ -121,7 +121,7 @@
                     </div>
                 </div>
                 <div class="column is-5">
-                    <?php include('load/tables/disciplines.php'); ?>
+                    <?php $Pages->LoadTablePage(substr(LINK, 1)); ?>
                 </div>
             </div>
             <div class="columns">
