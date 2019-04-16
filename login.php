@@ -7,7 +7,7 @@
    * @package Bulma by Milla
    */
   include('header-index.php');
-  $link = isset($_GET['email']) ? substr(LINK, 0, 6) : LINK;
+  $link = isset($_GET['email']) ? substr(LINK, 0, MAX) : LINK;
   include('load/pages'.$link.'.php');
   #echo $Pages->LoadSamplePage($link);
 ?>
@@ -54,11 +54,9 @@
           }
 
           #$password = $Tables->HashStr($password);
-
-          $sql = $Tables->LoadFrom('users WHERE email LIKE :email AND password LIKE :password AND status_use = 1 LIMIT 1');
           
           # Verificar se o usuário existe e se a senha é a mesma     
-          $stmt = $PDO->prepare($sql);
+          $stmt = $PDO->prepare($Tables->LoadFrom('*', null, 'users WHERE email LIKE :email AND password LIKE :password AND status_use = 1', 0, 1));
           $stmt->bindParam(':email', $email);
           $stmt->bindParam(':password', $password);
           $stmt->execute();
