@@ -10,7 +10,7 @@
 ?>
 <div class="columns">
     <div class="column is-4">
-        <div class="tabs is-left"><?php echo $Load->MainNavegation(LINK, null); ?></div>
+        <div class="tabs is-left"><?php echo $Load->MainNavegation(); ?></div>
     </div>
 </div>
 
@@ -19,8 +19,8 @@
     <div class="columns">
         <div class="column is-6">
             <?php 
-                include('load/tables/notifies.php');
-                include('load/tables/classroom.php'); 
+                echo $Pages->LoadTablePage('notifies');
+                echo $Pages->LoadTablePage('classroom');
             ?>
         </div>
         <div class="column is-6">
