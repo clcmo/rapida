@@ -1,10 +1,10 @@
 <?php
 	include('header-admin.php');
-    include('load/pages/courses.php');
+    #include('load/pages/courses.php');
 ?>
 <div class="columns">
     <div class="column is-4">
-        <div class="tabs is-left"><?php echo $Load->MainNavegation(LINK, 'Cursos'); ?></div>
+        <div class="tabs is-left"><?php echo $Load->MainNavegation(); ?></div>
     </div>
 </div>
 <div class="box content">
@@ -51,7 +51,7 @@
                     </div>
                 </div>
                 <div class="column is-5">
-                    <?php include('load/tables/courses.php'); ?>
+                    <?php echo $Pages->LoadTablePage(substr(LINK, 1)); ?>
                 </div>
             </div>
             <div class="columns">
