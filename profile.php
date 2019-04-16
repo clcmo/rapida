@@ -1,10 +1,10 @@
 <?php
 	include('header-admin.php');
-	include('load/pages/users.php');
+	#include('load/pages/users.php');
 ?>
 <div class="columns">
     <div class="column is-3">
-        <div class="tabs is-left"><?php echo $Load->MainNavegation(LINK, ucfirst('perfil')); ?></div>
+        <div class="tabs is-left"><?php echo $Load->MainNavegation(); ?></div>
     </div>
 </div>
 <div class="box content">
@@ -197,23 +197,7 @@
 		  				</div>
 		  			</div>
 					<hr/>
-					<div class="card events-card">
-                        <header class="card-header">
-                            <p class="card-header-title">Usuários Cadastrados</p>
-                            <a href="" class="card-header-icon" aria-label="more options"><span class="icon"><i class="fa fa-angle-down" aria-hidden="true"></i></span></a>
-                        </header>
-                        <div class="card-table">
-                            <div class="content">
-                                <table class="table is-fullwidth is-striped">
-                                    <tbody>
-                                        <?php include('load/table/users.php'); ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <footer class="card-footer"><a href="" class="card-footer-item">Ver Todos</a></footer>
-                    </div>
-				</div>
+					<?php $Pages->LoadTablePage('users'); ?>
 			</div>
 			<div class="columns">
 				<div class="column">
