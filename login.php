@@ -76,7 +76,7 @@
           $_SESSION['name'] = $user['name_use'];
           #$_SESSION['type'] = $user['tipo_usu'];
           #$_SESSION['year_date'] = date('Y', strtotime($user['cadastro']));
-          header('Location: admin.php');
+          header('Location: admin');
         }
       ?>
     </p>
