@@ -33,7 +33,7 @@
 	    # 2.2 - Contar dados exixtentes de uma tabela através do string informado
 	    function LoadCountFrom($name_table){
 	      	$Tables = new Tables;
-	      	return $Tables->LoadFrom('count ('.$Tables->Found_Item('id', $name_table).')', 'qt', $name_table);
+	      	return $Tables->LoadFrom('COUNT('.$Tables->Found_Item('id', $name_table).')', 'qt', $name_table);
 	    }
 
 	    # 3 - Cria o Hash da Senha, usando MD5 e SHA-1
@@ -597,7 +597,7 @@
 				$script = $Tables->LoadFrom('*', null, $name_table, 0, 10);
 				#echo $script;
 			    $con = $PDO->query($script) or die ($PDO);
-			    #$cont = $Tables->CountViewTable($name_table);
+			    $cont = $Tables->CountViewTable($name_table);
 
 			    $id = $Tables->Found_Item('id', $name_page);
 			    $name_table = $Tables->Found_Item('name', $name_page);
