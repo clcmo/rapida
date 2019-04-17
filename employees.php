@@ -11,32 +11,26 @@
 		  	<ul>
 		    	<li class="is-active">
 		      		<a>
-		        		<span class="icon is-small"><i class="fas fa-search" aria-hidden="true"></i></span>
-		        		<span><input class="input" type="search" placeholder="Procurar..."></span>
-		      		</a>
-		    	</li>
-		    	<li>
-		      		<a>
-		        		<span class="icon is-small"><i class="fas fa-chalkboard" aria-hidden="true"></i></span>
+		        		<span class="icon is-small"><i class="fas fa-user" aria-hidden="true"></i></span>
 		        		<span>Todos</span>
 		      		</a>
 		    	</li>
 		    	<li>
 		      		<a>
-		        		<span class="icon is-small"><i class="fas fa-chalkboard-teacher" aria-hidden="true"></i></span>
+		        		<span class="icon is-small"><i class="fas fa-user" aria-hidden="true"></i></span>
 		        		<span class="content is-link">Ativos</span>
 		      		</a>
 		    	</li>
 		    	<li>
 		      		<a>
-		        		<span class="icon is-small"><i class="fas fa-chalkboard" aria-hidden="true"></i></span>
+		        		<span class="icon is-small"><i class="fas fa-user" aria-hidden="true"></i></span>
 		        		<span class="content is-danger">Inativos</span>
 		      		</a>
 		    	</li>
 		  		<li>
 		      		<a>
-		        		<span class="icon is-small"><i class="fas fa-chalkboard-teacher" aria-hidden="true"></i></span>
-		        		<span class="content is-blak">Add Professor</span>
+		        		<span class="icon is-small"><i class="fas fa-user" aria-hidden="true"></i></span>
+		        		<span class="content is-blak">Add Funcionário</span>
 		      		</a>
 		    	</li>
 			</ul>
@@ -47,6 +41,6 @@
 	<?php
 		echo $Load->HeroMessage(LINK, ucfirst('funcionários'), 'Visualização dos Funcionários Cadastrados'); ?>
 	<hr/>
-	<?php include('load/articles/employees.php'); ?>
+	<?php #include('load/articles/employees.php'); ?>
 </div>
 <?php include('footer-admin.php'); ?>
