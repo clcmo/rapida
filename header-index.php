@@ -11,5 +11,5 @@
 ?>
 <section class="hero is-fullheight">
     <div class="container has-text-centered">
-        <?php echo $Load->HeroMenu(); ?>
+        <?php echo $Navegation->HeroMenu(); ?>
     <div class="hero-body">
