@@ -11,7 +11,7 @@
 ?>
 <section class="hero is-medium">
     <div class="container has-text-centered">
-        <?php echo $Load->HeroMenu(); ?>
+        <?php echo $Navegation->HeroMenu(); ?>
     </div>
 </section>
 <section class="section">

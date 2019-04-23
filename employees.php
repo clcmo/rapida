@@ -38,8 +38,7 @@
     </div>
 </div>
 <div class="box content">
-	<?php
-		echo $Load->HeroMessage(LINK, ucfirst('funcionários'), 'Visualização dos Funcionários Cadastrados'); ?>
+	<?php echo $Load->HeroMessage(LINK, ucfirst('funcionários'), 'Visualização dos Funcionários Cadastrados'); ?>
 	<hr/>
 	<?php #include('load/articles/employees.php'); ?>
 </div>

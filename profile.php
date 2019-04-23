@@ -1,15 +1,14 @@
 <?php
 	include('header-admin.php');
-	#include('load/pages/users.php');
+	include('load/pages/users.php');
 ?>
 <div class="columns">
     <div class="column is-3">
-        <div class="tabs is-left"><?php echo $Load->MainNavegation(); ?></div>
+        <div class="tabs is-left"><?php echo $Navegation->MainNavegation(); ?></div>
     </div>
 </div>
 <div class="box content">
-	<?php
-		echo $Load->HeroMessage(LINK, ucfirst('perfil'), 'Informe os dados para '.$selected_type); ?>
+	<?php echo $Navegation->HeroMessage(ucfirst('perfil'), 'Informe os dados para '.$selected_type); ?>
 	<hr/>
 	<section class="info-tiles">
 		<form action="#" method="post">
@@ -190,7 +189,6 @@
 		    						</label>
 		    					</div>
 		  					</div>
-							
 						</div>
 						<div class="column is-4">
 							<figure class="image is-128x128"><img class="is-rounded" src="<?php echo $photo; ?>"></figure>
@@ -198,6 +196,7 @@
 		  			</div>
 					<hr/>
 					<?php $Pages->LoadTablePage('users'); ?>
+				</div>
 			</div>
 			<div class="columns">
 				<div class="column">
