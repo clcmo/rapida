@@ -22,17 +22,9 @@
 	    function SelectFrom($item = null, $name_table_and_cond, $limit = array()){
 	    	$Tables = new Tables;
 	    	switch ($item) {
-	    		case 'COUNT':
-	    			$sql = 'SELECT COUNT('.$Tables->Found_Item('id', $name_table_and_cond).') AS qt';
-	    		break;
-
-	    		case null:
-	    			$sql = 'SELECT *';
-	    		break;
-	    		
-	    		default:
-	    			$sql = 'SELECT '.$item;
-	    		break;
+	    		case 'COUNT': $sql = 'SELECT COUNT('.$Tables->Found_Item('id', $name_table_and_cond).') AS qt'; break;
+	    		case null: $sql = 'SELECT *'; break;
+	    		default: $sql = 'SELECT '.$item; break;
 	    	}
 	    	$sql .= (!$limit) ? ' FROM '.$name_table_and_cond : ' FROM '.$name_table_and_cond.' LIMIT '.$limit[1].', '.$limit[2];
 	    	return $sql;
@@ -55,7 +47,7 @@
 	    }
 
 	    # 5 - Conta os registros de uma tabela ou de uma busca //a aprimorar
-	    function CountViewTable($type, $name_table, $item = null){
+	    function CountViewTable($type = null, $name_table, $item = null){
 	    	$Load = new Load;
 	    	$Tables = new Tables;
 	      	$PDO = $Load->DataBase();
