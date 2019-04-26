@@ -1,32 +1,23 @@
 <?php
-	$id = (isset($_GET['id'])) ? $_GET['id'] : (isset($_SESSION['id'])) ? $_SESSION['id'] : '';
+	#$id = (isset($_GET['id'])) ? $_GET['id'] : (isset($_SESSION['id'])) ? $_SESSION['id'] : '';
 	#puxa a id informada
 
 	#com o nome da página estaremos puxando:
-	$script = $name_page;
+	$script = $link;
 	#script sql
-	$type_table = $Tables->Found_Item('type', $name_page);
+	$type_table = $Tables->Found_Item('type', $link);
 	#o tipo na tabela informada
-	$status_table = $Tables->Found_Item('status', $name_page);
+	$status_table = $Tables->Found_Item('status', $link);
 	#o status na tabela informada
-	$name_table = $Tables->Found_Item('name', $name_page);
+	$name_table = $Tables->Found_Item('name', $link);
 	#o titulo/nome na tabela informada 
-	$id_table = $Tables->Found_Item('id', $name_page);
+	$id_table = $Tables->Found_Item('id', $link);
 	#o id na tabela informada
-	switch ($name_page) {
+	switch ($link) {
 		case 'courses':
-		case 'users':
-			$script .= ' WHERE ';
-		break;
-				
-		case 'disciplines':
-			$script .= ', courses WHERE '.$name_page.'.id_cou = courses.id_cou AND ';
-		break;
-
-		case 'login':
-			$script = 'users WHERE ';
-		break;
-
+		case 'users': $script .= ' WHERE '; break;
+		case 'disciplines': $script .= ', courses WHERE '.$link.'.id_cou = courses.id_cou AND '; break;
+		case 'login': $script = 'users WHERE '; break;
 		case 'notifies':
 			$con = $PDO->query($Tables->SelectFrom('type_use','users WHERE id_use LIKE '.$_SESSION['id'].' AND status_use = 1', 1)) or die ($PDO);
 			while($row = $con->fetch(PDO::FETCH_OBJ)){
@@ -61,7 +52,7 @@
 
 	switch($id){
 		case false:
-			switch ($name_page) {
+			switch ($link) {
 				case 'courses':
 					$name_cou = 'Informe o nome';
 				break;
@@ -71,7 +62,7 @@
 				break;
 
 				case 'login':
-					$email = $row->email;
+					$placeholder = $email = $row->email;
 				break;
 
 				case 'notifies':
@@ -90,10 +81,11 @@
 		case true:
 			$script.= $id_table.' = '.$id;
 			$PDO = $Load->DataBase();
+			#echo $Tables->SelectFrom(null, $script);
 			$con = $PDO->query($Tables->SelectFrom(null, $script)) or die ($PDO);
-			$cont = $Tables->CountViewTable('default', $script);
+			$cont = $Tables->CountViewTable(null, $script);
 			while($row = $con->fetch(PDO::FETCH_OBJ)){
-				switch ($name_page) {
+				switch ($link) {
 					case 'courses':
 						$name_cou = $row->$name_table;
 					break;
@@ -103,7 +95,7 @@
 					break;
 
 					case 'login':
-						$email = $row->email;
+						$placeholder = $email = $row->email;
 					break;
 
 					case 'notifies':
@@ -142,7 +134,6 @@
 						$checked1 = '';
 					break;
 				}
-				$placeholder = $email = $row->email;
 			}
 		break;
 	}
