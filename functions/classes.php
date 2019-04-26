@@ -57,7 +57,8 @@
 	      			$qt = count($PDO->prepare($Tables->LoadCountFrom($name_table)." WHERE ".$item." LIKE '%".$q."%' ORDER BY ".$item) or die ($PDO));
 	      		break;
 	      		
-	      		case 'default':
+	      		case null:
+	      		default:
 	      			$con = $PDO->query($Tables->LoadCountFrom($name_table)) or die ($PDO);
 	      			while($row = $con->fetch(PDO::FETCH_OBJ)){
 	        			$qt = $row->qt;
@@ -74,7 +75,7 @@
 	    	$PDO = $Load->DataBase();
 	    	$con = $PDO->query('DELETE FROM '.$name_table.' WHERE '.$Tables->FoundId($name_table).' = '.$Tables->SearchId($name_table)) or die ($PDO);
 	    	if ($con) {
-	    	  return $Load->GoToLink($str);
+	    	  return $Load->GoToLink($name_table);
 	    	} else {
 	    	  //return messageShow('error', $_SERVER['REQUEST_URI'], $str);
 	    	}
@@ -375,7 +376,7 @@
 			</div>
 			<div class="column is-3">';
     		$PDO = $Load->DataBase();
-    		$con = $PDO->query($Tables->SelectFrom('type_use', 'users WHERE id_use LIKE '.$_SESSION['id'].' AND status_use = 1', 1)) or die ($PDO);
+    		$con = $PDO->query($Tables->SelectFrom('type_use', 'users WHERE id_use LIKE '.$_SESSION['id'].' AND status_use = 1')) or die ($PDO);
     		while($row = $con->fetch(PDO::FETCH_OBJ)){
     			switch ($row->type_use) {
 					case 1:
@@ -473,13 +474,7 @@
     		$Tables = new Tables;
     		$Load = new Load;
 
-    		if(isset($_GET['id'])){
-    			$id = $_GET['id'];
-    		} else if (isset($_SESSION['id'])){
-    			$id = $_SESSION['id'];
-    		} else {
-    			$id = '';
-    		}
+    		$id = (isset($_GET['id'])) ? $_GET['id'] : (isset($_SESSION['id'])) ? $_SESSION['id'] : '';
 			#puxa a id informada
 
 			#com o nome da página estaremos puxando:
@@ -495,17 +490,9 @@
 			#o id na tabela informada
 			switch ($name_page) {
 				case 'courses':
-				case 'users':
-					$script .= ' WHERE ';
-				break;
-				
-				case 'disciplines':
-					$script .= ', courses WHERE '.$name_page.'.id_cou = courses.id_cou AND ';
-				break;
-
-				case 'login':
-					$script = 'users WHERE ';
-				break;
+				case 'users': $script .= ' WHERE '; break;
+				case 'disciplines': $script .= ', courses WHERE '.$name_page.'.id_cou = courses.id_cou AND '; break;
+				case 'login': $script = 'users WHERE '; break;
 
 				case 'notifies':
 					$con = $PDO->query($Tables->SelectFrom('type_use','users WHERE id_use LIKE '.$_SESSION['id'].' AND status_use = 1', 1)) or die ($PDO);
@@ -543,15 +530,14 @@
 				case false:
 				case null:
 					$name_use = $name_cou = $name_dis = $name_not = 'Informe o nome';
-					$checked2 = '';
-					$checked1 = '';
+					$checked2 = $checked1 = '';
 				break;
 
 				case true:
 					$script.= $id_table.' = '.$id;
 					$PDO = $Load->DataBase();
 					$con = $PDO->query($Tables->SelectFrom(null, $script)) or die ($PDO);
-					$cont = $Tables->CountViewTable('default', $script);
+					$cont = $Tables->CountViewTable(null, $script);
 					while($row = $con->fetch(PDO::FETCH_OBJ)){
 						switch ($name_page) {
 							case 'courses':
@@ -665,9 +651,9 @@
 				break;
 			}
 			$script = $Tables->SelectFrom(null, $name_table, 0, 10);
-			#echo $script;
+			echo $script;
 			$con = $PDO->query($script) or die ($PDO);
-			$cont = $Tables->CountViewTable('default',$name_table);
+			$cont = $Tables->CountViewTable(null, $name_table);
 
 			$id = $Tables->Found_Item('id', $name_page);
 			$name_table = $Tables->Found_Item('name', $name_page);
@@ -755,27 +741,13 @@
 								    			$col_1 = '<a href="'.$name_page.'?id='.$row->$id.'" class="button is-link is-small">'.$icon.'</a>';
 												$col_2 = $row->$name_table;
 												switch ($row->$type_table) {
-													case 1: 
-														$type = 'Solicitação'; 
-													break;
-													case 2: 
-														$type = 'Revisão'; 
-													break;
-													case 3: 
-														$type = 'Matrícula'; 
-													break;
-													case 4: 
-														$type = 'Ocorrência'; 
-													break;
-													case 5: 
-														$type = 'Trancamento'; 
-													break;
-													case 6: 
-														$type = 'Histórico'; 
-													break;
-													case 7: 
-														$type = 'Outros'; 
-													break;
+													case 1: $type = 'Solicitação'; break;
+													case 2: $type = 'Revisão'; break;
+													case 3: $type = 'Matrícula'; break;
+													case 4: $type = 'Ocorrência'; break;
+													case 5: $type = 'Trancamento'; break;
+													case 6: $type = 'Histórico'; break;
+													case 7: $type = 'Outros'; break;
 												}
 												$col_3 = '<a class="button is-light is-inverted is-small">'.$type.'</a>';
 												$col_4 = $row->name_use;
@@ -947,21 +919,10 @@
 						//$name_page.', courses, students, users WHERE '.$name_page.'.id_cla = '.$row->$id.' AND '.$name_page.'.id_cou = courses.id_cou AND students.id_cla = '.$name_page.'.id_cla AND students.id_use = users.id_use
 						$cont_class = $Tables->CountViewTable($script);
 						switch ($row->period) {
-							case 'M':
-								$period = 'Manhã';
-							break;
-
-							case 'T':
-								$period = 'Tarde';
-							break;
-								
-							case 'N':
-								$period = 'Noite';
-							break;
-
-							case 'I':
-								$period = 'Integral';
-							break;
+							case 'M': $period = 'Manhã'; break;
+							case 'T': $period = 'Tarde'; break;
+							case 'N': $period = 'Noite'; break;
+							case 'I': $period = 'Integral'; break;
 						}
 						$message = 'Número de Alunos: '.$row->students.'</br>Período: '.$period.'<br/>Curso: ';
 						$user = $titulo;
@@ -1069,6 +1030,46 @@
 						<div class="column">
 						</div>
 					</div>';
+		}
+
+		function LoadOptionsPage($name_page){
+			$Tables = new Tables;
+			$Load = new load;
+			$PDO = $Load->DataBase();
+			switch ($name_page) {
+				case 'courses':
+					$name_translated = 'Cursos';
+					$script = $name_page.' WHERE status_cou = 1';
+					$name_table = $Tables->Found_Item('name', $name_page);
+					$id_table = $Tables->Found_Item('id', $name_page);
+					$icon = '<i class="fas fa-chalkboard"></i>';
+				break;
+				
+				case 'teachers':
+					$name_translated = 'Professor';
+					$script = $name_page.', users WHERE '.$name_page.'.id_use = users.id_use AND status_use = 1';
+					$icon = '<i class="fas fa-user"></i>';
+					$name_table = $Tables->Found_Item('name', 'users');
+					$id_table = $Tables->Found_Item('id', $name_page);
+				break;
+			}
+	
+			$query = $PDO->query($Tables->SelectFrom(null, $script)) or die ($PDO);
+			
+			echo'
+				<div class="field" id="'.$name_page.'">
+			        <label class="label">'.$name_translated.'</label>
+			        <div class="control has-icons-left">
+			            <div class="select is-hovered is-link">
+			            	<select name="'.$name_page.'">';
+				            	while($row = $query->fetch(PDO::FETCH_OBJ)){
+				            		echo '<option value="'.$row->$id_table.'">'.$row->$name_table.'</option>';
+				            	}
+			            echo '</select>
+			            </div>
+			            <span class="icon is-small is-left">'.$icon.'</span>
+			        </div>
+			    </div>';
 		}
     }
     $Pages = new Pages;
