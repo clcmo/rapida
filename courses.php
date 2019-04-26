@@ -1,14 +1,15 @@
 <?php
 	include('header-admin.php');
-    #include('load/pages/courses.php');
+    $link = isset($_GET['id']) ? substr(LINK, 1, 7): LINK;
+    include('load/pages/'.$link.'.php');
 ?>
 <div class="columns">
     <div class="column is-4">
-        <div class="tabs is-left"><?php echo $Load->MainNavegation(); ?></div>
+        <div class="tabs is-left"><?php echo $Navegation->MainNavegation(substr(LINK, 0, 8)); ?></div>
     </div>
 </div>
 <div class="box content">
-    <?php echo $Load->HeroMessage(LINK, 'Cursos', 'Informe os dados para '.$selected_type); ?>
+    <?php echo $Navegation->HeroMessage('Cursos', 'Informe os dados para '.$selected_type); ?>
     <hr/>
     <section class="info-tiles">
 		<form action="" method="post">
@@ -51,7 +52,7 @@
                     </div>
                 </div>
                 <div class="column is-5">
-                    <?php echo $Pages->LoadTablePage(substr(LINK, 1)); ?>
+                    <?php echo $Pages->LoadTablePage($link); ?>
                 </div>
             </div>
             <div class="columns">
