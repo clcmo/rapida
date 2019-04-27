@@ -1,30 +1,31 @@
 <?php
-	include('header-admin.php');
-    #include('load/pages/courses.php');
+    include('header-admin.php');
+    $link = isset($_GET['id']) ? substr(LINK, 1, 7): LINK;
+    include('load/pages/'.$link.'.php');
 ?>
 <div class="columns">
     <div class="column is-4">
-        <div class="tabs is-left"><?php echo $Load->MainNavegation(); ?></div>
+        <div class="tabs is-left"><?php echo $Navegation->MainNavegation(substr(LINK, 0, 8)); ?></div>
     </div>
 </div>
 <div class="box content">
-    <?php echo $Load->HeroMessage(LINK, 'Cursos', 'Informe os dados para '.$selected_type); ?>
+    <?php echo $Navegation->HeroMessage('Cursos', 'Informe os dados para '.$selected_type); ?>
     <hr/>
     <section class="info-tiles">
-		<form action="" method="post">
-			<div class="columns">
+        <form action="" method="post">
+            <div class="columns">
                 <div class="column is-7">
-                	<p class="title is-small">Dados do Curso</p>
+                    <p class="title is-small">Dados do Curso</p>
                     <div class="columns">
                         <div class="column is-6">
-                        	<div class="field" id="name_cou">
-          						<label class="label">Nome do Curso</label>
-          						<div class="control has-icons-left has-icons-right">
-          							<input class="input is-link" type="text" name="name_cou" placeholder="<?php echo $name_cou; ?>">
-          							<span class="icon is-small is-left"><i class="fas fa-user"></i></span>
-        							<span class="icon is-small is-right"><i class="fas fa-check"></i></span>
-        						</div>
-        					</div>
+                            <div class="field" id="name_cou">
+                                <label class="label">Nome do Curso</label>
+                                <div class="control has-icons-left has-icons-right">
+                                    <input class="input is-link" type="text" name="name_cou" placeholder="<?php echo $name_cou; ?>">
+                                    <span class="icon is-small is-left"><i class="fas fa-user"></i></span>
+                                    <span class="icon is-small is-right"><i class="fas fa-check"></i></span>
+                                </div>
+                            </div>
                         </div>
                         <div class="column">
                             <div class="field" id="type_cou">
@@ -51,16 +52,16 @@
                     </div>
                 </div>
                 <div class="column is-5">
-                    <?php echo $Pages->LoadTablePage(substr(LINK, 1)); ?>
+                    <?php echo $Pages->LoadTablePage($link); ?>
                 </div>
             </div>
             <div class="columns">
-            	<div class="column">
-					<input class="button is-block is-success is-large is-fullwidth" type="submit" name="<?php echo $type_button; ?>" value="Salvar" />
-				</div>
-				<div class="column">
-					<input class="button is-block is-danger is-large is-fullwidth" type="button" name="cancel" value="Cancelar" />
-				</div>
+                <div class="column">
+                    <input class="button is-block is-success is-large is-fullwidth" type="submit" name="<?php echo $type_button; ?>" value="Salvar" />
+                </div>
+                <div class="column">
+                    <input class="button is-block is-danger is-large is-fullwidth" type="button" name="cancel" value="Cancelar" />
+                </div>
             </div>
         </form>
     </section>
@@ -70,12 +71,10 @@
                 $name_cou = isset($_POST['name_cou']) ? $_POST['name_cou'] : '';
                 $type_cou = isset($_POST['type_cou']) ? $_POST['type_cou'] : '';
                 $period = isset($_POST['period']) ? $_POST['period'] : '';
-
                 if (empty($name_cou)) {
                     echo 'Informe o nome do curso.</br>';
                     exit;
                 }
-
                 $sql = "SELECT name_cou, period FROM courses";
                 $con = $PDO->query($sql) or die ($PDO);
                 while ($row = $con->fetch(PDO::FETCH_OBJ)){
@@ -83,13 +82,11 @@
                         echo 'Curso já está registrado.</br>';
                     }
                 }
-
                 if($type_cou == 1){
                     $name_cou = 'Ensino Médio e '.$name_cou;
                     $period = 'I';
                 }
             }
-
             if(isset($_POST['save'])) {
                 $sql = "INSERT INTO courses (name_cou, type_cou, status_cou, period) VALUES (:name_cou , :type_cou, 1, :period)";
                 $stmt = $PDO->prepare($sql);
@@ -104,7 +101,6 @@
                     echo 'Um erro aconteceu.</br>';
                     exit;
                 }
-
             } else if(isset($_POST['edit'])){
                 $sql = "UPDATE courses SET name_cou = :name_cou, type_cou = :type_cou, period = :period WHERE id_cur = ".$id;
                 $stmt = $PDO->prepare($sql);
