@@ -1,21 +1,21 @@
 <?php
 	include('header-admin.php');
-	#include('load/pages/users.php');
+	$link = isset($_GET['id']) ? substr(LINK, 0, 8): LINK;
+	include('load/pages'.$link.'.php');
 ?>
 <div class="columns">
     <div class="column is-3">
-        <div class="tabs is-left"><?php echo $Load->MainNavegation(); ?></div>
+        <div class="tabs is-left"><?php echo $Navegation->MainNavegation($link); ?></div>
     </div>
 </div>
 <div class="box content">
-	<?php
-		echo $Load->HeroMessage(LINK, ucfirst('perfil'), 'Informe os dados para '.$selected_type); ?>
+	<?php echo $Navegation->HeroMessage(ucfirst('perfil'), 'Informe os dados para '.$selected_type); ?>
 	<hr/>
 	<section class="info-tiles">
 		<form action="#" method="post">
 			<div class="columns">
                 <div class="column is-6">
-					<p class="title is-small">Dados do <?php echo ucfirst($tipo); ?></p>
+					<p class="title is-small">Dados do <?php echo ucfirst($type); ?></p>
 					<div class="columns">
 						<div class="column">
 							<div class="field">
@@ -102,7 +102,7 @@
                         </div>
                     </div>
                     <hr />
-                    <p class="title is-small">Dados Residenciais do <?php echo ucfirst($tipo); ?></p>
+                    <p class="title is-small">Dados Residenciais do <?php echo ucfirst($type); ?></p>
                     <div class="columns">
 						<div class="column">
 							<div class="field">
@@ -190,14 +190,16 @@
 		    						</label>
 		    					</div>
 		  					</div>
-							
 						</div>
 						<div class="column is-4">
 							<figure class="image is-128x128"><img class="is-rounded" src="<?php echo $photo; ?>"></figure>
 		  				</div>
 		  			</div>
+		  			<hr/>
+		  			<?php echo $data; ?>
 					<hr/>
 					<?php $Pages->LoadTablePage('users'); ?>
+				</div>
 			</div>
 			<div class="columns">
 				<div class="column">

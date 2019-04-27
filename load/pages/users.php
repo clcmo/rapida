@@ -1,7 +1,8 @@
 <?php
 	$name_page = 'users';
+	include('main.php');
 
-	$name_table = $Tables->Found_Item('name', $name_page);
+	/*$name_table = $Tables->Found_Item('name', $name_page);
 	$status_table = $Tables->Found_Item('status', $name_page);
 	$id_table = $Tables->Found_Item('id', $name_page);
 
@@ -91,4 +92,4 @@
 	                <span class="icon is-small is-left"><i class="fas fa-user"></i></span>
 	            </div>';
 		break;
-	}
+	}*/

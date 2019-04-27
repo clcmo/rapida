@@ -1,5 +1,5 @@
 <?php
-    include('header-admin.php');
+	include('header-admin.php');
     $link = isset($_GET['id']) ? substr(LINK, 1, 7): LINK;
     include('load/pages/'.$link.'.php');
 ?>

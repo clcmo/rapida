@@ -38,7 +38,7 @@
     define('MAX', count(LINK));
 
     # 6 - Definições de Inserção/Edição
-    $id = (isset($_GET['id'])) ? $_GET['id'] : (isset($_SESSION['id'])) ? $_SESSION['id'] : '';
+    $id = (isset($_SESSION['id'])) ? $_SESSION['id'] : (isset($_GET['id'])) ? $_GET['id'] : '';
     $email = isset($_GET['email']) ? $_GET['email'] : '';
     $placeholder = isset($_GET['email']) ? $_GET['email'] : 'Informe seu email';
     switch ($id) {

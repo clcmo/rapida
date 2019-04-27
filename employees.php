@@ -4,7 +4,7 @@
 ?>
 <div class="columns">
     <div class="column is-4">
-        <div class="tabs is-left"><?php echo $Navegation->MainNavegation(); ?></div>
+        <div class="tabs is-left"><?php echo $Load->MainNavegation(); ?></div>
     </div>
     <div class="column">
     	<div class="tabs is-centered">
@@ -38,9 +38,8 @@
     </div>
 </div>
 <div class="box content">
-	<?php
-		echo $Navegation->HeroMessage(LINK, ucfirst('funcionários'), 'Visualização dos Funcionários Cadastrados'); ?>
+	<?php echo $Navegation->HeroMessage(ucfirst('funcionários'), 'Visualização dos Funcionários Cadastrados'); ?>
 	<hr/>
-	<?php echo $Pages->LoadArticlePage(substr(LINK,1)); #include('load/articles/employees.php'); ?>
+	<?php #include('load/articles/employees.php'); ?>
 </div>
 <?php include('footer-admin.php'); ?>
