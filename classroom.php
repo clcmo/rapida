@@ -4,7 +4,7 @@
 ?>
 <div class="columns">
 	<div class="column is-4">
-		<div class="tabs is-left"><?php echo $Load->MainNavegation(substr(LINK, 0, (MAX-6))); ?></div>
+		<div class="tabs is-left"><?php echo $Navegation->MainNavegation(substr(LINK, 0, (MAX-6))); ?></div>
 	</div>
 	<div class="column">
 		<div class="tabs is-right">
