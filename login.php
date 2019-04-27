@@ -46,13 +46,11 @@
           # Resgata variáveis do formulário
           $email = isset($_POST['email']) ? $_POST['email'] : '';
           $password = isset($_POST['password']) ? $Tables->HashStr($_POST['password']) : '';
-
           # Verifica se os campos estão vazios e exibe uma mensagem de erro
           if (empty($email) || empty($password)) {
             echo 'Informe email e/ou senha.';
             exit;
           }
-
           #$password = $Tables->HashStr($password);
           
           # Verificar se o usuário existe e se a senha é a mesma     
@@ -61,12 +59,10 @@
           $stmt->bindParam(':password', $password);
           $stmt->execute();
           $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
           if (count($users) <= 0) {
             echo 'Email ou senha incorretos. Deseja <strong><a href="forgot-pass?email='.$email.'">recuperar</a></strong>?';
             exit;
           }
-
           # Busca os resultados e os cataloga com a variável $_SESSION
           $user = $users[0];
           #session_start();
