@@ -10,12 +10,12 @@
 ?>
 <div class="columns">
     <div class="column is-4">
-        <div class="tabs is-left"><?php echo $Load->MainNavegation(); ?></div>
+        <div class="tabs is-left"><?php echo $Navegation->MainNavegation(); ?></div>
     </div>
 </div>
 
 <div class="box content">
-    <?php echo $Load->HeroMessage(LINK, 'Olá, '.$_SESSION['name'], 'Tenha um bom dia!'); ?>
+    <?php echo $Navegation->HeroMessage('Olá, '.$_SESSION['name'], 'Tenha um bom dia!'); ?>
     <div class="columns">
         <div class="column is-6">
             <?php 
