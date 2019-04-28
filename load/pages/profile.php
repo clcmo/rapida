@@ -1,5 +1,6 @@
 <?php
-	$id = ($link != 'notifies') ? $id : $_SESSION['id'];
+	$id = isset(($_GET['id'])) ? $_GET['id'] : $_SESSION['id'];
+	#echo $Tables->SelectFrom(null, 'users WHERE id_use LIKE '.$id.' AND status_use = 1');
 	$query = $PDO->query($Tables->SelectFrom(null, 'users WHERE id_use LIKE '.$id.' AND status_use = 1')) or die ($PDO);
 	
 	while($row = $query->fetch(PDO::FETCH_OBJ)){
