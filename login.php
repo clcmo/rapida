@@ -6,10 +6,7 @@
    *
    * @package Bulma by Milla
    */
-  include('header-index.php');
-  $link = isset($_GET['email']) ? substr(LINK, 0, MAX) : LINK;
-  include('load/pages'.$link.'.php');
-  #echo $Pages->LoadSamplePage($link);
+  include('header.php');
 ?>
   <div class="column is-4 is-offset-4">
     <h3 class="title is-medium">Login</h3>
@@ -54,7 +51,7 @@
           #$password = $Tables->HashStr($password);
           
           # Verificar se o usuário existe e se a senha é a mesma     
-          $stmt = $PDO->prepare($Tables->LoadFrom('*', null, 'users WHERE email LIKE :email AND password LIKE :password AND status_use = 1', 0, 1));
+          $stmt = $PDO->prepare($Tables->SelectFrom(null, 'users WHERE email LIKE :email AND password LIKE :password AND status_use = 1', 0, 1));
           $stmt->bindParam(':email', $email);
           $stmt->bindParam(':password', $password);
           $stmt->execute();
@@ -72,7 +69,7 @@
           $_SESSION['name'] = $user['name_use'];
           #$_SESSION['type'] = $user['tipo_usu'];
           #$_SESSION['year_date'] = date('Y', strtotime($user['cadastro']));
-          header('Location: admin');
+          header('Location: index');
         }
       ?>
     </p>
