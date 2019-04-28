@@ -1,10 +1,10 @@
 <?php
-	include('header-admin.php');
+	include('header.php');
 	#include('load/pages/courses.php');
 ?>
 <div class="columns">
     <div class="column is-4">
-        <div class="tabs is-left"><?php echo $Load->MainNavegation(); ?></div>
+        <div class="tabs is-left"><?php echo $Navegation->MainNavegation(); ?></div>
     </div>
     <div class="column">
 		<div class="tabs is-right">
@@ -27,8 +27,9 @@
 </div>
 <div class="box content">
 	<!--Criar formato onde, a partir da seleção do curso, a página seja automaticamente redirecionada -->
-	<?php include('load/options/courses.php'); ?>
-	<?php echo $Load->HeroMessage(LINK, 'Grade de Horários', 'Visualização da grade de horários para '.$name_cou); ?>
+	<?php 
+		include('load/options/courses.php'); 
+		echo $Navegation->HeroMessage('Grade de Horários', 'Visualização da grade de horários para '.$name_cou); ?>
 	<hr />
 	<?php include('load/schedule-grid.php'); ?>
 </div>
