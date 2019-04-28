@@ -1,11 +1,12 @@
 <?php
 	include('header-admin.php');
-    $link = isset($_GET['id']) ? substr(LINK, 1, 7): LINK;
+    $link = isset($_GET['id']) ? substr(LINK, 1, MAX) : LINK;
+    echo $link;
     include('load/pages/'.$link.'.php');
 ?>
 <div class="columns">
     <div class="column is-4">
-        <div class="tabs is-left"><?php echo $Navegation->MainNavegation(substr(LINK, 0, 8)); ?></div>
+        <div class="tabs is-left"><?php echo $Navegation->MainNavegation($link); ?></div>
     </div>
 </div>
 <div class="box content">
