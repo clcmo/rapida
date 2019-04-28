@@ -9,7 +9,8 @@
 
 		$id = (isset($_GET['id'])) ? $_GET['id'] : '';
 		
-		$script = $Tables->LoadFrom($table.' WHERE '.$id_table.' = '.$id);
+		$script = $Tables->SelectFrom($status_table, $table.' WHERE '.$id_table.' = '.$id);
+		echo $script;
 		//$script = 'SELECT '.$status_table.' FROM '.$table.' WHERE '.$table.'.'.$id_table.' = '.$id;
 		$query = $PDO->query($script) or die ($PDO);
 		while($row = $query->fetch(PDO::FETCH_OBJ)){
