@@ -15,13 +15,13 @@
 
                 /*Importante: Como as cidades já foram cadastradas no banco de dados,
                     preciso criar uma implementação PHP neste JS, tal como em Calendário*/
-                $("#endereco").val(resposta.logradouro);
+                $("#address").val(resposta.logradouro);
                 $("#complemento").val(resposta.complemento);
-                $("#bairro").val(resposta.bairro);
-                $("#cidade").val(resposta.localidade);
-                $("#uf").val(resposta.uf);
+                $("#neighborhood").val(resposta.bairro);
+                $("#city").val(resposta.localidade);
+                $("#state").val(resposta.uf);
                 //Vamos incluir para que o Número seja focado automaticamente melhorando a experiência do usuário
-                $("#numero").focus();
+                $("#number").focus();
             }
         });
     });
