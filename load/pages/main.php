@@ -15,11 +15,25 @@
 	#o id na tabela informada
 	switch ($link) {
 		case 'courses':
-		case 'users': $script .= ' WHERE '; break;
+		#case 'users': $script .= ' WHERE '; break;
+		case 'new-user':
+			$name_use = '';
+			$year = date('Y', strtotime(TODAY));
+			$signup_date = date('d/m/Y', strtotime(TODAY));
+			$email = isset($_GET['email']) ? $_GET['email'] : '';
+			$login = '';
+			$photo = $Load->Gravatar($email);
+			$cep = $address = $number = $neighborhood = $city = $state = $rg = $cpf = $phone = '';
+			$birthday_date = date('d/m/Y', strtotime(TODAY));
+			$birthday_year = date('Y', strtotime(TODAY));
+			$data = $name_par = $phone_par = $rg_par = $cpf_par = $area = '';
+			$type = 'usuário';
+			$string = 'Tipo de Usuário';
+			#criar radio button
+		break;
 		case 'disciplines': $script .= ', courses WHERE '.$link.'.id_cou = courses.id_cou AND '; break;
-		case 'login': $script = 'users WHERE '; break;
 		case 'notifies':
-			$con = $PDO->query($Tables->SelectFrom('type_use','users WHERE id_use LIKE '.$_SESSION['id'].' AND status_use = 1', 1)) or die ($PDO);
+			$con = $PDO->query($Tables->SelectFrom('name_use, type_use','users WHERE id_use LIKE '.$_SESSION['id'].' AND status_use = 1')) or die ($PDO);
 			while($row = $con->fetch(PDO::FETCH_OBJ)){
 				$name_use = $row->name_use;
 				switch ($row->type_use){
@@ -42,7 +56,7 @@
 					break;
 
 					case 5:
-						$script .= ', users WHERusers.id_use = '.$name_page.'.id_use AND users.id_use = '.$_SESSION['id'].' AND ';
+						$script .= ', users WHERE users.id_use = '.$name_page.'.id_use AND users.id_use = '.$_SESSION['id'].' AND ';
 						/*$profile_link = SERVER.'profile';*/
 					break;
 				}
@@ -56,13 +70,9 @@
 				case 'courses':
 					$name_cou = 'Informe o nome';
 				break;
-				
+
 				case 'disciplines':
 					$name_dis = 'Informe o nome';
-				break;
-
-				case 'login':
-					$placeholder = $email = $row->email;
 				break;
 
 				case 'notifies':
@@ -71,7 +81,7 @@
 
 				case 'users':
 					$name_use = 'Informe o nome';
-					$tipo = 'usuário';
+					$type = 'usuário';
 				break;
 			}
 			$checked2 = '';
@@ -92,10 +102,6 @@
 				
 					case 'disciplines':
 						$name_cou = $row->$name_table;
-					break;
-
-					case 'login':
-						$placeholder = $email = $row->email;
 					break;
 
 					case 'notifies':
@@ -137,5 +143,5 @@
 			}
 		break;
 	}
-	$picture = $Load->Gravatar();
-	$placeholder = $email = isset($_GET['email']) ? $_GET['email'] : '';
+	
+	#$placeholder = $email = isset($_GET['email']) ? $_GET['email'] : '';
