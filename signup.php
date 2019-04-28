@@ -12,9 +12,7 @@
     <h3 class="title is-medium">Cadastrar</h3>
     <p class="subtitle">Insira os dados para continuar.</p>
     <div class="box">
-      <figure class="image is-128x128 avatar">
-        <img class="is-rounded" src="<?php echo $Load->Gravatar(); ?>">
-      </figure>
+      <figure class="image is-128x128 avatar"><img class="is-rounded" src="<?php echo $Load->Gravatar(); ?>"></figure>
       <form method="post" action="" method="POST">
         <div class="field">
           <div class="control">
@@ -23,17 +21,30 @@
         </div>
         <div class="field">
           <div class="control">
-            <input class="input is-large" type="password" name="password" value="" autofocus="">
+            <input class="input is-large" type="password" name="password" placeholder="<?php echo $password; ?>" autofocus="">
           </div>
         </div>
         <div class="field">
           <div class="control">
-            <input class="input is-large" type="password" name="password_conf" value="" autofocus="">
+            <input class="input is-large" type="password" name="password_conf" placeholder="<?php echo $password_conf; ?>" autofocus="">
           </div>
         </div>
-        <div class="field">
-          <label class="checkbox"><input type="checkbox">&nbsp;Aceito os Termos</label>
-        </div>
+        <div class="field" id="type_use">
+          <label class="label">Tipo de Usuário</label>
+            <div class="control has-icons-left">
+              <div class="select is-hovered is-link">
+                <select name="type_use">
+                  <option value="1">Diretor</option>
+                  <option value="2">Coordenador</option>
+                  <option value="3">Funcionário</option>
+                  <option value="4" disabled>Professor</option>
+                  <option value="5" disabled>Aluno</option>
+                </select>
+              </div>
+              <span class="icon is-small is-left"><i class="fas fa-chalkboard-teacher"></i></span>
+            </div>
+          </div>
+        <div class="field"><label class="checkbox"><input type="checkbox">&nbsp;Aceito os Termos</label></div>
         <input class="button is-block is-info is-large is-fullwidth" type="submit" name="signup" value="Cadastrar" />
       </form>
   </div>
@@ -63,8 +74,7 @@
         }
 
         # Verifica se o usuário existe e exibe ou uma mensagem de erro ou vai ao cadastro
-        $sql = $Tables->LoadFrom('users WHERE email LIKE '.$email.' AND status_use = 1 LIMIT 1');
-        $con = $PDO->prepare($sql) or die ($PDO);
+        $con = $PDO->prepare($Tables->SelectFrom(null, 'users WHERE email LIKE '.$email.' AND status_use = 1', 0, 1)) or die ($PDO);
         if(count($con) == 1){
             echo 'E-mail já existe. Deseja <strong><a href="forgot-pass?email='.$email.'">recuperar sua senha</a></strong> ou <strong><a href="login?email='.$email.'">fazer login</a></strong>?';
             exit;
@@ -74,8 +84,7 @@
         $password = $Tables->HashStr($password);
         $photo = $Load->Gravatar($email);
 
-        $sql = "INSERT INTO users (email, password, photo, type_use) VALUES (:email, :password, :photo, 1)";
-        $stmt = $PDO->prepare($sql);
+        $stmt = $PDO->prepare("INSERT INTO users (email, password, photo, type_use) VALUES (:email, :password, :photo, 1)");
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':password', $password);
         $stmt->bindParam(':photo', $photo);
@@ -95,8 +104,8 @@
         
             $_SESSION['id'] = $user['id_use'];
             $_SESSION['name'] = $user['name_use'];
-              
-            header ('Location: admin');
+            #redireciona para a página de perfil aonde ele finalizará o cadastro  
+            header ('Location: profile');
         }
       }
     ?>
