@@ -1,36 +1,20 @@
 <?php
-	include('header-admin.php');
-	#include('load/pages/notifies.php');
+	include('header.php');
+	#$link = ($_GET['id']) ? $Load->DiscoverLink($link, 6) : $link;
+  	include('load/pages/'.$link.'.php');
 ?>
 <div class="columns">
-    <div class="column is-4">
-        <div class="tabs is-left"><?php echo $Load->MainNavegation(); ?></div>
+    <div class="column">
+        <div class="tabs is-left"><?php echo $Navegation->MainNavegation($link); ?></div>
     </div>
-    <div class="column is-8">
-		<div class="tabs is-right">
-			<div class="container">
-				<div class="navbar-menu">
-					<div class="navbar-end">
-						<a class="navbar-item" href="#"><span class="tag is-small">Todas</span></a>
-						<a class="navbar-item" href="#"><span class="tag is-primary is-small">Solicitações</span></a>
-						<a class="navbar-item" href="#"><span class="tag is-warning is-small">Revisões</span></a>
-						<a class="navbar-item" href="#"><span class="tag is-success is-small">Matrículas</span></a>
-						<a class="navbar-item" href="#"><span class="tag is-light is-danger is-small">Ocorrências</span></a>
-						<a class="navbar-item" href="#"><span class="tag is-dark is-small">Trancamentos</span></a>
-						<a class="navbar-item" href="#"><span class="tag is-link is-small">Históricos</span></a>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
 </div>
 <div class="box content">
-	<?php echo $Load->HeroMessage(LINK, 'Notificações', 'Informe os dados para '.$selected_type); ?>
+	<?php echo $Navegation->HeroMessage('Notificações', 'Informe os dados para '.$selected_type); ?>
 	<hr/>
 	<section class="info-tiles">
 		<form action="" method="post">
 			<div class="columns">
-                <div class="column is-7">
+                <div class="column">
                     <p class="title is-small">Dados da Notificação</p>
                     <div class="columns">
                         <div class="column">
@@ -67,7 +51,7 @@
                         	<div class="field">
           						<label class="label">Usuário Solicitante</label>
           						<div class="control has-icons-left has-icons-right">
-          							<input class="input is-link" type="text" placeholder="Nome do Usuário" value="<?php echo $name_use; ?>">
+          							<input class="input is-link" type="text" placeholder="Nome do Usuário" value="<?php echo $name_use; ?>" disabled>
           							<span class="icon is-small is-left"><i class="fas fa-user"></i></span>
         							<span class="icon is-small is-right"><i class="fas fa-check"></i></span>
         						</div>
@@ -75,13 +59,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="column is-5">
-                	<?php $Pages->LoadTablePage(substr(LINK, 1)); ?>
+                <div class="column">
+                	<?php $Pages->LoadTablePage($link); ?>
                 </div>
             </div>
             <div class="columns">
             	<div class="column">
-					<input class="button is-block is-success is-large is-fullwidth" type="submit" name="save" value="Salvar" />
+					<input class="button is-block is-success is-large is-fullwidth" type="submit" name="<?php echo $type_button; ?>" value="Salvar" />
 				</div>
 				<div class="column">
 					<input class="button is-block is-danger is-large is-fullwidth" type="button" name="cancel" value="Cancelar" />
@@ -103,9 +87,7 @@
 				//$id_use = $_SESSION['id'];
 				//$status_not = 1;
 				$date_not = date('Y-m-d H:i:s');
-
-				$sql = 'INSERT INTO notifies (name_not, type_not, id_use, date_not, status_not) VALUES (:name_not, :type_not, '.$_SESSION['id'].', :date_not, 1)';
-		        $stmt = $PDO->prepare($sql);
+		        $stmt = $PDO->prepare('INSERT INTO notifies (name_not, type_not, id_use, date_not, status_not) VALUES (:name_not, :type_not, '.$_SESSION['id'].', :date_not, 1)');
 		        $stmt->bindParam(':name_not', $name_not);
 		        $stmt->bindParam(':type_not', $type_not);
 		        $stmt->bindParam(':date_not', $date_not);
