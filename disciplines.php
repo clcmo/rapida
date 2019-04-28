@@ -4,7 +4,7 @@
     include('load/pages/'.$link.'.php');
 ?>
 <div class="columns">
-    <div class="column is-4">
+    <div class="column">
         <div class="tabs is-left"><?php echo $Navegation->MainNavegation(); ?></div>
     </div>
 </div>
