@@ -82,7 +82,7 @@
         function IsLogged() {
         	return (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] != true) ? false : true;
         }
-        #2 - Checa se o usuário está logado e redireciona para uma das páginas
+        #2 - Checa se o usuário está logado e redireciona para uma das páginas //desnecessário
         function Check(){
         	$Login = new Login;
         	$Load = new Load;
@@ -108,7 +108,16 @@
 	    function Link($name_page) {
 	      	return header('Location: '.SERVER.''.$name_page);
 	    }
-	    # 4 - Gerador de Senha Aleatória
+	    # 4 - Descobrir o link para gerar o Load page
+	    function DiscoverLink($link = LINK, $sizeof = false){
+	    	$link = substr(LINK, 1);
+	    	if ($link != 'login')
+	    		$link = (isset($_GET['id'])) ? substr($link, 0, $sizeof) : $link;
+	    	else
+         		$link = (isset($_GET['email'])) ? substr($link, 1) : $link;
+         	return $link;
+	    }
+	    # 5 - Gerador de Senha Aleatória
 	    function RandomPass($size = 10, $ma = true, $mi = true, $nu = true, $si = false){
 		 	$ma = "ABCDEFGHIJKLMNOPQRSTUVYXWZ"; 	# $ma contem as letras maiúsculas
 		 	$mi = "abcdefghijklmnopqrstuvyxwz"; 	# $mi contem as letras minusculas
@@ -126,23 +135,34 @@
 		# 5 - Exibe a imagem gravada no BD ou a imagem gravada no site Gravatar.com
 		function Gravatar($s = 80, $d = 'mp', $r = 'g', $img = false, $atts = array()){
 			$Login = new Login;
+			$Load = new Load;
 			$Tables = new Tables;
-			switch ($Login->IsLogged()){
-				case false:
-					$email = isset($_GET['email']) ? $_GET['email'] : 'someone@somewhere.com';
-					$photo = '';
-				break;
-				case true:
-					$Load = new Load;
-					$PDO = $Load->DataBase();
-					$con = $PDO->query($Tables->SelectFrom('photo, email', 'users WHERE id_use = '.$_SESSION['id'])) or die ($PDO);
-					while($row = $con->fetch(PDO::FETCH_OBJ)) {
-						$email = isset($row->email) ? $row->email : 'someone@somewhere.com';
-						$photo = isset($row->photo) ? $row->photo : '';
-					}
-				break;
+			$email = (!$Login->IsLogged()) ? isset($_GET['email']) ? $_GET['email'] : 'someone@somewhere.com' : '';
+			$photo = '';
+			$PDO = $Load->DataBase();
+			$link = $Load->DiscoverLink();
+			if($Login->IsLogged()){
+				#echo $link;
+				switch($link){
+					case 'employees': case 'teachers': case 'students':
+						#echo $Tables->SelectFrom('email', $link.', users WHERE '.$link.'.id_use = users.id_use');
+						$con = $PDO->query($Tables->SelectFrom('email', $link.', users WHERE '.$link.'.id_use = users.id_use')) or die ($PDO);
+						while($row = $con->fetch(PDO::FETCH_OBJ)) {
+							$email = isset($row->email) ? $row->email : 'someone@somewhere.com';
+						}
+					break;
+					default:
+						$id = (isset($_SESSION['id'])) ? $_SESSION['id'] : $_GET['id'];
+						#echo $Tables->SelectFrom('photo, email', 'users WHERE id_use = '.$id);
+						$con = $PDO->query($Tables->SelectFrom('photo, email', 'users WHERE id_use = '.$id)) or die ($PDO);
+						while($row = $con->fetch(PDO::FETCH_OBJ)) {
+							$email = isset($row->email) ? $row->email : 'someone@somewhere.com';
+							$photo = isset($row->photo) ? $row->photo : '';
+						}
+					break;
+				}
 			}
-			if(!$photo || $photo = null){
+			if(!$photo){
 				$url = 'https://www.gravatar.com/avatar/';
 			    $url .= md5(strtolower(trim($email)));
 			    $url .= "?s=$s&d=$d&r=$r";
@@ -167,12 +187,11 @@
 	    	$Tables = new Tables;
 	        $Login = new Login;
 	        $menu = array();
-	        $home = (!$Login->IsLogged()) ? 'index' : 'admin';
 	        $menu[1] = '
 	        <div class="hero-head">
 	        	<nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
 				  	<div class="navbar-brand">
-					    <a class="navbar-item is-logo" href="'.SERVER.''.$home.'">rÁpidA</a>
+					    <a class="navbar-item is-logo" href="'.SERVER.'index">rÁpidA</a>
 					    <div class="navbar-burger burger" data-target="navMenubd-example">
 					    	<span></span>
 					    	<span></span>
@@ -192,8 +211,9 @@
 												#diretor
 												$menu[2] = $menu[1].'
     												<div class="navbar-item has-dropdown is-hoverable">
-	        											<a class="navbar-link is-active" href="'.SERVER.'users"><i class="fas fa-users"></i>&nbsp;Usuários</a>
+	        											<a class="navbar-link is-active" href="#"><i class="fas fa-users"></i>&nbsp;Usuários</a>
 	        											<div class="navbar-dropdown ">
+	        												<a class="dropdown-item" href="'.SERVER.'new-user">Cadastrar</a>
 	        												<a class="dropdown-item " href="'.SERVER.'employees">Funcionários</a>
 	        												<hr class="navbar-divider">
 	        												<a class="dropdown-item " href="'.SERVER.'teachers">Professores</a>
@@ -218,8 +238,9 @@
 												#coordenador
 												$menu[2] = $menu[1].'
     												<div class="navbar-item has-dropdown is-hoverable">
-	        											<a class="navbar-link is-active" href="'.SERVER.'users"><i class="fas fa-users"></i>&nbsp;Usuários</a>
+	        											<a class="navbar-link is-active" href="#"><i class="fas fa-users"></i>&nbsp;Usuários</a>
 	        											<div class="navbar-dropdown ">
+	        												<a class="dropdown-item" href="'.SERVER.'new-user">Cadastrar</a>
 	        												<a class="dropdown-item " href="'.SERVER.'employees">Funcionários</a>
 	        												<hr class="navbar-divider">
 	        												<a class="dropdown-item " href="'.SERVER.'teachers">Professores</a>
@@ -244,8 +265,9 @@
 												#funcionário
 												$menu[2] = $menu[1].'
     												<div class="navbar-item has-dropdown is-hoverable">
-	        											<a class="navbar-link is-active" href="'.SERVER.'users"><i class="fas fa-users"></i>&nbsp;Usuários</a>
+	        											<a class="navbar-link is-active" href="#"><i class="fas fa-users"></i>&nbsp;Usuários</a>
 	        											<div class="navbar-dropdown ">
+	        												<a class="dropdown-item" href="'.SERVER.'new-user">Cadastrar</a>
 	        												<a class="dropdown-item " href="'.SERVER.'employees">Funcionários</a>
 	        												<hr class="navbar-divider">
 	        												<a class="dropdown-item " href="'.SERVER.'teachers">Professores</a>
@@ -314,27 +336,28 @@
     	}
     	# 2 - Gera a informação e um mapa rápido de acesso através do link informado
 	    function MainNavegation($link = LINK){
-	    	$str = substr($link, 1);
+	    	switch ($link) {
+	    		case 'classroom': $link = 'Turmas'; break;
+	    		case 'courses': $link = 'Cursos'; break;
+	    		case 'disciplines': $link = 'Disciplinas'; break;
+	    		case 'employees': $link = 'Funcionários'; break;
+	    		case 'historic': $link = 'Notas'; break;
+	   			case 'notifies': $link = 'Notificações'; break;
+	    		case 'profile': $link = 'Perfil'; break;
+	    		case 'schedule-grid': $link = 'Grade'; break;
+	    		case 'students': $link = 'Estudantes'; break;
+				case 'teachers': $link = 'Professores'; break;
+    			case 'new-user': $link = 'Usuários'; break;
+    			#case 'admin': $link = 'Início'; break;
+	    	} 
+	    	
 	    	$mess ='<ul>Você está em: &nbsp;';
-	    	if($str != 'admin'){
-	    		switch ($str) {
-	    			case 'classroom': $str = 'Turmas'; break;
-	    			case 'courses': $str = 'Cursos'; break;
-	    			case 'disciplines': $str = 'Disciplinas'; break;
-	    			case 'employees': $str = 'Funcionários'; break;
-	    			case 'historic': $str = 'Notas'; break;
-	    			case 'notifies': $str = 'Notificações'; break;
-	    			case 'profile': $str = 'Perfil'; break;
-	    			case 'schedule-grid': $str = 'Grade'; break;
-	    			case 'students': $str = 'Estudantes'; break;
-					case 'teachers': $str = 'Professores'; break;
-	    			case 'users': $str = 'Usuários'; break;
-	    		}
+	    	if($link != 'index'){
 	    		$mess .='
 	    			<li class=""><a href="admin" aria-current="page">Início</a></li>
-	    			<li class="is-active"><a href="'.$link.'" aria-current="page">'.ucfirst($str).'</a></li>';
+	    			<li class="is-active"><a href="'.$link.'" aria-current="page">'.ucfirst($link).'</a></li>';
 	    	} else {
-	    		$mess .= '<li class="is-active"><a href="'.$str.'" aria-current="page">Início</a></li>';
+	    		$mess .= '<li class="is-active"><a href="'.$link.'" aria-current="page">Início</a></li>';
 	    	}
 	    	return $mess .= '</ul>';
 	    }
@@ -348,7 +371,7 @@
     		<aside class="menu is-hidden-mobile">
         	<p class="menu-label">Gerais</p>
         	<ul class="menu-list">
-                <li><a href="'.SERVER.'admin" class="is-active">Início</a></li>
+                <li><a href="'.SERVER.'index" class="is-active">Início</a></li>
                 <li><a href="'.SERVER.'profile">Perfil</a></li>
                 <li><a href="'.SERVER.'notifies">Notificações</a></li>
                 <li><a href="#">Biblioteca Online</a></li>
@@ -380,8 +403,9 @@
 		                            </ul>
 		                        </li>
 		                        <li>
-		                            <a href="users">Usuários</a>
+		                            <a href="#">Usuários</a>
 		                            <ul>
+		                            	<li><a href="'.SERVER.'new-user">Cadastrar</a></li>
 		                                <li><a href="'.SERVER.'teachers">Professores</a></li>
 		                                <li><a href="'.SERVER.'employees">Funcionarios</a></li>
 		                                <li>
@@ -544,6 +568,7 @@
 			$picture = $Load->Gravatar();
 			$placeholder = $email = isset($_GET['email']) ? $_GET['email'] : '';
 		}
+
 		function LoadTablePage($name_page){
 			#$str = substr($name_page, 1, (MAX-5));
 			$Load = new Load;
@@ -587,7 +612,7 @@
 						<th>Titulo</th>
 						<th>Tipo da Notificação</th>
 						<th>Nome do Usuário</th>';
-					$con = $PDO->query($Tables->SelectFrom('type_use', 'users WHERE id_use LIKE '.$_SESSION['id'].' AND status_use = 1', 1)) or die ($PDO);
+					$con = $PDO->query($Tables->SelectFrom('type_use', 'users WHERE id_use LIKE '.$_SESSION['id'].' AND status_use = 1')) or die ($PDO);
 					$name_table .= ', users WHERE users.id_use = '.$name_page.'.id_use';
 					$titulo = 'Notificações';
 					$icon = '<i class="fas fa-bell"></i>';
@@ -613,7 +638,7 @@
 				break;
 			}
 			$script = $Tables->SelectFrom(null, $name_table, 0, 10);
-			echo $script;
+			#echo $script;
 			$con = $PDO->query($script) or die ($PDO);
 			$cont = $Tables->CountViewTable(null, $name_table);
 			$id = $Tables->Found_Item('id', $name_page);
@@ -691,16 +716,16 @@
 								    		case 'notifies':
 								    			$col_1 = '<a href="'.$name_page.'?id='.$row->$id.'" class="button is-link is-small">'.$icon.'</a>';
 												$col_2 = $row->$name_table;
-												switch ($row->$type_table) {
-													case 1: $type = 'Solicitação'; break;
-													case 2: $type = 'Revisão'; break;
-													case 3: $type = 'Matrícula'; break;
-													case 4: $type = 'Ocorrência'; break;
-													case 5: $type = 'Trancamento'; break;
-													case 6: $type = 'Histórico'; break;
-													case 7: $type = 'Outros'; break;
+												switch ($row->$type_table) {						
+													case 1: $type = 'Solicitação'; $color = 'is-primary'; break;
+													case 2: $type = 'Revisão'; $color = 'is-warning'; break;
+													case 3: $type = 'Matrícula'; $color = 'is-success'; break;
+													case 4: $type = 'Ocorrência'; $color = 'is-danger'; break;
+													case 5: $type = 'Trancamento'; $color = 'is-dark'; break;
+													case 6: $type = 'Histórico'; $color = 'is-link'; break;
+													case 7: $type = 'Outros'; $color = 'is-primary'; break;
 												}
-												$col_3 = '<a class="button is-light is-inverted is-small">'.$type.'</a>';
+												$col_3 = '<a class="button '.$color.' is-small">'.$type.'</a>';
 												$col_4 = $row->name_use;
 												switch ($row->$status_table) {
 													case 1:
@@ -836,18 +861,36 @@
 		            #proxima etapa = exibir os resultados em multiplos de 10
 		}
 		function LoadArticlePage($name_page){
-			$script .=' LIMIT '.$vi.', '.$vf;
-		    $query = $PDO->query($Tables->SelectFrom($script)) or die ($PDO);
-		    $cont = $Tables->CountViewTable($script);
+			$Load = new Load;
+			$Tables = new Tables;
+			$PDO = $Load->DataBase();
+			$pg = isset($_GET['pg']) ? $_GET['pg'] : '';
+			$script = $name_page;
+			switch ($name_page){
+				default:
+		    		$name_table = $Tables->Found_Item('name', $name_page);
+				break;
+				case 'employees': 
+					$script.=', users  WHERE '.$name_page.'.id_emp = users.id_use'; 
+					$name_table = $Tables->Found_Item('name', 'users'); 
+				break;
+			}
+
+			#echo $Tables->SelectFrom(null, $script, (1 * $pg), (10 * $pg));
+		    $query = $PDO->query($Tables->SelectFrom(null, $script, (1 * $pg), (10 * $pg))) or die ($PDO);
+		    $cont = $Tables->CountViewTable(null, $script);
+
 		    while($row = $query->fetch(PDO::FETCH_OBJ)){
 		    	$id = $Tables->Found_Item('id', $name_page);
-				$edit_link = $name_page.'?id='.$row->$id;
-				$titulo = $row->$name_table;
-				$status_table = $Tables->Found_Item('status', $name_page);
-				$action_link = ($status_table) ? 'deactivate?t='.$name_page.'?id='.$row->$id : 'activate?t='.$name_page.'?id='.$row->$id;
+		    	$edit_link = $name_page.'?id='.$row->$id;
+		    	$status_table = $Tables->Found_Item('status', $name_page);
+		   		$action_link = ($status_table) ? 'deactivate?t='.$name_page.'?id='.$row->$id : 'activate?t='.$name_page.'?id='.$row->$id;
 				$action_color = ($status_table) ? 'danger' : 'success';
 				$action_button = ($status_table) ? '<i class="fas fa-minus-circle"></i>' : '<i class="fas fa-check-square">';
-				switch ($name_page) {
+				$content = '';
+				#$img = '<img class="is-rounded" src="'.$Load->Gravatar().'">';
+		    	$titulo = $row->$name_table;
+		    	switch ($name_page) {
 					case 'classroom':
 						$link = 'courses?id='.$row->$id;
 						//$name_page.', courses, students, users WHERE '.$name_page.'.id_cla = '.$row->$id.' AND '.$name_page.'.id_cou = courses.id_cou AND students.id_cla = '.$name_page.'.id_cla AND students.id_use = users.id_use
@@ -861,7 +904,12 @@
 						$message = 'Número de Alunos: '.$row->students.'</br>Período: '.$period.'<br/>Curso: ';
 						$user = $titulo;
 					break;
-					case 'users':
+					
+					case 'employees':
+					case 'teachers':
+					case 'students':
+					#case 'users':
+						#echo $id;
 						$link = 'profile?id='.$row->$id;
 						switch ($row->birthday_date) {
 							case true:
@@ -886,21 +934,7 @@
 								$signup_date = $signup_year = $signup_time = '';
 							break;
 						}
-						$user = $login = ($row->login) ? $row->login : '';
-						$email = ($row->email) ? $row->email : '';
-						$img = isset($row->photo) ? '<img class="is-rounded" src="'.$row->photo.'">' : '<img class="is-rounded" src="'.$Load->Gravatar($email).'">';
 						
-						/*
-						$cep = ($row->cep) ? $row->cep : '';
-						$address = ($row->address) ? $row->address : '';
-						$number = ($row->number) ? $row->number : '';
-						$neighborhood = ($row->neighborhood) ? $row->neighborhood : '';
-						$city = ($row->city) ? $row->city : '';
-						$state = ($row->state) ? $row->state : '';
-						$rg = ($row->rg) ? $row->rg : '';
-						$cpf = ($row->cpf) ? $row->cpf : '';
-						$phone = ($row->phone) ? $row->phone : '';*/
-						#preparar especificações para cada tipo de usuário
 						switch ($row->type_use) {
 							case 1:
 								$tag = 'is-primary';
@@ -926,7 +960,26 @@
 							case 5:
 							break;
 						}
-						$message = 'Idade: '.$age.'<br/>'.$tipo.' desde '.$signup_year.'<br/> Login: ';
+
+						$user = $login = ($row->login) ? $row->login : '';
+						$email = ($row->email) ? $row->email : '';
+						$img = isset($row->photo) ? '<img class="is-rounded" src="'.$row->photo.'">' : '<img class="is-rounded" src="'.$Load->Gravatar().'">';
+						
+						/*
+						$cep = ($row->cep) ? $row->cep : '';
+						$address = ($row->address) ? $row->address : '';
+						$number = ($row->number) ? $row->number : '';
+						$neighborhood = ($row->neighborhood) ? $row->neighborhood : '';
+						$city = ($row->city) ? $row->city : '';
+						$state = ($row->state) ? $row->state : '';
+						$rg = ($row->rg) ? $row->rg : '';
+						$cpf = ($row->cpf) ? $row->cpf : '';
+						$phone = ($row->phone) ? $row->phone : '';*/
+						#preparar especificações para cada tipo de usuário
+
+						$content = 'Idade: '.$age.'<br/>';
+						$content .= $tipo.' desde '.$signup_year.'<br/>';
+						$content .= 'Login: <a href="'.$link.'">'.$user.'</a>';
 					break;
 				}
 				echo '
@@ -936,7 +989,7 @@
 							<div class="media-left">'.$img.'</div>
 							<div class="media-content">
 								<div class="content">
-									<p>'.$message.'<a href="'.$link.'">'.$user.'</a></p>
+									<p>'.$content.'</p>
 								</div>
 							</div>
 							<div class="media-right">
