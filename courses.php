@@ -17,43 +17,7 @@
             <?php
         break;
         case true:
-            $name_cou = $checked1 = $checked2 = $disabled = '';
-            $con = $PDO->query($Tables->SelectFrom('type_use', 'users WHERE id_use = '.$_SESSION['id'])) or die($PDO);
-            while($row = $con->fetch(PDO::FETCH_OBJ)){
-                if($type_use = 4 || $type_use = 5){
-                    if($type_use = 4){
-                        $con = $PDO->query($Tables->SelectFrom(null, 'courses, disciplines, teachers, users WHERE courses.id_cou = disciplines.id_cou AND disciplines.id_tea = teachers.id_tea AND teachers.id_use = users.id_use = '.$_SESSION['id'])) or die ($PDO);
-                    } else {
-                        $con = $PDO->query($Tables->SelectFrom(null, 'courses, disciplines, teachers, users WHERE courses.id_cou = disciplines.id_cou AND disciplines.id_tea = teachers.id_tea AND teachers.id_use = users.id_use = '.$_SESSION['id'])) or die ($PDO);
-                    }
-                    $disabled = 'disabled';
-                    $selected_type = 'visualizar';
-                    while($row = $con->fetch(PDO::FETCH_OBJ)){
-                        #Verificar se a id do curso e o Get id são iguais
-                        if($row->id_cou){
-                            $name_cou = $row->name_cou;
-                            $period = $row->period;
-                        } else {
-                            ?>
-                            <div class="column is-4 is-offset-4">
-                                <div class="box">
-                                    <h3 class="title is-medium">Ops</h3>
-                                    <p class="subtitle">Houve problemas durante a sua requisição.</p>
-                                    <p class="links">
-                                        <a href="index">Início</a> &nbsp;·&nbsp;
-                                        <a href="#">Voltar aonde estava</a> &nbsp;·&nbsp;
-                                        <a href="help">Ajuda</a>
-                                    </p>
-                                </div>
-                            </div>
-                            <?php
-                        }
-                    }
-                } else {
-                    # demais funcionários poderão ver e alterar os dados do curso
-                    include('load/pages/'.$link.'.php');
-                }
-            }
+            include('load/pages/'.$link.'.php');
             ?>
             <div class="columns">
                 <div class="column is-4">
@@ -92,7 +56,7 @@
                                             <div class="control has-icons-left">
                                                 <div class="select is-hovered is-link">
                                                     <select name="period" <?php echo $disabled; ?>>
-                                                        <option value="M">Manhã</option>
+                                                        <option value="M" disabled>Manhã</option>
                                                         <option value="T">Tarde</option>
                                                         <option value="N">Noite</option>
                                                     </select>
