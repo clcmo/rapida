@@ -181,185 +181,128 @@
 	# Classe Referente a Navegação das Páginas
 	class Navegation {
 		# 1 - Gera o Menu de topo se o usuário estiver logado. Menu irá variar de acordo com o tipo de usuário
-	    function HeroMenu(){
+	    function HeroMenu(
+	    	$menu = '
+		    	<div class="hero-head">
+		        		<nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
+						  	<div class="navbar-brand">
+							    <a class="navbar-item is-logo" href="'.SERVER.'">rÁpidA</a>
+							    <div class="navbar-burger burger" data-target="navMenubd-example">
+							    	<span></span>
+							    	<span></span>
+							    	<span></span>
+							    </div>
+						  	</div>
+	                    	<div id="navMenubd-example" class="navbar-menu">
+		    					<div class="navbar-start">'
+		){
 	    	$Load = new Load;
 	    	$Tables = new Tables;
 	        $Login = new Login;
-	        $menu = array();
-	        $menu[1] = '
-	        <div class="hero-head">
-	        	<nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
-				  	<div class="navbar-brand">
-					    <a class="navbar-item is-logo" href="'.SERVER.'index">rÁpidA</a>
-					    <div class="navbar-burger burger" data-target="navMenubd-example">
-					    	<span></span>
-					    	<span></span>
-					    	<span></span>
-					    </div>
-				  	</div>
-                    <div id="navMenubd-example" class="navbar-menu">
-	    				<div class="navbar-start">';
-                    		switch ($Login->IsLogged()) {
-                    			case true:
-    								$PDO = $Load->DataBase();
-    								#echo $Tables->SelectFrom('type_use', 'users WHERE id_use LIKE '.$_SESSION['id'].' AND status_use = 1');
-    								$con = $PDO->query($Tables->SelectFrom('type_use', 'users WHERE id_use LIKE '.$_SESSION['id'].' AND status_use = 1')) or die ($PDO);
-    								while($row = $con->fetch(PDO::FETCH_OBJ)){
-					    				switch ($row->type_use){
-											case 1:
-												#diretor
-												$menu[2] = $menu[1].'
-    												<div class="navbar-item has-dropdown is-hoverable">
-	        											<a class="navbar-link is-active" href="#"><i class="fas fa-users"></i>&nbsp;Usuários</a>
-	        											<div class="navbar-dropdown ">
-	        												<a class="dropdown-item" href="'.SERVER.'new-user">Cadastrar</a>
-	        												<a class="dropdown-item " href="'.SERVER.'employees">Funcionários</a>
-	        												<hr class="navbar-divider">
-	        												<a class="dropdown-item " href="'.SERVER.'teachers">Professores</a>
-	        												<a class="dropdown-item " href="'.SERVER.'#">Coordenadores</a>
-	        												<a class="dropdown-item " href="'.SERVER.'#">Direção</a>
-	        												<hr class="navbar-divider">
-	        												<a class="dropdown-item " href="'.SERVER.'students">Alunos</a>
-	        												<!--<a class="dropdown-item" href="'.SERVER.'classroom">Turmas de Alunos</a>-->
-	        											</div>
-	        										</div>
-	        										<div class="navbar-item has-dropdown is-hoverable">
-	        											<a class="navbar-link is-active" href="courses-disciplines"><i class="fas fa-book-open"></i>&nbsp;Cursos e Disciplinas</a>
-	        											<div class="navbar-dropdown ">
-	        												<a class="dropdown-item " href="'.SERVER.'courses">Cursos</a>
-	        												<a class="dropdown-item " href="'.SERVER.'disciplines">Disciplinas</a>
-	        												<!--<a class="dropdown-item " href="'.SERVER.'schedule-grid">Grade de Horários</a>-->
-	        											</div>
-	        										</div>
-													<!--<a class="navbar-item" href="'.SERVER.'events"><i class="fas fa-graduation-cap"></i>&nbsp;Eventos</a>-->';
-											break;
-											case 2:
-												#coordenador
-												$menu[2] = $menu[1].'
-    												<div class="navbar-item has-dropdown is-hoverable">
-	        											<a class="navbar-link is-active" href="#"><i class="fas fa-users"></i>&nbsp;Usuários</a>
-	        											<div class="navbar-dropdown ">
-	        												<a class="dropdown-item" href="'.SERVER.'new-user">Cadastrar</a>
-	        												<a class="dropdown-item " href="'.SERVER.'employees">Funcionários</a>
-	        												<hr class="navbar-divider">
-	        												<a class="dropdown-item " href="'.SERVER.'teachers">Professores</a>
-	        												<a class="dropdown-item " href="'.SERVER.'#">Coordenadores</a>
-	        												<a class="dropdown-item " href="'.SERVER.'#">Direção</a>
-	        												<hr class="navbar-divider">
-	        												<a class="dropdown-item " href="'.SERVER.'students">Alunos</a>
-	        												<!--<a class="dropdown-item" href="'.SERVER.'classroom">Turmas de Alunos</a>-->
-	        											</div>
-	        										</div>
-	        										<div class="navbar-item has-dropdown is-hoverable">
-	        											<a class="navbar-link is-active" href="courses-disciplines"><i class="fas fa-book-open"></i>&nbsp;Cursos e Disciplinas</a>
-	        											<div class="navbar-dropdown ">
-	        												<a class="dropdown-item " href="'.SERVER.'courses">Cursos</a>
-	        												<a class="dropdown-item " href="'.SERVER.'disciplines">Disciplinas</a>
-	        												<!--<a class="dropdown-item " href="'.SERVER.'schedule-grid">Grade de Horários</a>-->
-	        											</div>
-	        										</div>
-													<!--<a class="navbar-item" href="'.SERVER.'events"><i class="fas fa-graduation-cap"></i>&nbsp;Eventos</a>-->';
-											break;
-											case 3:
-												#funcionário
-												$menu[2] = $menu[1].'
-    												<div class="navbar-item has-dropdown is-hoverable">
-	        											<a class="navbar-link is-active" href="#"><i class="fas fa-users"></i>&nbsp;Usuários</a>
-	        											<div class="navbar-dropdown ">
-	        												<a class="dropdown-item" href="'.SERVER.'new-user">Cadastrar</a>
-	        												<a class="dropdown-item " href="'.SERVER.'employees">Funcionários</a>
-	        												<hr class="navbar-divider">
-	        												<a class="dropdown-item " href="'.SERVER.'teachers">Professores</a>
-	        												<a class="dropdown-item " href="'.SERVER.'#">Coordenadores</a>
-	        												<a class="dropdown-item " href="'.SERVER.'#">Direção</a>
-	        												<hr class="navbar-divider">
-	        												<a class="dropdown-item " href="'.SERVER.'students">Alunos</a>
-	        												<!--<a class="dropdown-item" href="'.SERVER.'classroom">Turmas de Alunos</a>-->
-	        											</div>
-	        										</div>
-	        										<div class="navbar-item has-dropdown is-hoverable">
-	        											<a class="navbar-link is-active" href="courses-disciplines"><i class="fas fa-book-open"></i>&nbsp;Cursos e Disciplinas</a>
-	        											<div class="navbar-dropdown ">
-	        												<a class="dropdown-item " href="'.SERVER.'courses">Cursos</a>
-	        												<a class="dropdown-item " href="'.SERVER.'disciplines">Disciplinas</a>
-	        												<!--<a class="dropdown-item " href="'.SERVER.'schedule-grid">Grade de Horários</a>-->
-	        											</div>
-	        										</div>
-													<!--<a class="navbar-item" href="'.SERVER.'events"><i class="fas fa-graduation-cap"></i>&nbsp;Eventos</a>-->';
-											break;
-											
-											case 4:
-												#professor
-												$menu[2] = $menu[1].'
-    											<a class="navbar-item" href="'.SERVER.'notifies"><i class="fas fa-book-open"></i>&nbsp;Notificações</a>
-												<a class="navbar-item" href="'.SERVER.'admin"><i class="fas fa-graduation-cap"></i>&nbsp;Formandos</a>';
-											break;
-											case 5:
-											#aluno
-												$menu[2] = $menu[1].'
-                    							<a class="navbar-item" href="'.SERVER.'#"><i class="fas fa-book-open"></i>&nbsp;Histórico</a>
-												<a class="navbar-item" href="'.SERVER.'#"><i class="far fa-file"></i>&nbsp;Documentos</a>';
-											break;
-    									}
-    								}
-                    				$menu[3] = $menu[2].'
-                    				</div>
-                    				<a class="navbar-item">
-										<i class="fas fa-search" aria-hidden="true"></i>&nbsp;<span><input class="input" type="search" placeholder="Procurar..."></span>
-									</a>
-                    				<div class="navbar-end">
-										<a class="navbar-item" href="profile"><i class="fas fa-user"></i>&nbsp;Perfil</a>
-                    					<a class="navbar-item" href="notifies"><i class="fas fa-bell"></i>&nbsp;Notificações</a>
-                    					<a class="navbar-item" href="profile"><i class="fas fa-book"></i>&nbsp;Biblioteca</a>
-										<a class="navbar-item" href="logout"><i class="fas fa-sign-out-alt"></i>&nbsp;Sair</a>
-									</div>
-									</div>
-                    				</div>
-	        						</div>
-	        						</nav>';
-                    			break;
-                    			
-                    			case false:
-                    				$menu[2] = $menu[1].'
-                    				</div>
-		                    		<div class="navbar-end">
-			    						<a class="navbar-item" href="login"><i class="fa fa-user"></i>&nbsp;Login</a>
-			    						<a class="navbar-item" href="example"><i class="fab fa-superpowers"></i>&nbsp;Exemplos</a>
-			    						<a class="navbar-item" href="#"><i class="fab fa-github"></i>&nbsp;Instale</a>
-			    					</div>
-	        						</nav>
-	        						</div>';
-                    			break;
-                    		}
-            return ($Login->IsLogged()) ? $menu[3] : $menu[2];
+			switch ($Login->IsLogged()) {
+	            case true:
+	    			$PDO = $Load->DataBase();
+	    			$con = $PDO->query($Tables->SelectFrom('type_use', 'users WHERE id_use LIKE '.$_SESSION['id'].' AND status_use = 1')) or die ($PDO);
+	    			while($row = $con->fetch(PDO::FETCH_OBJ)){
+						switch ($row->type_use){
+							case 1:
+							case 2:
+							case 3: 
+								#diretor, coordenador e funcionário estão unificados no momento
+								$menu .= '
+	    							<div class="navbar-item has-dropdown is-hoverable">
+		        						<a class="navbar-link is-active" href="#"><i class="fas fa-users"></i>&nbsp;Usuários</a>
+		        						<div class="navbar-dropdown ">
+		        							<a class="dropdown-item" href="'.SERVER.'new-user">Cadastrar</a>
+		        							<a class="dropdown-item " href="'.SERVER.'employees">Funcionários</a>
+		        							<hr class="navbar-divider">
+		        							<a class="dropdown-item " href="'.SERVER.'teachers">Professores</a>
+		        							<a class="dropdown-item " href="'.SERVER.'#">Coordenadores</a>
+		        							<a class="dropdown-item " href="'.SERVER.'#">Direção</a>
+		        							<hr class="navbar-divider">
+		        							<a class="dropdown-item " href="'.SERVER.'students">Alunos</a>
+		        							<!--<a class="dropdown-item" href="'.SERVER.'classroom">Turmas de Alunos</a>-->
+		        						</div>
+		        					</div>
+		        					<div class="navbar-item has-dropdown is-hoverable">
+		        						<a class="navbar-link is-active" href="courses-disciplines"><i class="fas fa-book-open"></i>&nbsp;Cursos e Disciplinas</a>
+		        						<div class="navbar-dropdown ">
+		        							<a class="dropdown-item " href="'.SERVER.'courses">Cursos</a>
+		        							<a class="dropdown-item " href="'.SERVER.'disciplines">Disciplinas</a>
+		        							<!--<a class="dropdown-item " href="'.SERVER.'schedule-grid">Grade de Horários</a>-->
+		        						</div>
+		        					</div>
+									<!--<a class="navbar-item" href="'.SERVER.'events"><i class="fas fa-graduation-cap"></i>&nbsp;Eventos</a>-->';
+							break;
+												
+							case 4:
+								#professor
+								$menu .= '
+	    						<a class="navbar-item" href="'.SERVER.'notifies"><i class="fas fa-book-open"></i>&nbsp;Notificações</a>
+								<a class="navbar-item" href="'.SERVER.'"><i class="fas fa-graduation-cap"></i>&nbsp;Formandos</a>';
+							break;
+							case 5:
+							#aluno
+								$menu .= '
+	                    		<a class="navbar-item" href="'.SERVER.'historic"><i class="fas fa-book-open"></i>&nbsp;Histórico</a>
+								<a class="navbar-item" href="'.SERVER.'#"><i class="far fa-file"></i>&nbsp;Documentos</a>';
+							break;
+	    			}
+	    		}
+	                $menu .= '
+	                    </div>
+	                    <!--<a class="navbar-item" href="search">
+							<i class="fas fa-search" aria-hidden="true"></i>&nbsp;<span><input class="input" type="search" placeholder="Procurar..."></span>
+						</a>-->
+	                    <div class="navbar-end">
+							<a class="navbar-item" href="profile"><i class="fas fa-user"></i>&nbsp;Perfil</a>
+	                    	<a class="navbar-item" href="notifies"><i class="fas fa-bell"></i>&nbsp;Notificações</a>
+	                    	<a class="navbar-item" href="#"><i class="fas fa-book"></i>&nbsp;Biblioteca</a>
+							<a class="navbar-item" href="logout"><i class="fas fa-sign-out-alt"></i>&nbsp;Sair</a>
+						</div>
+					</div>
+		        </nav>';
+	            break;
+	                    			
+	            case false:
+	                $menu .= '
+	                    </div>
+			            <div class="navbar-end">
+				    		<a class="navbar-item" href="login"><i class="fa fa-user"></i>&nbsp;Login</a>
+				    		<a class="navbar-item" href="example"><i class="fab fa-superpowers"></i>&nbsp;Exemplos</a>
+				    		<a class="navbar-item" href="#"><i class="fab fa-github"></i>&nbsp;Instale</a>
+				    	</div>
+		        	</nav>';
+	            break;
+	        }            		
+            return $menu;
     	}
+
     	# 2 - Gera a informação e um mapa rápido de acesso através do link informado
-	    function MainNavegation($link = LINK){
-	    	switch ($link) {
-	    		case 'classroom': $link = 'Turmas'; break;
-	    		case 'courses': $link = 'Cursos'; break;
-	    		case 'disciplines': $link = 'Disciplinas'; break;
-	    		case 'employees': $link = 'Funcionários'; break;
-	    		case 'historic': $link = 'Notas'; break;
-	   			case 'notifies': $link = 'Notificações'; break;
-	    		case 'profile': $link = 'Perfil'; break;
-	    		case 'schedule-grid': $link = 'Grade'; break;
-	    		case 'students': $link = 'Estudantes'; break;
-				case 'teachers': $link = 'Professores'; break;
-    			case 'new-user': $link = 'Usuários'; break;
-    			#case 'admin': $link = 'Início'; break;
-	    	} 
-	    	
-	    	$mess ='<ul>Você está em: &nbsp;';
-	    	if($link != 'index'){
-	    		$mess .='
-	    			<li class=""><a href="admin" aria-current="page">Início</a></li>
-	    			<li class="is-active"><a href="'.$link.'" aria-current="page">'.ucfirst($link).'</a></li>';
+	    function MainNavegation($link = LINK, $mess = '<ul>Você está em: &nbsp;', $str = ''){
+	    	if(!$link || $link == 'index') {
+	    		$mess .= '<li class="is-active"><a href="'.SERVER.'" aria-current="page">Início</a></li>';
 	    	} else {
-	    		$mess .= '<li class="is-active"><a href="'.$link.'" aria-current="page">Início</a></li>';
+	    		switch ($link) {
+		    		case 'classroom': $str = 'Turmas'; break;
+		    		case 'courses': $str = 'Cursos'; break;
+		    		case 'disciplines': $str = 'Disciplinas'; break;
+		    		case 'employees': $str = 'Funcionários'; break;
+		    		case 'historic': $str = 'Notas'; break;
+		   			case 'notifies': $str = 'Notificações'; break;
+		    		case 'profile': $str = 'Perfil'; break;
+		    		case 'schedule-grid': $str = 'Grade'; break;
+		    		case 'students': $str = 'Estudantes'; break;
+					case 'teachers': $str = 'Professores'; break;
+	    			case 'new-user': $str = 'Usuários'; break;
+		    	}
+		    	$mess .='
+	    			<li class=""><a href="'.SERVER.'" aria-current="page">Início</a></li>
+	    			<li class="is-active"><a href="'.$link.'" aria-current="page">'.ucfirst($str).'</a></li>';
 	    	}
 	    	return $mess .= '</ul>';
 	    }
+
 	    # 2.1 - Mostra um menu personalizado, com mapa de acesso, através do link e do tipo de usuário informado
     	function FooterMenu() {
     		$Load = new Load;
@@ -370,7 +313,7 @@
     		<aside class="menu is-hidden-mobile">
         	<p class="menu-label">Gerais</p>
         	<ul class="menu-list">
-                <li><a href="'.SERVER.'index" class="is-active">Início</a></li>
+                <li><a href="'.SERVER.'" class="is-active">Início</a></li>
                 <li><a href="'.SERVER.'profile">Perfil</a></li>
                 <li><a href="'.SERVER.'notifies">Notificações</a></li>
                 <li><a href="#">Biblioteca Online</a></li>
@@ -665,7 +608,8 @@
 			                </footer>
 			            </div>';
 		}
-		function LoadSuperTablePage($name_page){
+
+		function LoadSuperTablePage($name_page = LINK){
 			$id = (isset($_GET['id'])) ? $_GET['id'] : '';
 			$Load = new Load;
 			$PDO = $Load->DataBase();
@@ -756,7 +700,8 @@
 		            </table>';
 		            #proxima etapa = exibir os resultados em multiplos de 10
 		}
-		function LoadArticlePage($name_page){
+
+		function LoadArticlePage($name_page = LINK){
 			$Load = new Load;
 			$Tables = new Tables;
 			$PDO = $Load->DataBase();
@@ -905,7 +850,8 @@
 						</div>
 					</div>';
 		}
-		function LoadOptionsPage($name_page){
+
+		function LoadOptionsPage($name_page = LINK){
 			$Tables = new Tables;
 			$Load = new load;
 			$PDO = $Load->DataBase();
