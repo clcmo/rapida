@@ -1,4 +1,5 @@
 <?php
+	#ouxar tabela histórico
 	#$id = (isset($_GET['id'])) ? $_GET['id'] : (isset($_SESSION['id'])) ? $_SESSION['id'] : '';
 	#puxa a id informada
 

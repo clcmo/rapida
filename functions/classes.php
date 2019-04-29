@@ -1,4 +1,5 @@
 <?php
+	#atualizar com o essencial
 	# Lista de páginas e suas respectivas funcionalidades
 	# Classe referente as Tabelas
   	class Tables {
