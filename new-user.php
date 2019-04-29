@@ -17,6 +17,8 @@
       		<?php
 		break;
 		case true:
+		#Verificar o tipo de usuário e restringir acesso
+		
 			?>
 			<p class="subtitle-is-6 has-text-centered">
 				<?php
