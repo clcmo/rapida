@@ -1,5 +1,4 @@
 <?php
-	$name_page = 'users';
 	include('main.php');
 
 	/*$name_table = $Tables->Found_Item('name', $name_page);
