@@ -18,15 +18,15 @@
 		break;
 		case true:
 			#Verificar se o tipo do usuário é aluno ou não
-			$query = $PDO->query($Tables->SelectFrom('type_use', 'historic, disciplines, students, users')) or die ($PDO);
-			while($row = $query->fetch(PDO::FETCH_OBJ)){
+			$con = $PDO->query($Tables->SelectFrom('type_use', 'users WHERE id_use = '.$_SESSION['id'])) or die ($PDO);
+			while($row = $con->fetch(PDO::FETCH_OBJ)){
 				switch ($row->type_use) {
 					case 5:
-						
+						$con = $PDO->query($Tables->SelectFrom(null, 'historic, students, disciplines, users WHERE historic.id_dis = disciplines.id_dis AND historic.id_stu = students.id_stu AND students.id_use = users.id_use And users.id_use = '.$_SESSION['id'])) or die ($PDO);
 					break;
 					
 					default:
-						
+						$con = $PDO->query($Tables->SelectFrom(null, 'historic, students, disciplines, users WHERE historic.id_dis = disciplines.id_dis AND historic.id_stu = students.id_stu AND students.id_use = users.id_use And users.id_use = '.$_GET['id'])) or die ($PDO);
 					break;
 				}
 			}
