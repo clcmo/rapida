@@ -22,8 +22,55 @@
 		break;
 		
 		case 'courses':
+			$name_cou = 'Informe o nome do curso';
+			$checked1 = $checked2 = $disabled = '';
+            $con = $PDO->query($Tables->SelectFrom('type_use', 'users WHERE id_use = '.$_SESSION['id'])) or die($PDO);
+            while($row = $con->fetch(PDO::FETCH_OBJ)){
+            	switch($row->type_use){
+            		case 4: 
+            			$script_con = $link.', disciplines, teachers, users WHERE '.$link.'.id_cou = disciplines.id_cou AND disciplines.id_tea = teachers.id_tea AND teachers.id_use = users.id_use = '.$_SESSION['id'];
+            		break;
+            		case 5:
+            			$script_con = $link.', classroom, students, users WHERE '.$link.'.id_cou = classroom.id_cou AND classroom.id_cla = students.id_cla AND students.id_use = users.id_use AND users.id_use = '.$_SESSION['id'];
+            		break;
+	            }
+	            #echo $Tables->SelectFrom(null, $script_con);
+	            $con = $PDO->query($Tables->SelectFrom(null, $script_con)) or die ($PDO);
+	            while($row = $con->fetch(PDO::FETCH_OBJ)){
+                    #Verificar se a id do curso e o Get id são iguais
+                    if($row->id_cou){
+                        $name_cou = $row->name_cou;
+                        $period = $row->period;
+                        $disabled = 'disabled';
+                        $selected_type = 'visualizar';
+                    } else {
+                       	# demais funcionários poderão ver e alterar os dados do curso
+                        ?>
+                        <div class="column is-4 is-offset-4">
+                            <div class="box">
+                                <h3 class="title is-medium">Ops</h3>
+                                <p class="subtitle">Houve problemas durante a sua requisição.</p>
+                                <p class="links">
+                                    <a href="index">Início</a> &nbsp;·&nbsp;
+                                    <a href="#">Voltar aonde estava</a> &nbsp;·&nbsp;
+                                    <a href="help">Ajuda</a>
+                                </p>
+                            </div>
+                        </div>
+                        <?php
+                    }
+            	}
+            }
+        break;
+
+        case 'disciplines': 
+        $script .= ', courses WHERE '.$link.'.id_cou = courses.id_cou AND '; 
+        break;
+
+        case 'historic':
+        break;
+
 		#case 'users': $script .= ' WHERE '; break;
-		break;
 		
 		case 'new-user':
 			$name_use = '';
@@ -41,7 +88,7 @@
 			#criar radio button
 		break;
 		
-		case 'disciplines': $script .= ', courses WHERE '.$link.'.id_cou = courses.id_cou AND '; break;
+		
 		
 		case 'notifies':
 			$con = $PDO->query($Tables->SelectFrom('name_use, type_use','users WHERE id_use LIKE '.$_SESSION['id'].' AND status_use = 1')) or die ($PDO);
