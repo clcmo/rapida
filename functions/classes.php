@@ -1,24 +1,15 @@
 <?php
 	#atualizar com o essencial
 	# Lista de páginas e suas respectivas funcionalidades
+	
 	# Classe referente as Tabelas
   	class Tables {
-    	# 1 - Verifica se a tabela existe, através da informação de uma string
-    	function IsThisTableExists($name_table){
-		    $Load = new Load;
-		    $PDO = $Load->DataBase();
-		    $con = $PDO->query("SHOW TABLES") or die ($PDO);
-		    while ($row = $con->fetch(PDO::FETCH_OBJ)) {
-		    	$tabs[] = $row;
-		    }
-		    return ($tabs) ? true : false;
-	    }
-		
-		# 2.1 - Localizar uma coluna de uma tabela para carregar seus dados
+		# 1.1 - Localizar uma coluna de uma tabela para carregar seus dados
 	    function Found_Item($item, $name_table){
 	    	return $item.'_'.substr($name_table, 0, 3);
 	    }
-	    # 2 - Carregar todos os dados (ou específicos) de uma tabela através do string informado
+	    
+	    # 1 - Carregar todos os dados (ou específicos) de uma tabela através do string informado
 	    function SelectFrom($item = null, $name_table_and_cond, $limit = array()){
 	    	$Tables = new Tables;
 	    	switch ($item) {
@@ -29,20 +20,24 @@
 	    	$sql .= (!$limit) ? ' FROM '.$name_table_and_cond : ' FROM '.$name_table_and_cond.' LIMIT '.$limit[1].', '.$limit[2];
 	    	return $sql;
 	    }
-	    # 2.2 - Contar dados existentes de uma tabela através do string informado
+	    
+	    # 1.2 - Contar dados existentes de uma tabela através do string informado
 	    function LoadCountFrom($name_table){
 	      	$Tables = new Tables;
 	      	return $Tables->SelectFrom('COUNT', $name_table);
 	    }
-	    # 3 - Cria o Hash da Senha, usando MD5 e SHA-1
+	    
+	    # 2 - Cria o Hash da Senha, usando MD5 e SHA-1
 	    function HashStr($password){
 	    	return sha1(md5($password));
 	    }
-	    # 4 - Busca uma determinada linha da tabela //a desenvolver
+	    
+	    # 3 - Busca uma determinada linha da tabela //a desenvolver
 	    function SearchId($name_table){
 	     	return isset($_REQUEST['id']) ? $_REQUEST['id']: '';
 	    }
-	    # 5 - Conta os registros de uma tabela ou de uma busca //a aprimorar
+	    
+	    # 4 - Conta os registros de uma tabela ou de uma busca //a aprimorar
 	    function CountViewTable($type = null, $name_table, $item = null){
 	    	$Load = new Load;
 	    	$Tables = new Tables;
@@ -50,12 +45,12 @@
 	      	switch ($type) {
 	      		case 'search':
 	      			$q = isset($_GET['q']) ? $_GET['q'] : '';
-	      			$qt = count($PDO->prepare($Tables->LoadCountFrom($name_table)." WHERE ".$item." LIKE '%".$q."%' ORDER BY ".$item) or die ($PDO));
+	      			$qt = count($PDO->prepare($Tables->SelectFrom('COUNT', $name_table)." WHERE ".$item." LIKE '%".$q."%' ORDER BY ".$item) or die ($PDO));
 	      		break;
 	      		
 	      		case null:
 	      		default:
-	      			$con = $PDO->query($Tables->LoadCountFrom($name_table)) or die ($PDO);
+	      			$con = $PDO->query($Tables->SelectFrom('COUNT', $name_table)) or die ($PDO);
 	      			while($row = $con->fetch(PDO::FETCH_OBJ)){
 	        			$qt = $row->qt;
 	      			}
@@ -63,7 +58,8 @@
 	      	}
 	      	return $qt;
 	    }
-	    # 6 - Deleta um registro do sistema // a desenvolver
+	    
+	    # 5 - Deleta um registro do sistema // a desenvolver
 	    function DeleteId($name_table){
 	    	$Load = new Load;
 	    	$Tables = new Tables;
@@ -77,21 +73,16 @@
 	    }
   	}
   	$Tables = new Tables;
+	
 	# Classe Referente ao Login
   	class Login { 
         # 1 - Retorna se o usuário logou
         function IsLogged() {
         	return (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] != true) ? false : true;
         }
-        #2 - Checa se o usuário está logado e redireciona para uma das páginas //desnecessário
-        function Check(){
-        	$Login = new Login;
-        	$Load = new Load;
-        	$link = (!$Login->IsLogged()) ? 'index' : 'admin';
-			return $Load->GoToLink($link);
-        }
     }
     $Login = new Login;
+	
 	# Classe Referente ao Carregamento das Atribuições, Variáveis
 	class Load {
 		# 1 - Conexão com o BD
@@ -105,10 +96,12 @@
 	    function Server() {
 	     	return (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https://'.$_SERVER["SERVER_NAME"].'/' : 'http://'.$_SERVER["SERVER_NAME"].'/';
 	    }
+	    
 	    # 3 - Redirecionamento de URL
 	    function Link($name_page) {
 	      	return header('Location: '.SERVER.''.$name_page);
 	    }
+	    
 	    # 4 - Descobrir o link para gerar o Load page
 	    function DiscoverLink($link = LINK, $sizeof = false){
 	    	$link = substr(LINK, 1);
@@ -118,12 +111,18 @@
          		$link = (isset($_GET['email'])) ? substr($link, 1) : $link;
          	return $link;
 	    }
+	    
 	    # 5 - Gerador de Senha Aleatória
 	    function RandomPass($size = 10, $ma = true, $mi = true, $nu = true, $si = false){
-		 	$ma = "ABCDEFGHIJKLMNOPQRSTUVYXWZ"; 	# $ma contem as letras maiúsculas
-		 	$mi = "abcdefghijklmnopqrstuvyxwz"; 	# $mi contem as letras minusculas
-		 	$nu = "0123456789"; 					# $nu contem os números
-		 	$si = "!@#$%¨&*()_+="; 					# $si contem os símbolos
+	    	#letras maiusculas e minusculas
+	    	foreach(range('a', 'z') as $mi) {
+	    		$mi;
+	    		$ma = strtoupper($mi);
+	    	}
+	    	#numeros
+		 	foreach(range(0, 9) as $nu) { $nu; }
+		 	#simbolos
+		 	foreach(range('!', '+') as $si) { $si; }
 		 
 		 	if ($ma || $mi || $nu || $si){
 		 		$password = str_shuffle($ma); 		# se $maiusculas for "true", a variável $ma é embaralhada e adicionada para a variável $senha
@@ -133,12 +132,12 @@
 		    }
 	    	return substr(str_shuffle($password), 0, $size);	# retorna a senha embaralhada com "str_shuffle" com o tamanho definido pela variável $tamanho
 		}
+		
 		# 5 - Exibe a imagem gravada no BD ou a imagem gravada no site Gravatar.com
-		function Gravatar($s = 80, $d = 'mp', $r = 'g', $img = false, $atts = array()){
+		function Gravatar($email = MAIN_EMAIL, $s = 240, $d = 'mp', $r = 'g', $img = false, $atts = array()){
 			$Login = new Login;
 			$Load = new Load;
 			$Tables = new Tables;
-			$email = (!$Login->IsLogged()) ? isset($_GET['email']) ? $_GET['email'] : 'someone@somewhere.com' : '';
 			$photo = '';
 			$PDO = $Load->DataBase();
 			$link = $Load->DiscoverLink();
@@ -146,7 +145,6 @@
 				#echo $link;
 				switch($link){
 					case 'employees': case 'teachers': case 'students':
-						#echo $Tables->SelectFrom('email', $link.', users WHERE '.$link.'.id_use = users.id_use');
 						$con = $PDO->query($Tables->SelectFrom('email', $link.', users WHERE '.$link.'.id_use = users.id_use')) or die ($PDO);
 						while($row = $con->fetch(PDO::FETCH_OBJ)) {
 							$email = isset($row->email) ? $row->email : 'someone@somewhere.com';
@@ -154,7 +152,6 @@
 					break;
 					default:
 						$id = (isset($_SESSION['id'])) ? $_SESSION['id'] : $_GET['id'];
-						#echo $Tables->SelectFrom('photo, email', 'users WHERE id_use = '.$id);
 						$con = $PDO->query($Tables->SelectFrom('photo, email', 'users WHERE id_use = '.$id)) or die ($PDO);
 						while($row = $con->fetch(PDO::FETCH_OBJ)) {
 							$email = isset($row->email) ? $row->email : 'someone@somewhere.com';
@@ -180,6 +177,7 @@
 	}
 	$Load = new Load;
 	define('SERVER', $Load->Server());
+
 	# Classe Referente a Navegação das Páginas
 	class Navegation {
 		# 1 - Gera o Menu de topo se o usuário estiver logado. Menu irá variar de acordo com o tipo de usuário
@@ -469,113 +467,16 @@
 	    }
 	}
 	$Navegation = new Navegation;
+	
 	# Classe que cataloga as funções referentes as páginas
     class Pages {
-    	function LoadSamplePage($name_page){
-    		$Tables = new Tables;
-    		$Load = new Load;
-    		$id = (isset($_GET['id'])) ? $_GET['id'] : (isset($_SESSION['id'])) ? $_SESSION['id'] : '';
-			#puxa a id informada
-			#com o nome da página estaremos puxando:
-			$script = $name_page;
-			#script sql
-			$type_table = $Tables->Found_Item('type', $name_page);
-			#o tipo na tabela informada
-			$status_table = $Tables->Found_Item('status', $name_page);
-			#o status na tabela informada
-			$name_table = $Tables->Found_Item('name', $name_page);
-			#o titulo/nome na tabela informada 
-			$id_table = $Tables->Found_Item('id', $name_page);
-			#o id na tabela informada
-			switch ($name_page) {
-				case 'courses':
-				case 'users': $script .= ' WHERE '; break;
-				case 'disciplines': $script .= ', courses WHERE '.$name_page.'.id_cou = courses.id_cou AND '; break;
-				case 'login': $script = 'users WHERE '; break;
-				case 'notifies':
-					$con = $PDO->query($Tables->SelectFrom('type_use','users WHERE id_use LIKE '.$_SESSION['id'].' AND status_use = 1', 1)) or die ($PDO);
-					while($row = $con->fetch(PDO::FETCH_OBJ)){
-						$name_use = $row->name_use;
-						switch ($row->type_use){
-							case 1:
-								#diretor
-							break;
-							case 2:
-								#coordenador
-							break;
-							case 3:
-								#funcionário
-								$script .= ', users WHERE users.id_use = '.$name_page.'.id_use AND ';
-								$button_title = 'Gerar Documento';
-							break;
-							
-							case 4:
-								#professor
-							break;
-							case 5:
-								$script .= ', users WHERE users.id_use = '.$name_page.'.id_use AND users.id_use = '.$_SESSION['id'].' AND ';
-								/*$profile_link = SERVER.'profile';*/
-							break;
-						}
-					}
-				break;
-			}
-			switch($id){
-				case false:
-				case null:
-					$name_use = $name_cou = $name_dis = $name_not = 'Informe o nome';
-					$checked2 = $checked1 = '';
-				break;
-				case true:
-					$script.= $id_table.' = '.$id;
-					$PDO = $Load->DataBase();
-					$con = $PDO->query($Tables->SelectFrom(null, $script)) or die ($PDO);
-					$cont = $Tables->CountViewTable(null, $script);
-					while($row = $con->fetch(PDO::FETCH_OBJ)){
-						switch ($name_page) {
-							case 'courses':
-								$name_cou = $row->$name_table;
-							break;
-				
-							case 'disciplines':
-								$name_cou = $row->$name_table;
-							break;
-							case 'login':
-								$email = $row->email;
-							break;
-							case 'notifies':
-								$name_not = $row->$name_table;
-							break;
-							case 'users':
-								$name_use = $row->$name_table;
-							break;
-						}
-						switch ($row->$type_table) {
-							case 1: 
-								$button_title_2 = 'Ensino Médio';
-								$checked1 = 'checked';
-								$checked2 = '';
-							break;
-							case 2: 
-								$button_title_2 = 'Ensino Modular';
-								$checked2 = 'checked';
-								$checked1 = '';
-							break;
-						}
-						$placeholder = $email = $row->email;
-					}
-				break;
-			}
-			$picture = $Load->Gravatar();
-			$placeholder = $email = isset($_GET['email']) ? $_GET['email'] : '';
-		}
-
-		function LoadTablePage($name_page){
+    	
+		function LoadTablePage($name_page = LINK){
 			#$str = substr($name_page, 1, (MAX-5));
 			$Load = new Load;
 			$PDO = $Load->DataBase();
 			$Tables = new Tables;
-			$name_table = $name_page;
+			$script = $name_page;
 			switch ($name_page) {
 			    case 'classroom':
 			        $th = '
@@ -608,23 +509,16 @@
 					$type_table = $Tables->Found_Item('type', 'courses');
 				break;
 				case 'notifies':
-					$th = '
-						<th></th>
-						<th>Titulo</th>
-						<th>Tipo da Notificação</th>
-						<th>Nome do Usuário</th>';
+					$th = '<th></th><th>Titulo</th><th>Tipo da Notificação</th><th>Nome do Usuário</th>';
 					$con = $PDO->query($Tables->SelectFrom('type_use', 'users WHERE id_use LIKE '.$_SESSION['id'].' AND status_use = 1')) or die ($PDO);
-					$name_table .= ', users WHERE users.id_use = '.$name_page.'.id_use';
+					$script .= ', users WHERE users.id_use = '.$name_page.'.id_use';
 					$titulo = 'Notificações';
 					$icon = '<i class="fas fa-bell"></i>';
 					while($row = $con->fetch(PDO::FETCH_OBJ)){
 						switch ($row->type_use){
-							case 1:
-							case 3:
-								$name_table .=' AND users.id_use = '.$_SESSION['id'];
-							break;
-							default:
-							break;
+							case 2: break;
+							case 4: case 5: $script .=' AND users.id_use = '.$_SESSION['id']; break;
+							default: break;
 						}
 						$type_table = $Tables->Found_Item('type', $name_page);
 					}
@@ -638,12 +532,13 @@
 					$titulo = 'usuários';
 				break;
 			}
-			$script = $Tables->SelectFrom(null, $name_table, 0, 10);
+			;
 			#echo $script;
-			$con = $PDO->query($script) or die ($PDO);
-			$cont = $Tables->CountViewTable(null, $name_table);
+			$con = $PDO->query($Tables->SelectFrom(null, $script)) or die ($PDO);
+			#echo $Tables->CountViewTable(null, $script);
+			$cont = $Tables->CountViewTable(null, $script);
 			$id = $Tables->Found_Item('id', $name_page);
-			$name_table = $Tables->Found_Item('name', $name_page);
+			$script = $Tables->Found_Item('name', $name_page);
 			echo '
 			    	<div class="card events-card">
 			            <header class="card-header">
