@@ -1,5 +1,4 @@
-<?php
-	include('main.php');
+<?php include('main.php');
 
 	/*$name_table = $Tables->Found_Item('name', $name_page);
 	$status_table = $Tables->Found_Item('status', $name_page);
