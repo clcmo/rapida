@@ -17,6 +17,19 @@
       		<?php
 		break;
 		case true:
+			#Verificar se o tipo do usuário é aluno ou não
+			$query = $PDO->query($Tables->SelectFrom('type_use', 'historic, disciplines, students, users')) or die ($PDO);
+			while($row = $query->fetch(PDO::FETCH_OBJ)){
+				switch ($row->type_use) {
+					case 5:
+						
+					break;
+					
+					default:
+						
+					break;
+				}
+			}
 			?>
 			<p class="subtitle-is-6 has-text-centered">
 				<?php
