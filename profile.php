@@ -1,26 +1,9 @@
 <?php
 	include ('header.php');
-	switch ($Login->IsLogged()) {
-		case false:
-			?>
-			<div class="column is-4 is-offset-4">
-				<div class="box">
-	       			<h3 class="title is-medium">Ops</h3>
-	        		<p class="subtitle">Esta página está inacessível, pois a sua seção não foi inicializada.</p>
-	        		<p class="links">
-	        		  <a href="login">Entrar</a> &nbsp;·&nbsp;
-	        		  <a href="#">Voltar aonde estava</a> &nbsp;·&nbsp;
-	        		  <a href="help">Ajuda</a>
-	        		</p>
-	        	</div>
-	      	</div>
-      		<?php
-		break;
-		case true:
-			$selected_type = 'editar'; $disabled = '';
-			#Restringir acesso de edição para alunos
-			include('load/pages/'.$link.'.php');
-			?>
+	$selected_type = 'editar'; $disabled = '';
+	#Restringir acesso de edição para alunos
+	include('load/pages/main.php');
+?>
 			<div class="columns">
 			    <div class="column">
 			        <div class="tabs is-left"><?php echo $Navegation->MainNavegation($link); ?></div>
@@ -244,40 +227,85 @@
 			</div>
 			<p class="subtitle is-6">
 				<?php
-					if(isset($_POST['save']) || isset($_POST['edit'])){
-						#puxar as informações adquiridas
-						$name_use = isset($_POST['name_use']) ? $_POST['name_use'] : '';
-			            $email = isset($_POST['email']) ? $_POST['email'] : '';
-			            $password = isset($_POST['password']) ? $_POST['password'] : '';
-			            $conf_password = isset($_POST['conf_password']) ? $_POST['conf_password'] : '';
-			            $birthday_date = isset($_POST['birthday_date']) ? $_POST['birthday_date'] : '';
-			            $rg = isset($_POST['rg']) ? $_POST['rg'] : '';
-			            $cpf = isset($_POST['cpf']) ? $_POST['cpf'] : '';
-			            $phone = isset($_POST['phone']) ? $_POST['phone'] : '';
-			            $cep = isset($_POST['cep']) ? $_POST['cep'] : '';
-			            $address = isset($_POST['address']) ? $_POST['address'] : '';
-			            $number = isset($_POST['number']) ? $_POST['number'] : '';
-			            $neighborhood = isset($_POST['neighborhood']) ? $_POST['neighborhood'] : '';
-			            $city = isset($_POST['city']) ? $_POST['city'] : '';
-			            $state = isset($_POST['state']) ? $_POST['state'] : '';
+	if(isset($_POST['save']) || isset($_POST['edit'])){
+		#puxar as informações adquiridas
+		$name_use = isset($_POST['name_use']) ? $_POST['name_use'] : '';
+		$email = isset($_POST['email']) ? $_POST['email'] : '';
+		$password = isset($_POST['password']) ? $_POST['password'] : '';
+		$conf_password = isset($_POST['conf_password']) ? $_POST['conf_password'] : '';
+		$birthday_date = isset($_POST['birthday_date']) ? $_POST['birthday_date'] : '';
+		$rg = isset($_POST['rg']) ? $_POST['rg'] : '';
+		$cpf = isset($_POST['cpf']) ? $_POST['cpf'] : '';
+		$phone = isset($_POST['phone']) ? $_POST['phone'] : '';
+		$cep = isset($_POST['cep']) ? $_POST['cep'] : '';
+		$address = isset($_POST['address']) ? $_POST['address'] : '';
+		$number = isset($_POST['number']) ? $_POST['number'] : '';
+		$neighborhood = isset($_POST['neighborhood']) ? $_POST['neighborhood'] : '';
+		$city = isset($_POST['city']) ? $_POST['city'] : '';
+		$state = isset($_POST['state']) ? $_POST['state'] : '';
 
-			            # Verifica se os campos estão vazios e exibe uma mensagem de erro
-				        if (empty($email) || empty($password) || empty($password_conf)) {
-				          echo 'Informe o email e a senha.';
-				          exit;
-				        }
+		# Verifica se os campos estão vazios e exibe uma mensagem de erro
+		if (empty($email) || empty($password) || empty($password_conf)) {
+			echo 'Informe o email e a senha.'; exit;
+		}
+		if($password != $password_conf){
+			echo 'As duas senhas não conferem'; exit;
+		} else { $password = $Tables->HashStr($password); }
 
-				        if($password != $password_conf){
-				          echo 'As duas senhas não conferem';
-				          exit;
-				        }
-					}
-
-					if(isset($_POST['save'])){} elseif(isset($_POST['edit'])){}
-				?>
-			</p>
-		<?php
-		break;
+		#Verificar se usuário está registrado por meio do e-mail
+        $con = $PDO->query($Tables->SelectFrom('email, type_use', 'users')) or die ($PDO);
+        while ($row = $con->fetch(PDO::FETCH_OBJ)){
+        	if ($row->email == $email && $row->type_use == $type_use){
+        		echo 'Usuário já está registrado.</br>'; exit;
+        	}
+        }
+	}
+	if(isset($_POST['save'])){
+        $stmt = $PDO->prepare("INSERT INTO users (type_use, status_use, signup_date, name_use, password, email, photo, cep, address, number, neighborhood, city, state, rg, cpf, phone, birthday_date) VALUES (:type_use, 1, ".TODAY.", :name_use, :password, :email, :photo, :cep, :address, :number, :neighborhood, :city, :state, :rg, :cpf, :phone, :birthday_date)");
+        $stmt->bindParam(':type_use', $type_use);
+        $stmt->bindParam(':name_use', $name_use);
+        $stmt->bindParam(':password', $password);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':photo', $photo);
+        $stmt->bindParam(':cep', $cep);
+        $stmt->bindParam(':address', $address);
+        $stmt->bindParam(':number', $number);
+        $stmt->bindParam(':neighborhood', $neighborhood);
+        $stmt->bindParam(':city', $city);
+        $stmt->bindParam(':state', $state);
+        $stmt->bindParam(':rg', $rg);
+        $stmt->bindParam(':cpf', $cpf);
+        $stmt->bindParam(':phone', $phone);
+        $stmt->bindParam(':birthday_date', $birthday_date);
+        
+        $result = $stmt->execute();
+        if ($result){
+        	$id = $PDO->lastInsertId();
+        	echo 'Usuário cadastrado com sucesso. Para editar, entre no <a href="profile?id='.$id.'">link</a>.</br>';
+        } else {
+        	echo 'Um erro aconteceu.</br>'; exit;
+        }
+	} elseif(isset($_POST['edit'])){
+		$stmt = $PDO->prepare("UPDATE `users` SET `name_use` = :name_use, `password` = :password, `email` = :email, `photo` = :photo, `cep` = :cep, ,`address` = :address, ,`number` = :number, ,`neighborhood` = :neighborhood, ,`city` = :city, ,`state` = :state, ,`rg` = :rg, ,`cpf` = :cpf, ,`phone` = :phone, ,`birthday_date` = :birthday_date,  WHERE id_use = ".$_SESSION['id']);
+        $stmt->bindParam(':name_use', $name_use);
+        $stmt->bindParam(':password', $password);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':photo', $photo);
+        $stmt->bindParam(':cep', $cep);
+        $stmt->bindParam(':address', $address);
+        $stmt->bindParam(':number', $number);
+        $stmt->bindParam(':neighborhood', $neighborhood);
+        $stmt->bindParam(':city', $city);
+        $stmt->bindParam(':state', $state);
+        $stmt->bindParam(':rg', $rg);
+        $stmt->bindParam(':cpf', $cpf);
+        $stmt->bindParam(':phone', $phone);
+        $stmt->bindParam(':birthday_date', $birthday_date);
+		if ($result){
+			echo 'Usuário atualizado com sucesso. Para editar, entre no <a href="profile?id='.$id.'">link</a>.</br>';
+		} else {
+			echo 'Um erro aconteceu.</br>'; exit;
+		}
 	}
 	include('footer.php');
 ?>
