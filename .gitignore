@@ -6,6 +6,8 @@
 
 #the page
 tests.php
+sidebar.php
+courses-disciplines.php
 # the fuelphp document
 #/docs/
 
