@@ -24,7 +24,7 @@
 
 			# Puxar as informações das tabelas
 			$script = $name_page.', courses WHERE '.$name_page.'.id_cou = courses.id_cou AND courses.id_cou = '.$id;
-			$sql = $Tables->LoadFrom($script);
+			$sql = $Tables->SelectFrom(null, $script);
 			$query = $PDO->query($sql) or die ($PDO);
 			while($row = $query->fetch(PDO::FETCH_OBJ)){
 				$name_cou = $row->name_cou;
@@ -79,7 +79,7 @@
 					echo '
 						<th>'.$i.'</th>
 						<th>'.$class_time[$i].'</th>';
-						$sql = $Tables->LoadFrom($script.' AND '.$name_page.'.time_start = "'.$start[$i].':00"');
+						$sql = $Tables->SelectFrom(null, $script.' AND '.$name_page.'.time_start = "'.$start[$i].':00"');
 						$query = $PDO->query($sql) or die ($PDO);
 						while($row = $query->fetch(PDO::FETCH_OBJ)){
 							echo'<td><a href="'.$name_page.'?id='.$row->id_dis.'">'.$row->$name_table.'<br/>'.$row->classroom.'</td>';
