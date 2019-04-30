@@ -1,59 +1,7 @@
 <?php
-    include ('header.php');
-    switch ($Login->IsLogged()) {
-        case false:
-            ?>
-            <div class="column is-4 is-offset-4">
-                <div class="box">
-                    <h3 class="title is-medium">Ops</h3>
-                    <p class="subtitle">Esta página está inacessível, pois a sua seção não foi inicializada.</p>
-                    <p class="links">
-                      <a href="login">Entrar</a> &nbsp;·&nbsp;
-                      <a href="#">Voltar aonde estava</a> &nbsp;·&nbsp;
-                      <a href="help">Ajuda</a>
-                    </p>
-                </div>
-            </div>
-            <?php
-        break;
-        case true:
-            $name_dis = $disabled = '';
-            $con = $PDO->query($Tables->SelectFrom('type_use', 'users WHERE id_use = '.$_SESSION['id'])) or die($PDO);
-            while($row = $con->fetch(PDO::FETCH_OBJ)){
-                if($type_use = 4 || $type_use = 5){
-                    if($type_use = 4){
-                        $con = $PDO->query($Tables->SelectFrom(null, 'courses, disciplines, teachers, users WHERE courses.id_cou = disciplines.id_cou AND disciplines.id_tea = teachers.id_tea AND teachers.id_use = users.id_use = '.$_SESSION['id'])) or die ($PDO);
-                    } else {
-                        $con = $PDO->query($Tables->SelectFrom(null, 'courses, disciplines, teachers, users WHERE courses.id_cou = disciplines.id_cou AND disciplines.id_tea = teachers.id_tea AND teachers.id_use = users.id_use = '.$_SESSION['id'])) or die ($PDO);
-                    }
-                    $disabled = 'disabled';
-                    $selected_type = 'visualizar';
-                    while($row = $con->fetch(PDO::FETCH_OBJ)){
-                        #Verificar se a id do curso e o Get id são iguais
-                        if($row->id_dis){
-                            $name_dis = $row->name_dis;
-                        } else {
-                            ?>
-                            <div class="column is-4 is-offset-4">
-                                <div class="box">
-                                    <h3 class="title is-medium">Ops</h3>
-                                    <p class="subtitle">Houve problemas durante a sua requisição.</p>
-                                    <p class="links">
-                                        <a href="index">Início</a> &nbsp;·&nbsp;
-                                        <a href="#">Voltar aonde estava</a> &nbsp;·&nbsp;
-                                        <a href="help">Ajuda</a>
-                                    </p>
-                                </div>
-                            </div>
-                            <?php
-                        }
-                    }
-                } else {
-                    # demais funcionários poderão ver e alterar os dados do curso
-                    include('load/pages/'.$link.'.php');
-                }
-            }
-            ?>
+    include('header.php');
+    include('load/pages/main.php');
+?>
             <div class="columns">
                 <div class="column">
                     <div class="tabs is-left"><?php echo $Navegation->MainNavegation($link); ?></div>
@@ -172,7 +120,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="column is-5"><?php $Pages->LoadTablePage($link); ?></div>
+                            <div class="column is-5"><?php #$Pages->LoadTablePage($link); ?></div>
                         </div>
                         <div class="columns">
                             <div class="column">
@@ -260,7 +208,7 @@
                                 exit;
                             }
                         } else if(isset($_POST['edit'])){
-                            $stmt = $PDO->prepare("UPDATE courses SET name_cou = :name_cou, type_cou = :type_cou, period = :period WHERE id_cur = ".$id);
+                            $stmt = $PDO->prepare("UPDATE courses SET name_dis = :name_dis, id_cou = :id_cou, id_tea = :id_tea, classroom = :classroom, time_start = :time_start, time_end = :time_end  WHERE id_cur = ".$id);
                              $stmt->bindParam(':name_cou', $name_cou);
                             $stmt->bindParam(':id_cou', $id_cou);
                             $stmt->bindParam(':id_tea', $id_tea);
@@ -278,7 +226,4 @@
                     ?>
                 </p>
             </div>
-        <?php
-        break;
-    }
-    include('footer.php');
+<?php include('footer.php');
