@@ -420,16 +420,17 @@
 			$PDO = $Load->DataBase();
 			$Tables = new Tables;
 			$script = $name_page;
+			$type_table = $Tables->Found_Item('type', $name_page);
+			$id = $Tables->Found_Item('id', $name_page);
+			$name_table = $Tables->Found_Item('name', $name_page);
 			switch ($name_page) {
 			    case 'classroom':
-			        $th = '
-			                <th></th>
-							<th>Nome do Curso</th>
-							<th>Tipo de Curso</th>';
-					$name_table .= ', courses WHERE '.$name_page.'.id_cou = courses.id_cou';
+			        $th = '<th></th><th>Nome do Curso</th><th>Tipo de Curso</th>';
+					$script .= ', courses WHERE '.$name_page.'.id_cou = courses.id_cou';
 					$titulo = 'Turmas';
 					$icon = '<i class="fas fa-users"></i>';
 					$type_table = $Tables->Found_Item('type', 'courses');
+					$name_table = $Tables->Found_Item('name', 'courses');
 				break;
 				case 'courses':
 					$th = '
@@ -463,16 +464,13 @@
 							case 4: case 5: $script .=' AND users.id_use = '.$_SESSION['id']; break;
 							default: break;
 						}
-						$type_table = $Tables->Found_Item('type', $name_page);
+						
 					}
 				break;
 				case 'users':
-					$th = '
-						<th></th>
-						<th>Nome</th>
-						<th>Tipo do Usuário</th>
-						<th></th>';
+					$th = '<th></th><th>Nome</th><th>Tipo do Usuário</th><th></th>';
 					$titulo = 'usuários';
+					$icon = '<i class="fas fa-users"></i>';
 				break;
 			}
 			;
@@ -480,20 +478,16 @@
 			$con = $PDO->query($Tables->SelectFrom(null, $script)) or die ($PDO);
 			#echo $Tables->CountViewTable(null, $script);
 			$cont = $Tables->CountViewTable(null, $script);
-			$id = $Tables->Found_Item('id', $name_page);
-			$script = $Tables->Found_Item('name', $name_page);
 			echo '
 			    	<div class="card events-card">
 			            <header class="card-header">
 			                <p class="card-header-title">'.ucfirst($titulo).'</p>
-			                <a href="'.$name_page.'#show_all" class="card-header-icon" aria-label="more options"><span class="icon"><i class="fa fa-angle-down" aria-hidden="true"></i></span></a>
+			                <a href="'.$name_page.'" class="card-header-icon" aria-label="more options"><span class="icon"><i class="fa fa-angle-down" aria-hidden="true"></i></span></a>
 			            </header>
 			            <div class="card-table">
 			                <div class="content">
 			                    <table class="table is-fullwidth is-striped">
-			                    	<thead>
-			                    		<tr>'.$th.'</tr>
-									</thead>
+			                    	<thead><tr>'.$th.'</tr></thead>
 			                    	<tbody>';							
 								    while($row = $con->fetch(PDO::FETCH_OBJ)){
 								    	$status_table = $Tables->Found_Item('status', $name_page);
@@ -578,13 +572,22 @@
 														$action_button = '<i class="fas fa-file">&nbsp;Ver';
 													break;
 												}
-												$col_5 = '<a href="'.$action_link.'" class="button is-'.$action_color.' is-small">'.$action_button.'</a>';
+												#$col_5 = '<a href="'.$action_link.'" class="button is-'.$action_color.' is-small">'.$action_button.'</a>';
+												$col_5 = '';
 								    		break;
 								    		case 'users':
-								    			$photo = ($row->photo) ? SERVER.'uploads/'.$row->photo : $Load->Gravatar($row->email);
+								    			#$photo = ($row->photo) ? SERVER.'uploads/'.$row->photo : $Load->Gravatar($row->email);
 								    			$col_1 = '<a href="'.SERVER.'profile?id='.$row->id_use.'" class="button is-link is-small"><i class="fas fa-pencil-alt"></i></a>';
-								    			$col_2 = '<figure class="image is-32x32"><img class="is-rounded" src="'.$photo.'">';
-								    			$col_3 = $row->$name_table;
+								    			$col_2 = $row->$name_table;
+								    			switch ($row->type_use) {
+								    				case 1:$type = 'Diretor';break;
+								    				case 2:$type = 'Coordenador';break;
+								    				case 3:$type = 'Funcionário';break;
+								    				case 4:$type = 'Professor';break;
+								    				case 5:$type = 'Aluno'; break;
+								    			}
+								    			#$col_2 = '<figure class="image is-32x32"><img class="is-rounded" src="'.$photo.'">';
+								    			$col_3 = $type;
 								    			$col_4 = '<a href="'.$action_link.'" class="button is-'.$action_color.' is-small">'.$action_button.'</a>';
 								    			$col_5 = '';
 								    		break;
@@ -617,11 +620,7 @@
 			$name_table = $name_page;
 			switch ($name_page) {
 		        case 'classroom':
-		        	$th = '
-		                    <th colspan="2">Aluno</th>
-							<th>RA</th>
-						    <th>Data de Matrícula</th>
-						    <th>Data de Aniversário</th>';
+		        	$th = '<th colspan="2">Aluno</th><th>RA</th><th>Data de Matrícula</th><th>Data de Aniversário</th>';
 					$name_table = 	$name_page.', courses, students, users';
 					$name_table .= ' WHERE '.$name_page.'.id_cla = '.$id;
 					$name_table .= ' AND '.$name_page.'.id_cou = courses.id_cou';
@@ -629,31 +628,24 @@
 					$name_table .= ' AND students.id_use = users.id_use AND users.type_use = 5';
 				break;
 				case 'historic':
-					$th = '
-							<th colspan="2">Aluno</th>
-						    <th colspan="2">Notas</th>
-						    <th colspan="2">Faltas</th>
-						    <th colspan="2">Abonos</th>
-						    <th>Média Final</th>';
+					$th = '<th colspan="2">Aluno</th><th colspan="2">Notas</th><th colspan="2">Faltas</th><th colspan="2">Abonos</th><th>Média Final</th>';
 					$name_table = 	'historic, disciplines, students, users';
 					$name_table .= 	' WHERE historic.id_dis = disciplines.id_dis';
 					$name_table .= 	' AND historic.id_stu = students.id_stu';
 					$name_table .=	' AND students.id_use = users.id_use AND historic.id_his = '.$id;
 				break;
 			}
-			$script = $Tables->SelectFrom($name_table, 0, 10);
-		    $con = $PDO->query($script) or die ($PDO);
-		    $id = $Tables->Found_Item('id', $name_page);
-		    $name_table = $Tables->Found_Item('name', $name_page);
+		    $con = $PDO->query($Tables->SelectFrom(null, $name_table)) or die ($PDO);
+		    #$id = $Tables->Found_Item('id', $name_page);
+		    #$name_table = $Tables->Found_Item('name', $name_page);
 		    echo '
 		    	<table class="table is-fullwidth is-striped">
-		            <thead>
-		                <tr>'.$th.'</tr>
-					</thead>
+		            <thead><tr>'.$th.'</tr></thead>
 		            <tbody>';							
 					while($row = $con->fetch(PDO::FETCH_OBJ)){
-						$name_use = $row->name_use;
-						$photo = ($row->photo != null) ? SERVER.'uploads/'.$row->photo : $Load->Gravatar($row->email);
+						#$name_use = $row->name_use;
+						#$name_cou = $row->name_cou;
+						#$photo = ($row->photo != null) ? SERVER.'uploads/'.$row->photo : $Load->Gravatar($row->email);
 						switch ($name_page) {
 							case 'classroom':
 								$signup_date = date('d/m/Y', strtotime($row->signup_date));
