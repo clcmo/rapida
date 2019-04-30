@@ -1,11 +1,4 @@
 <?php
-    /**
-     * The landing page for our theme.
-     *
-     * Displays all of the brand menu content and index
-     *
-     * @package Bulma by Milla
-     */
     include('header.php');
     switch ($Login->IsLogged()) {
         case true:
@@ -56,7 +49,6 @@
                     </div>
                 </div><?php
         break;
-        
         case false:
             ?>
             <div class="hero-body">
@@ -77,5 +69,4 @@
             </div><?php
         break;
     } 
-    include('footer.php'); 
-?>
+    include('footer.php');

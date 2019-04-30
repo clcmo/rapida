@@ -10,6 +10,7 @@ sidebar.php
 courses-disciplines.php
 # the fuelphp document
 #/docs/
+/tests/
 
 # you may install these packages with `oil package`.
 # http://fuelphp.com/docs/packages/oil/package.html
