@@ -1,126 +1,245 @@
 <?php
-	#com o nome da página estaremos puxando:
-	$script = $link; #script sql
-
-	$type_table = $Tables->Found_Item('type', $link);
-	#o tipo na tabela informada
-	$status_table = $Tables->Found_Item('status', $link);
-	#o status na tabela informada
-	$name_table = $Tables->Found_Item('name', $link);
-	#o titulo/nome na tabela informada 
-	$id_table = $Tables->Found_Item('id', $link);
-	#o id na tabela informada
-	
-	switch ($link) {
-		case 'profile': 
-			$id = isset(($_GET['id'])) ? $_GET['id'] : $_SESSION['id'];
-			$script = 'users WHERE ';
-			$id_table = $Tables->Found_Item('id', 'users');
-		break;
-
-		case 'historic':
-		break;
-		
-		case 'courses':
-			$name_cou = 'Informe o nome do curso';
-			$checked1 = $checked2 = $disabled = '';
-            $con = $PDO->query($Tables->SelectFrom('type_use', 'users WHERE id_use = '.$_SESSION['id'])) or die($PDO);
-            while($row = $con->fetch(PDO::FETCH_OBJ)){
-            	switch($row->type_use){
-            		case 4: 
-            			$script_con = $link.', disciplines, teachers, users WHERE '.$link.'.id_cou = disciplines.id_cou AND disciplines.id_tea = teachers.id_tea AND teachers.id_use = users.id_use = '.$_SESSION['id'];
-            		break;
-            		case 5:
-            			$script_con = $link.', classroom, students, users WHERE '.$link.'.id_cou = classroom.id_cou AND classroom.id_cla = students.id_cla AND students.id_use = users.id_use AND users.id_use = '.$_SESSION['id'];
-            		break;
-	            }
-	            #echo $Tables->SelectFrom(null, $script_con);
-	            $con = $PDO->query($Tables->SelectFrom(null, $script_con)) or die ($PDO);
-	            while($row = $con->fetch(PDO::FETCH_OBJ)){
-                    #Verificar se a id do curso e o Get id são iguais
-                    if($row->id_cou){
-                        $name_cou = $row->name_cou;
-                        $period = $row->period;
-                        $disabled = 'disabled';
-                        $selected_type = 'visualizar';
-                    } else {
-                       	# demais funcionários poderão ver e alterar os dados do curso
-                        ?>
-                        <div class="column is-4 is-offset-4">
-                            <div class="box">
-                                <h3 class="title is-medium">Ops</h3>
-                                <p class="subtitle">Houve problemas durante a sua requisição.</p>
-                                <p class="links">
-                                    <a href="index">Início</a> &nbsp;·&nbsp;
-                                    <a href="#">Voltar aonde estava</a> &nbsp;·&nbsp;
-                                    <a href="help">Ajuda</a>
-                                </p>
-                            </div>
-                        </div>
-                        <?php
-                    }
-            	}
-            }
-        break;
-
-        case 'disciplines': 
-        $script .= ', courses WHERE '.$link.'.id_cou = courses.id_cou AND '; 
-        break;
-
-        case 'historic':
-        break;
-
-		#case 'users': $script .= ' WHERE '; break;
-		
-		case 'new-user':
-			$name_use = '';
-			$year = date('Y', strtotime(TODAY));
-			$signup_date = date('d/m/Y', strtotime(TODAY));
-			$email = isset($_GET['email']) ? $_GET['email'] : '';
-			$login = '';
-			$photo = $Load->Gravatar(MAIN_EMAIL);
-			$cep = $address = $number = $neighborhood = $city = $state = $rg = $cpf = $phone = '';
-			$birthday_date = date('d/m/Y', strtotime(TODAY));
-			$birthday_year = date('Y', strtotime(TODAY));
-			$data = $name_par = $phone_par = $rg_par = $cpf_par = $area = '';
-			$type = 'usuário';
-			$string = 'Tipo de Usuário';
-			#criar radio button
-		break;
-		
-		
-		
-		case 'notifies':
-			$con = $PDO->query($Tables->SelectFrom('name_use, type_use','users WHERE id_use LIKE '.$_SESSION['id'].' AND status_use = 1')) or die ($PDO);
-			while($row = $con->fetch(PDO::FETCH_OBJ)){
-				$name_use = $row->name_use;
-				switch ($row->type_use){
-					case 2: break;
-					case 3: $script .=' AND users.id_use = '.$_SESSION['id']; $button_title = 'Gerar Documento'; break;
-					case 4: $script .= ', users WHERE users.id_use = '.$name_page.'.id_use AND '; break;
-					case 5: $script .= ', users WHERE users.id_use = '.$name_page.'.id_use AND users.id_use = '.$_SESSION['id'].' AND '; break;
-					default: break;
-				}
-			}
-		break;
-
-		case 'schedule-grid':
-		break;
-	}
-
-	switch ($id) {
+	switch ($Login->IsLogged()) {
 		case false:
-			# code...
+			?>
+			<div class="column is-4 is-offset-4">
+				<div class="box">
+	       			<h3 class="title is-medium">Ops</h3>
+	        		<p class="subtitle">Esta página está inacessível, pois a sua seção não foi inicializada.</p>
+	        		<p class="links">
+	        		  <a href="login">Entrar</a> &nbsp;·&nbsp;
+	        		  <a href="#">Voltar aonde estava</a> &nbsp;·&nbsp;
+	        		  <a href="help">Ajuda</a>
+	        		</p>
+	        	</div>
+	      	</div>
+      		<?php
 		break;
-		
-		default:
-			$script.= $id_table.' = '.$id;
-			$PDO = $Load->DataBase();
-			$con = $PDO->query($Tables->SelectFrom(null, $script)) or die ($PDO);
-			$cont = $Tables->CountViewTable(null, $script);
-			while($row = $con->fetch(PDO::FETCH_OBJ)){
-				switch($link){
-					case 'profile':
+		case true:
+			#com o nome da página estaremos puxando:
+			$script = $link; #script sql
+			$type_table = $Tables->Found_Item('type', $link);
+			#o tipo na tabela informada
+			$status_table = $Tables->Found_Item('status', $link);
+			#o status na tabela informada
+			$name_table = $Tables->Found_Item('name', $link);
+			#o titulo/nome na tabela informada 
+			$id_table = $Tables->Found_Item('id', $link);
+			#o id na tabela informada
+
+			switch ($link) {
+				case 'change':
+					#Verifica se a tabela e o valor foram informados. Se não houver, repetir mensagem de erro
+					$res = '';
+					$table = (isset($_GET['t'])) ? $_GET['t'] : '';
+					$id = (isset($_GET['id'])) ? $_GET['id'] : '';
+					if(!$table || !$id){
+						?>
+						<div class="column is-4 is-offset-4">
+							<div class="box">
+				       			<h3 class="title is-medium">Ops</h3>
+				        		<p class="subtitle">Houve problemas durante a sua requisição.</p>
+				        		<p class="links">
+				        		  <a href="index">Início</a> &nbsp;·&nbsp;
+				        		  <a href="#">Voltar aonde estava</a> &nbsp;·&nbsp;
+				        		  <a href="help">Ajuda</a>
+				        		</p>
+				        	</div>
+				      	</div>
+      					<?php
+      				} else {
+      					$id_table = $Tables->Found_Item('id', $table);
+						$status_table = $Tables->Found_Item('status', $table);
+						$query = $PDO->query($Tables->SelectFrom($status_table, $table.' WHERE '.$id_table.' = '.$id)) or die ($PDO);
+						while($row = $query->fetch(PDO::FETCH_OBJ)){
+							$sql = 'UPDATE '.$table;
+							switch ($row->$status_table) {
+								case 1: $sql .= 'SET '.$status_table = '2'; break; #desativa
+								case 2: $sql .= 'SET '.$status_table = '1'; break; #ativa
+							}
+							$sql .= ' WHERE '.$id_table.' = '.$id;
+						}
+						$stmt = $PDO->prepare($sql);
+						$result = $stmt->execute();
+			    		if ($result){
+			    			$res = 'Alterado com sucesso.';
+			    		} else {
+			    			$res = 'Um erro ocorreu.';
+			    		}
+      				}
+				break;
+				case 'classroom':
+					#Verifica se a tabela e o valor foram informados. Se não houver, repetir mensagem de erro
+					$id = (isset($_GET['id'])) ? $_GET['id'] : '';
+					if(!$id){
+						?>
+						<div class="column is-4 is-offset-4">
+							<div class="box">
+					   			<h3 class="title is-medium">Ops</h3>
+		    		    		<p class="subtitle">Houve problemas durante a sua requisição.</p>
+						   		<p class="links">
+						        	<a href="index">Início</a> &nbsp;·&nbsp;
+						       		<a href="#">Voltar aonde estava</a> &nbsp;·&nbsp;
+						        	<a href="help">Ajuda</a>
+						       	</p>
+						    </div>
+						</div>
+      					<?php include('footer.php');
+      				exit;
+      				} else {
+      					$script .= ', courses WHERE '.$link.'.id_cou = courses.id_cou AND id_cla = '.$id;
+      					$con = $PDO->query($Tables->SelectFrom(null, $script)) or die($PDO);
+      					while($row = $con->fetch(PDO::FETCH_OBJ)){
+      						$name_cou = $row->name_cou;
+      					}
+      				}
+				break;
+				case 'courses':
+					$name_cou = 'Informe o nome do curso';
+					$checked1 = $checked2 = $disabled = '';
+            		$con = $PDO->query($Tables->SelectFrom('type_use', 'users WHERE id_use = '.$_SESSION['id'])) or die($PDO);
+		            while($row = $con->fetch(PDO::FETCH_OBJ)){
+		            	switch($row->type_use){
+		            		case 4: 
+		            			$script .= ', disciplines, teachers, users WHERE '.$link.'.id_cou = disciplines.id_cou AND disciplines.id_tea = teachers.id_tea AND teachers.id_use = users.id_use = '.$_SESSION['id'];
+		            		break;
+		            		case 5:
+		            			$script .= ', classroom, students, users WHERE '.$link.'.id_cou = classroom.id_cou AND classroom.id_cla = students.id_cla AND students.id_use = users.id_use AND users.id_use = '.$_SESSION['id'];
+		            		break;
+		            		default: $script.= 'WHERE id_cou = '.(isset($_GET['id'])) ? $_GET['id'] : ''; break;
+			            }
+			            #echo $Tables->SelectFrom(null, $script);
+			            $con = $PDO->query($Tables->SelectFrom(null, $script)) or die ($PDO);
+			            while($row = $con->fetch(PDO::FETCH_OBJ)){
+		                    #Verificar se a id do curso e o Get id são iguais
+		                    if($row->id_cou){
+		                        $name_cou = $row->name_cou;
+		                        $period = $row->period;
+		                        $disabled = 'disabled';
+		                        $selected_type = 'visualizar';
+		                    } else {
+		                       	# demais funcionários poderão ver e alterar os dados do curso
+		                        ?>
+		                        <div class="column is-4 is-offset-4">
+		                            <div class="box">
+		                                <h3 class="title is-medium">Ops</h3>
+		                                <p class="subtitle">Houve problemas durante a sua requisição.</p>
+		                                <p class="links">
+		                                    <a href="index">Início</a> &nbsp;·&nbsp;
+		                                    <a href="#">Voltar aonde estava</a> &nbsp;·&nbsp;
+		                                    <a href="help">Ajuda</a>
+		                                </p>
+		                            </div>
+		                        </div>
+		                        <?php
+		                    }
+		            	}
+		            }
+        		break;
+				case 'courses-disciplines':
+				break;
+				case 'disciplines':
+					$name_dis = $disabled = '';
+					$con = $PDO->query($Tables->SelectFrom('type_use', 'users WHERE id_use = '.$_SESSION['id'])) or die($PDO);
+					while($row = $con->fetch(PDO::FETCH_OBJ)){
+                		if($type_use = 4 || $type_use = 5){
+                    if($type_use = 4){
+                        $con = $PDO->query($Tables->SelectFrom(null, 'courses, disciplines, teachers, users WHERE courses.id_cou = disciplines.id_cou AND disciplines.id_tea = teachers.id_tea AND teachers.id_use = users.id_use = '.$_SESSION['id'])) or die ($PDO);
+                    } else {
+                        $con = $PDO->query($Tables->SelectFrom(null, 'courses, disciplines, teachers, users WHERE courses.id_cou = disciplines.id_cou AND disciplines.id_tea = teachers.id_tea AND teachers.id_use = users.id_use = '.$_SESSION['id'])) or die ($PDO);
+                    }
+                    $disabled = 'disabled';
+                    $selected_type = 'visualizar';
+                    while($row = $con->fetch(PDO::FETCH_OBJ)){
+                        #Verificar se a id do curso e o Get id são iguais
+                        if($row->id_dis){
+                            $name_dis = $row->name_dis;
+                        } else {
+                            ?>
+                            <div class="column is-4 is-offset-4">
+                                <div class="box">
+                                    <h3 class="title is-medium">Ops</h3>
+                                    <p class="subtitle">Houve problemas durante a sua requisição.</p>
+                                    <p class="links">
+                                        <a href="index">Início</a> &nbsp;·&nbsp;
+                                        <a href="#">Voltar aonde estava</a> &nbsp;·&nbsp;
+                                        <a href="help">Ajuda</a>
+                                    </p>
+                                </div>
+                            </div>
+                            <?php
+                        }
+                    }
+                		} 
+                    # demais funcionários poderão ver e alterar os dados do curso
+            		}
+        		break;
+				case 'employees': case 'students': case 'teachers': 
+					$con = $PDO->query($Tables->SelectFrom(null, $link.', users WHERE '.$link.'.id_use = users.id_use')) or die ($PDO);
+					while($row = $con->fetch(PDO::FETCH_OBJ)){
+
+					}
+				break;
+				case 'historic':
+					#Verificar se o tipo do usuário é aluno ou não
+					$con = $PDO->query($Tables->SelectFrom('name_use, type_use', 'users WHERE id_use = '.$_SESSION['id'])) or die ($PDO);
+					while($row = $con->fetch(PDO::FETCH_OBJ)){
+						$name_use = $row->name_use;
+						switch($row->type_use){
+							case 5: $id = $_SESSION['id']; break;
+							default:
+								$id = (isset($_GET['id'])) ? $_GET['id'] : '';
+								if(!$id){
+								?>
+								<div class="column is-4 is-offset-4">
+									<div class="box">
+									    <h3 class="title is-medium">Ops</h3>
+										<p class="subtitle">Houve problemas durante a sua requisição.</p>
+							    		<p class="links">
+							    			<a href="index">Início</a> &nbsp;·&nbsp;
+									   		<a href="#">Voltar aonde estava</a> &nbsp;·&nbsp;
+									    	<a href="help">Ajuda</a>
+									   	</p>
+								 	</div>
+							   	</div>
+								<?php
+								}	
+							break;
+						}
+						$con = $PDO->query($Tables->SelectFrom(null, 'historic, students, disciplines, users WHERE historic.id_dis = disciplines.id_dis AND historic.id_stu = students.id_stu AND students.id_use = users.id_use And users.id_use = '.$id)) or die ($PDO);
+						while($row = $con->fetch(PDO::FETCH_OBJ)){
+							#$name_use = $row->name_use;
+						}
+					}
+				break;
+				case 'notifies':
+					$con = $PDO->query($Tables->SelectFrom('name_use, type_use','users WHERE id_use LIKE '.$_SESSION['id'].' AND status_use = 1')) or die ($PDO);
+					while($row = $con->fetch(PDO::FETCH_OBJ)){
+						$name_use = $row->name_use;
+						$name_not = '';
+						switch ($row->type_use){
+							case 1: case 2: break; #diretor e coordenador
+							case 3: 
+								#$script .= ' AND users.id_use = '.$_SESSION['id'];
+								$button_title = 'Gerar Documento';
+							break;
+							case 4: $script .= ', users WHERE users.id_use = '.$link.'.id_use'; break;
+							case 5: $script .= ', users WHERE users.id_use = '.$link.'.id_use AND users.id_use = '.$_SESSION['id']; break;
+							default: break;
+						}
+						$con = $PDO->query($Tables->SelectFrom(null, $script)) or die($PDO);
+						while($row = $con->fetch(PDO::FETCH_OBJ)){
+							$name_not = $row->name_not;	
+						}
+					}
+				break;
+				case 'profile':
+					#puxar a tabela de usuário e o id
+					$id = (isset($_GET['id'])) ? $_GET['id'] : $_SESSION['id'];
+					$script = 'users WHERE id_use = '.$id;
+					$id_table = $Tables->Found_Item('id', 'users');
+					$con = $PDO->query($Tables->SelectFrom(null, $script)) or die ($PDO);
+					while($row = $con->fetch(PDO::FETCH_OBJ)){
 						$name_use = $row->name_use;
 						$year = ($row->signup_date) ? date('Y', strtotime($row->signup_date)) : '';
 						$signup_date = ($row->signup_date) ? date('d/m/Y', strtotime($row->signup_date)) : '';
@@ -145,16 +264,16 @@
 							case 1:	
 								$type = 'Diretor';
 								$table = 'director';
-								/*$string = 'Area';
+								$string = 'Area';
 								$query = '';
-								$input = '';*/
+								$input = '';
 							break;
 							case 2: 
 								$type = 'Coordenador';
 								$string = 'Curso';
 								$table = 'coordenators';
-								/*$query = '';
-								$input = '';*/
+								$query = '';
+								$input = '';
 							break;
 							case 3:
 								$type = 'Funcionário';
@@ -268,95 +387,25 @@
 									</div>';
 							break;
 						}
-					break;
-				}
-			}
-		break;
-	}
-
-
-
-
-/*
-
-	switch($id){
-		case false:
-			switch ($link) {
-				case 'courses':
-					$name_cou = 'Informe o nome';
+					}
 				break;
-
-				case 'disciplines':
-					$name_dis = 'Informe o nome';
-				break;
-
-				case 'notifies':
-					$name_not = 'Informe o nome';
-				break;
-
-				case 'users':
-					$name_use = 'Informe o nome';
+				case 'new-user':
+					$name_use = '';
+					$year = date('Y', strtotime(TODAY));
+					$signup_date = date('d/m/Y', strtotime(TODAY));
+					$email = isset($_GET['email']) ? $_GET['email'] : '';
+					$login = '';
+					$photo = $Load->Gravatar(MAIN_EMAIL);
+					$cep = $address = $number = $neighborhood = $city = $state = $rg = $cpf = $phone = '';
+					$birthday_date = date('d/m/Y', strtotime(TODAY));
+					$birthday_year = date('Y', strtotime(TODAY));
+					$data = $name_par = $phone_par = $rg_par = $cpf_par = $area = '';
 					$type = 'usuário';
+					$string = 'Tipo de Usuário';
+					#criar radio button
 				break;
-			}
-			$checked2 = '';
-			$checked1 = '';
-		break;
-
-		case true:
-			
-			
-			#echo $Tables->SelectFrom(null, $script);
-			
-			
-				switch ($link) {
-					case 'courses':
-						$name_cou = $row->$name_table;
-					break;
-				
-					case 'disciplines':
-						$name_cou = $row->$name_table;
-					break;
-
-					case 'notifies':
-						$name_not = $row->$name_table;
-					break;
-
-					case 'users':
-						$name_use = $row->$name_table;
-						$tipo = 'usuário';
-						$email = $row->email;
-						$birthday_date = ($row->birthday_date) ? date('d/m/Y', strtotime($row->birthday_date)) : '';
-						$rg = ($row->rg) ? $row->rg : '';
-						$cpf = ($row->cpf) ? $row->cpf : '';
-						$phone = ($row->phone) ? $row->phone : '';
-
-						$cep = ($row->cep) ? $row->cep : '';
-						$address = ($row->address) ? $row->address : '';
-						$number = ($row->number) ? $row->number : '';
-						$neighborhood = ($row->neighborhood) ? $row->neighborhood : '';
-						$city = ($row->city) ? $row->city : '';
-						$state = ($row->state) ? $row->state : '';
-						$photo = $Load->Gravatar();
-
-						$input = '';
-					break;
-				}
-				switch ($row->$type_table) {
-					case 1:
-						$button_title_2 = 'Ensino Médio';
-						$checked1 = 'checked';
-						$checked2 = '';
-					break;
-					case 2: 
-						$button_title_2 = 'Ensino Modular';
-						$checked2 = 'checked';
-						$checked1 = '';
-					break;
-				}
+				case 'schedule-grid':
+				break;
 			}
 		break;
 	}
-	
-	#$placeholder = $email = isset($_GET['email']) ? $_GET['email'] : '';
-*/
