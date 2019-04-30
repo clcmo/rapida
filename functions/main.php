@@ -20,7 +20,6 @@
     define('TITLE_HEAD',  TITLE.' | '.DESC);
 	define('AUTHOR',     'Camila L. Oliveira');
     define('AUTHOR_URL', 'http://projetos.camilaloliveira.com/');
-    $home = (!$Login->IsLogged()) ? 'index' : 'admin';
     define('FOOTER',     'Copyright &copy; '.YEAR.'&nbsp;<a href="'.AUTHOR_URL.'" class="text-bold" style="text-decoration: none" target="_blank"><img class="bulma" src="'.SERVER.'assets/brand/logo_milla_b.png"></a>. Todos os direitos reservados.');
 
     # 4 - Definição de Conexão
