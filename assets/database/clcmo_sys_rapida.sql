@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.7.4
+-- version 4.7.9
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Apr 15, 2019 at 05:40 PM
--- Server version: 5.7.19
--- PHP Version: 7.1.9
+-- Generation Time: Apr 30, 2019 at 04:04 AM
+-- Server version: 5.7.21
+-- PHP Version: 7.0.29
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -51,6 +51,22 @@ INSERT INTO `classroom` (`id_cla`, `start_semester`, `start_year`, `id_cou`, `st
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `coordinators`
+--
+
+DROP TABLE IF EXISTS `coordinators`;
+CREATE TABLE IF NOT EXISTS `coordinators` (
+  `id_coo` int(11) NOT NULL AUTO_INCREMENT,
+  `id_cur` int(11) NOT NULL,
+  `id_use` int(11) NOT NULL,
+  PRIMARY KEY (`id_coo`),
+  KEY `fk_coo_tea` (`id_use`),
+  KEY `fk_coo_cur` (`id_cur`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `courses`
 --
 
@@ -69,18 +85,33 @@ CREATE TABLE IF NOT EXISTS `courses` (
 --
 
 INSERT INTO `courses` (`id_cou`, `name_cou`, `status_cou`, `type_cou`, `period`) VALUES
-(1, 'Ensino Médio e Administração', 1, 1, ''),
-(2, 'Ensino Médio e Logistica', 1, 1, ''),
-(3, 'Ensino Médio e Contabilidade', 1, 1, ''),
-(4, 'Desenvolvimento de Sistemas', 1, 2, ''),
-(5, 'Recursos Humanos', 1, 2, ''),
-(6, 'Enfermagem', 1, 2, ''),
-(8, 'Segurança do Trabalho', 1, 2, ''),
-(9, 'Jogos Digitais', 2, 2, ''),
-(10, 'Paleontologia', 2, 2, ''),
-(11, 'Culinária', 2, 2, ''),
-(12, 'Informática', 2, 2, ''),
-(13, 'Ensino Médio e Ciências Contábeis', 1, 1, '');
+(1, 'Ensino Médio e Administração', 1, 1, 'I'),
+(2, 'Ensino Médio e Logistica', 1, 1, 'I'),
+(3, 'Ensino Médio e Contabilidade', 1, 1, 'I'),
+(4, 'Desenvolvimento de Sistemas', 1, 2, 'N'),
+(5, 'Recursos Humanos', 1, 2, 'T'),
+(6, 'Enfermagem', 1, 2, 'T'),
+(8, 'Segurança do Trabalho', 1, 2, 'N'),
+(9, 'Jogos Digitais', 2, 2, 'N'),
+(10, 'Paleontologia', 2, 2, 'T'),
+(11, 'Culinária', 2, 2, 'T'),
+(12, 'Informática', 2, 2, 'N'),
+(13, 'Ensino Médio e Ciências Contábeis', 1, 1, 'I');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `directors`
+--
+
+DROP TABLE IF EXISTS `directors`;
+CREATE TABLE IF NOT EXISTS `directors` (
+  `id_dir` int(11) NOT NULL AUTO_INCREMENT,
+  `area_dir` varchar(25) NOT NULL,
+  `id_use` int(11) NOT NULL,
+  PRIMARY KEY (`id_dir`),
+  KEY `fk_dir_use` (`id_use`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -131,7 +162,7 @@ CREATE TABLE IF NOT EXISTS `employees` (
 --
 
 INSERT INTO `employees` (`id_emp`, `area_emp`, `id_use`, `status_emp`) VALUES
-(1, 'Informática', 2, 1);
+(1, 'Informática', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -220,7 +251,7 @@ CREATE TABLE IF NOT EXISTS `students` (
   PRIMARY KEY (`id_stu`),
   KEY `fk_stu_use` (`id_use`),
   KEY `fk_stu_cla` (`id_cla`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `students`
@@ -228,7 +259,8 @@ CREATE TABLE IF NOT EXISTS `students` (
 
 INSERT INTO `students` (`id_stu`, `id_use`, `id_cla`) VALUES
 (1, 2, 1),
-(2, 3, 1);
+(2, 3, 1),
+(3, 5, 1);
 
 -- --------------------------------------------------------
 
