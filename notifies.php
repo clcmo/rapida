@@ -1,24 +1,7 @@
 <?php
     include ('header.php');
-    switch ($Login->IsLogged()) {
-        case false:
-            ?>
-            <div class="column is-4 is-offset-4">
-                <div class="box">
-                    <h3 class="title is-medium">Ops</h3>
-                    <p class="subtitle">Esta página está inacessível, pois a sua seção não foi inicializada.</p>
-                    <p class="links">
-                      <a href="login">Entrar</a> &nbsp;·&nbsp;
-                      <a href="#">Voltar aonde estava</a> &nbsp;·&nbsp;
-                      <a href="help">Ajuda</a>
-                    </p>
-                </div>
-            </div>
-            <?php
-        break;
-        case true:
-            include('load/pages/'.$link.'.php');
-            ?>
+    include('load/pages/main.php')
+?>
             <div class="columns">
                 <div class="column">
                     <div class="tabs is-left"><?php echo $Navegation->MainNavegation($link); ?></div>
@@ -125,6 +108,4 @@
                 </p>
             </div>
         <?php
-        break;
-    }
     include('footer.php');
