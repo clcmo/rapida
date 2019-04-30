@@ -1,26 +1,9 @@
 <?php
-    include ('header.php');
-    switch ($Login->IsLogged()) {
-        case false:
-            ?>
-            <div class="column is-4 is-offset-4">
-                <div class="box">
-                    <h3 class="title is-medium">Ops</h3>
-                    <p class="subtitle">Esta página está inacessível, pois a sua seção não foi inicializada.</p>
-                    <p class="links">
-                      <a href="login">Entrar</a> &nbsp;·&nbsp;
-                      <a href="#">Voltar aonde estava</a> &nbsp;·&nbsp;
-                      <a href="help">Ajuda</a>
-                    </p>
-                </div>
-            </div>
-            <?php
-        break;
-        case true:
-            include('load/pages/'.$link.'.php');
-            ?>
+    include('header.php');
+    include('load/pages/main.php');
+?>
             <div class="columns">
-                <div class="column is-4">
+                <div class="column">
                     <div class="tabs is-left"><?php echo $Navegation->MainNavegation($link); ?></div>
                 </div>
             </div>
@@ -30,7 +13,7 @@
                 <section class="info-tiles">
                     <form action="" method="post">
                         <div class="columns">
-                            <div class="column is-7">
+                            <div class="column">
                                 <p class="title is-small">Dados do Curso</p>
                                 <div class="columns">
                                     <div class="column is-6">
@@ -67,7 +50,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="column is-5"><?php echo $Pages->LoadTablePage($link); ?></div>
+                            <div class="column"><?php echo $Pages->LoadTablePage($link); ?></div>
                         </div>
                         <div class="columns">
                             <div class="column">
@@ -132,7 +115,4 @@
                     ?>
                 </p>
             </div>
-        <?php
-        break;
-    }
-    include('footer.php');
+<?php include('footer.php');
