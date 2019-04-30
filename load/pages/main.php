@@ -102,11 +102,15 @@
 		            	switch($row->type_use){
 		            		case 4: 
 		            			$script .= ', disciplines, teachers, users WHERE '.$link.'.id_cou = disciplines.id_cou AND disciplines.id_tea = teachers.id_tea AND teachers.id_use = users.id_use = '.$_SESSION['id'];
+		            			$disabled = 'disabled';
+		            			$selected_type = 'visualizar';
 		            		break;
 		            		case 5:
 		            			$script .= ', classroom, students, users WHERE '.$link.'.id_cou = classroom.id_cou AND classroom.id_cla = students.id_cla AND students.id_use = users.id_use AND users.id_use = '.$_SESSION['id'];
+								$disabled = 'disabled';
+								$selected_type = 'visualizar';
 		            		break;
-		            		default: $script.= 'WHERE id_cou = '.(isset($_GET['id'])) ? $_GET['id'] : ''; break;
+		            		default: $script.= (isset($_GET['id'])) ? ' WHERE id_cou = '.$_GET['id'] : ''; break;
 			            }
 			            #echo $Tables->SelectFrom(null, $script);
 			            $con = $PDO->query($Tables->SelectFrom(null, $script)) or die ($PDO);
@@ -115,8 +119,6 @@
 		                    if($row->id_cou){
 		                        $name_cou = $row->name_cou;
 		                        $period = $row->period;
-		                        $disabled = 'disabled';
-		                        $selected_type = 'visualizar';
 		                    } else {
 		                       	# demais funcionários poderão ver e alterar os dados do curso
 		                        ?>
@@ -143,41 +145,47 @@
 					$con = $PDO->query($Tables->SelectFrom('type_use', 'users WHERE id_use = '.$_SESSION['id'])) or die($PDO);
 					while($row = $con->fetch(PDO::FETCH_OBJ)){
                 		if($type_use = 4 || $type_use = 5){
-                    if($type_use = 4){
-                        $con = $PDO->query($Tables->SelectFrom(null, 'courses, disciplines, teachers, users WHERE courses.id_cou = disciplines.id_cou AND disciplines.id_tea = teachers.id_tea AND teachers.id_use = users.id_use = '.$_SESSION['id'])) or die ($PDO);
-                    } else {
-                        $con = $PDO->query($Tables->SelectFrom(null, 'courses, disciplines, teachers, users WHERE courses.id_cou = disciplines.id_cou AND disciplines.id_tea = teachers.id_tea AND teachers.id_use = users.id_use = '.$_SESSION['id'])) or die ($PDO);
-                    }
-                    $disabled = 'disabled';
-                    $selected_type = 'visualizar';
-                    while($row = $con->fetch(PDO::FETCH_OBJ)){
-                        #Verificar se a id do curso e o Get id são iguais
-                        if($row->id_dis){
-                            $name_dis = $row->name_dis;
+		                    if($type_use = 4){
+		                        $con = $PDO->query($Tables->SelectFrom(null, 'courses, disciplines, teachers, users WHERE courses.id_cou = disciplines.id_cou AND disciplines.id_tea = teachers.id_tea AND teachers.id_use = users.id_use = '.$_SESSION['id'])) or die ($PDO);
+		                        $disabled = 'disabled';
+                    			$selected_type = 'visualizar';
+		                    } else {
+		                        $con = $PDO->query($Tables->SelectFrom(null, 'courses, disciplines, teachers, users WHERE courses.id_cou = disciplines.id_cou AND disciplines.id_tea = teachers.id_tea AND teachers.id_use = users.id_use = '.$_SESSION['id'])) or die ($PDO);
+		                        $disabled = 'disabled';
+                    			$selected_type = 'visualizar';
+		                    }
+		                    while($row = $con->fetch(PDO::FETCH_OBJ)){
+		                        #Verificar se a id do curso e o Get id são iguais
+		                        if($row->id_dis){
+		                            $name_dis = $row->name_dis;
+		                        } else {
+		                            ?>
+		                            <div class="column is-4 is-offset-4">
+		                                <div class="box">
+		                                    <h3 class="title is-medium">Ops</h3>
+		                                    <p class="subtitle">Houve problemas durante a sua requisição.</p>
+		                                    <p class="links">
+		                                        <a href="index">Início</a> &nbsp;·&nbsp;
+		                                        <a href="#">Voltar aonde estava</a> &nbsp;·&nbsp;
+		                                        <a href="help">Ajuda</a>
+		                                    </p>
+		                                </div>
+		                            </div>
+		                            <?php
+                        		}
+                        	}
                         } else {
-                            ?>
-                            <div class="column is-4 is-offset-4">
-                                <div class="box">
-                                    <h3 class="title is-medium">Ops</h3>
-                                    <p class="subtitle">Houve problemas durante a sua requisição.</p>
-                                    <p class="links">
-                                        <a href="index">Início</a> &nbsp;·&nbsp;
-                                        <a href="#">Voltar aonde estava</a> &nbsp;·&nbsp;
-                                        <a href="help">Ajuda</a>
-                                    </p>
-                                </div>
-                            </div>
-                            <?php
+                        	$disabled = '';
+                        	$selected_type = 'cadastrar';
                         }
-                    }
-                		} 
+                    } 
                     # demais funcionários poderão ver e alterar os dados do curso
-            		}
         		break;
-				case 'employees': case 'students': case 'teachers': 
+        		case 'events':
+        		break;
+				case 'employees': case 'students': case 'teachers': case 'directors' : case 'coordinators': 
 					$con = $PDO->query($Tables->SelectFrom(null, $link.', users WHERE '.$link.'.id_use = users.id_use')) or die ($PDO);
 					while($row = $con->fetch(PDO::FETCH_OBJ)){
-
 					}
 				break;
 				case 'historic':
@@ -404,7 +412,8 @@
 					$string = 'Tipo de Usuário';
 					#criar radio button
 				break;
-				case 'schedule-grid':
+				case 'schedule-grid': 
+		    		
 				break;
 			}
 		break;
