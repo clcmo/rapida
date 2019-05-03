@@ -1,113 +1,66 @@
 <?php
-  include ('header.php');
+  include('header.php');
   switch ($Login->IsLogged()) {
     case false:
-      ?>
-      <div class="column is-4 is-offset-4">
-        <h3 class="title is-medium">Recuperar</h3>
-        <p class="subtitle">Insira os dados para recuperar sua senha.</p>
-        <div class="box">
-          <figure class="image is-128x128 avatar">
-            <img class="is-rounded" src="<?php echo $picture; ?>">
-          </figure>
+        $title = 'Recuperar';
+        $message = 'Informe o e-mail para recuperar seu acesso
+          <figure class="image is-128x128 avatar"><img class="is-rounded" src="'.$picture.'"></figure>
           <form method="post" action="">
             <div class="field">
               <div class="control">
-                <input class="input is-large" type="email" name="email" placeholder="<?php echo $placeholder; ?>" value="<?php echo $email; ?>" autofocus="">
+                <input class="input is-large" type="email" name="email" placeholder="'.$placeholder.'" value="'.$email.'" autofocus="">
               </div>
             </div>
             <input class="button is-block is-info is-large is-fullwidth" type="submit" name="recover" value="Recuperar" />
-          </form>
-        </div>
-        <p class="links">
-          <a href="signup">Cadastrar</a> &nbsp;·&nbsp;
-          <a href="forgot-pass">Recuperar Senha</a> &nbsp;·&nbsp;
-          <a href="help">Ajuda</a>
-        </p>
-        <p class="subtitle is-6">
-          <?php
-            if(isset($_POST['recover'])) {
-              # Resgata variáveis do formulário
-              $email = isset($_POST['email']) ? $_POST['email'] : '';
+          </form>';
+          $links[1] = 'login'; 
+          $links[2] = 'Entrar';
+          $links[3] = 'signup'; 
+          $links[4] = 'Cadastrar';
 
-              # Verifica se os campos estão vazios e exibe uma mensagem de erro
-              if (empty($email)) {
-                echo 'Informe email.';
-                exit;
-              }
+          if(isset($_POST['recover'])) {
+            # Resgata variáveis do formulário
+            $email = isset($_POST['email']) ? $_POST['email'] : '';
+
+            # Verifica se os campos estão vazios e exibe uma mensagem de erro
+            if (empty($email)) {
+              echo 'Informe email.'; exit;
+            }
 
               # Verifica se o usuário existe e exibe ou uma mensagem de erro ou vai ao cadastro
-              $sql = $Tables->LoadFrom('users WHERE email = '.$email.' AND status_use = 1 LIMIT 1');
-              $con = $PDO->prepare($sql) or die ($PDO);
+              $con = $PDO->prepare($Tables->SelectFrom(null, 'users WHERE email = '.$email.' AND status_use = 1')) or die ($PDO);
               if(count($con) == 1){
-                  $password = $Load->RandomPass();
-                  $password = $Tables->HashStr($password);
+                $password = $Tables->HashStr($Load->RandomPass());
 
-                  $sql = $Tables->LoadFrom('users WHERE email = '.$email.' AND password = :password AND status_use = 1 LIMIT 1');
-                  $stmt = $PDO->prepare($sql);
-                  $stmt->bindParam(':password', $password);
-                  $stmt->execute();
-                  $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                  if (count($users) <= 0) {
-                    echo 'Um erro aconteceu';
-                    exit;
-                  }
+                $stmt = $PDO->prepare($Tables->SelectFrom(null, 'users WHERE email = '.$email.' AND password = :password AND status_use = 1'));
+                $stmt->bindParam(':password', $password);
+                $stmt->execute();
+                $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                if (count($users) <= 0) {
+                  echo 'Um erro aconteceu'; exit;
+                }
 
                 # Busca os resultados e os cataloga com a variável $_SESSION
                 $user = $users[0];
-                # session_start();
                 $_SESSION['logged_in'] = true;
-                
+                  
                 $_SESSION['id'] = $user['id_use'];
                 $_SESSION['name'] = $user['name_use'];
-                header('Location: admin.php');
-                  //$password = $Tables->HashStr();
-                  //echo 'Sua nova senha é '.$password;
-                  //echo 'Sua nova senha será encaminhada por email';
+                header('Location: profile');
+                //$password = $Tables->HashStr();
+                //echo 'Sua nova senha é '.$password;
+                //echo 'Sua nova senha será encaminhada por email';
               }
-              
-             /* //Verificar se o usuário existe e se a senha é a mesma     
-              $stmt = $PDO->prepare($sql);
-              $stmt->bindParam(':email', $email);
-              $stmt->execute();
-              $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-              if (count($users) <= 0) {
-                echo 'Email ou senha incorretos.';
-                exit;
-              }
-
-              //Busca os resultados e os cataloga com a variável $_SESSION
-              $user = $users[0];
-              //session_start();
-              $_SESSION['logged_in'] = true;
-              
-              $_SESSION['id'] = $user['id_use'];
-              $_SESSION['name'] = $user['name_use'];
-              //$_SESSION['type'] = $user['tipo_usu'];
-              //$_SESSION['year_date'] = date('Y', strtotime($user['cadastro']));
-
-              header('Location: admin.php');*/
-            }
-          ?>
-        </p>
-      </div>    
-      <?php
+          }
     break;
     case true:
-      ?>
-      <div class="column is-4 is-offset-4">
-        <div class="box">
-          <h3 class="title is-medium">Ops</h3>
-          <p class="subtitle">Esta página está inacessível, pois a sua seção foi inicializada.</p>
-          <p class="links">
-            <a href="index">Início</a> &nbsp;·&nbsp;
-            <a href="#">Voltar aonde estava</a> &nbsp;·&nbsp;
-            <a href="help">Ajuda</a>
-          </p>
-        </div>
-      </div>
-      <?php
-    break;
+        $title = 'Ops';
+        $message = 'Sessão já inicializada';
+        $links[1] = SERVER; 
+        $links[2] = 'Início';
+        $links[3] = '#'; 
+        $links[4] = 'Voltar aonde estava';
+      break;
   }
+  include('functions/ops.php');
   include('footer.php');

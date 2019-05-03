@@ -1,28 +1,7 @@
 <?php
 	include('main.php');
 
-	$sql = $Tables->LoadFrom('usuarios WHERE id_usu LIKE '.$_SESSION['id'].' AND status_usu = 1 LIMIT 1');
-	$query = $PDO->query($sql) or die ($PDO);
-	while($row = $query->fetch(PDO::FETCH_OBJ)){
-		switch ($row->tipo_usu){
-			case 1:
-			case 3:
-				$load = $name_page.', usuarios WHERE usuarios.id_usu LIKE '.$name_page.'.id_usu AND usuarios.id_usu LIKE '.$_SESSION['id'].' LIMIT '.$vi.','.$vf;
-				$button = '';
-				$profile_link = 'profile';
-			break;
-
-			case 2:
-				$load = $name_page.', usuarios WHERE usuarios.id_usu LIKE '.$name_page.'.id_usu LIMIT '.$vi.','.$vf;
-				$button = '<a class="button is-light is-inverted is-small">Gerar Documento</a>';
-				$profile_link = 'profile?id='.$row->id_usu;
-			break;
-		}
-	}
-
-	$sql = $Tables->LoadFrom($load);
-	$cont = $Tables->CountViewTable($load);
-	$query = $PDO->query($sql) or die ($PDO);
+	
 
 	while($row = $query->fetch(PDO::FETCH_OBJ)){
 		$foto = ($row->foto != null) ? SERVER.'uploads/'.$row->foto : $User->get_gravatar($main_email);

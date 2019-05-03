@@ -35,6 +35,8 @@
                 break;
             }
         ?>    
-        <section class="hero <?php echo $section_class?>">
+        <section class="hero <?php echo $section_class; ?>">
             <div class="container has-text-centered"><?php echo $Navegation->HeroMenu(); ?></div>
-        <?php echo $class; ?>
+        <?php 
+            echo $class;
+            #include('load/pages/main.php');

@@ -1,4 +1,48 @@
 <?php
+	$script = $link;
+
+	switch ($link) {
+		case 'classroom':
+			$script .= ', courses WHERE '.$link.'.id_cou = courses.id_cou';
+			$img = '<i class="fas fa-users" style="font-size: 3rem;"></i>';
+			$id = $Tables->Found_Item('id', $name_page);
+			$name_table = $Tables->Found_Item('name', 'courses');
+			$type_table = $Tables->Found_Item('type', 'courses');
+		break;
+		
+		case 'employees': case 'students': case 'teachers':
+			$script .= ', users WHERE '.$link.'.id_use = users.id_use';
+		break;
+
+		case 'historic': break;
+
+		case 'notifies':
+			$query = $PDO->query($Tables->SelectFrom(null,'users WHERE id_use = '.$_SESSION['id'].' AND status_use = 1')) or die ($PDO);
+			while($row = $query->fetch(PDO::FETCH_OBJ)){
+				switch ($row->type_use){
+					case 3:
+					case 5:
+						$script .= ', users WHERE '.$link.'.id_use = users.id_use AND users.id_use = '.$_SESSION['id'];
+						$button = '';
+						$profile_link = 'profile';
+					break;
+
+					default:
+						$script.=', users WHERE '.$link.'.id_use = users.id_usu';
+						$button = '<a class="button is-light is-inverted is-small">Gerar Documento</a>';
+						$profile_link = 'profile?id='.$row->id_use;
+					break;
+				}
+			}
+		break;
+
+	}
+
+	$sql = $Tables->LoadFrom($load);
+	$cont = $Tables->CountViewTable($load);
+	$query = $PDO->query($sql) or die ($PDO);
+	}
+
 	$script .=' LIMIT '.$vi.', '.$vf;
 
     $query = $PDO->query($Tables->LoadFrom($script)) or die ($PDO);

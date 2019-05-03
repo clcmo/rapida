@@ -1,8 +1,15 @@
 <?php
-	#atualizar com o essencial
 	# Lista de páginas e suas respectivas funcionalidades
-	
-	# Classe referente as Tabelas
+	# Classe Referente ao Login
+  	class Login { 
+        # 1 - Retorna se o usuário logou
+        function IsLogged() {
+        	return (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] != true) ? false : true;
+        }
+    }
+    $Login = new Login;
+
+    # Classe referente as Tabelas
   	class Tables {
 		# 1.1 - Localizar uma coluna de uma tabela para carregar seus dados
 	    function Found_Item($item, $name_table){
@@ -19,12 +26,6 @@
 	    	}
 	    	$sql .= (!$limit) ? ' FROM '.$name_table_and_cond : ' FROM '.$name_table_and_cond.' LIMIT '.$limit[1].', '.$limit[2];
 	    	return $sql;
-	    }
-	    
-	    # 1.2 - Contar dados existentes de uma tabela através do string informado
-	    function LoadCountFrom($name_table){
-	      	$Tables = new Tables;
-	      	return $Tables->SelectFrom('COUNT', $name_table);
 	    }
 	    
 	    # 2 - Cria o Hash da Senha, usando MD5 e SHA-1
@@ -73,17 +74,8 @@
 	    }
   	}
   	$Tables = new Tables;
-	
-	# Classe Referente ao Login
-  	class Login { 
-        # 1 - Retorna se o usuário logou
-        function IsLogged() {
-        	return (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] != true) ? false : true;
-        }
-    }
-    $Login = new Login;
-	
-	# Classe Referente ao Carregamento das Atribuições, Variáveis
+
+  	# Classe Referente ao Carregamento das Atribuições, Variáveis
 	class Load {
 		# 1 - Conexão com o BD
 	    function DataBase() {
@@ -174,11 +166,28 @@
 			}
             return $photo;
 		}
+
+		function WhatLink($link = LINK){
+			switch ($link) {
+		    	case 'classroom': $str = 'Turmas'; break;
+		    	case 'courses': $str = 'Cursos'; break;
+		    	case 'disciplines': $str = 'Disciplinas'; break;
+		    	case 'employees': $str = 'Funcionários'; break;
+		    	case 'historic': $str = 'Notas'; break;
+		   		case 'notifies': $str = 'Notificações'; break;
+		    	case 'profile': $str = 'Perfil'; break;
+		    	case 'schedule-grid': $str = 'Grade'; break;
+		    	case 'students': $str = 'Estudantes'; break;
+				case 'teachers': $str = 'Professores'; break;
+	    		case 'new-user': $str = 'Cadastro'; break;
+		    }
+		    return $str;
+		}
 	}
 	$Load = new Load;
 	define('SERVER', $Load->Server());
 
-	# Classe Referente a Navegação das Páginas
+		# Classe Referente a Navegação das Páginas
 	class Navegation {
 		# 1 - Gera o Menu de topo se o usuário estiver logado. Menu irá variar de acordo com o tipo de usuário
 	    function HeroMenu(
@@ -213,38 +222,38 @@
 	    							<div class="navbar-item has-dropdown is-hoverable">
 		        						<a class="navbar-link is-active" href="#"><i class="fas fa-users"></i>&nbsp;Usuários</a>
 		        						<div class="navbar-dropdown ">
-		        							<a class="dropdown-item" href="'.SERVER.'new-user">Cadastrar</a>
-		        							<a class="dropdown-item " href="'.SERVER.'employees">Funcionários</a>
+		        							<a class="dropdown-item " href="'.SERVER.'new-user">'.$Load->WhatLink('new-user').'</a>
+		        							<a class="dropdown-item " href="'.SERVER.'employees">'.$Load->WhatLink('employees').'</a>
 		        							<hr class="navbar-divider">
-		        							<a class="dropdown-item " href="'.SERVER.'teachers">Professores</a>
-		        							<a class="dropdown-item " href="'.SERVER.'#">Coordenadores</a>
-		        							<a class="dropdown-item " href="'.SERVER.'#">Direção</a>
+		        							<a class="dropdown-item " href="'.SERVER.'teachers">'.$Load->WhatLink('teachers').'</a>
+		        							<a class="dropdown-item " href="'.SERVER.'#">'.$Load->WhatLink('coordenators').'</a>
+		        							<a class="dropdown-item " href="'.SERVER.'#">'.$Load->WhatLink('directors').'</a>
 		        							<hr class="navbar-divider">
-		        							<a class="dropdown-item " href="'.SERVER.'students">Alunos</a>
-		        							<!--<a class="dropdown-item" href="'.SERVER.'classroom">Turmas de Alunos</a>-->
+		        							<a class="dropdown-item " href="'.SERVER.'students">'.$Load->WhatLink('students').'</a>
+		        							<!--<a class="dropdown-item" href="'.SERVER.'classroom">'.$Load->WhatLink('classroom').'</a>-->
 		        						</div>
 		        					</div>
 		        					<div class="navbar-item has-dropdown is-hoverable">
-		        						<a class="navbar-link is-active" href="courses-disciplines"><i class="fas fa-book-open"></i>&nbsp;Cursos e Disciplinas</a>
+		        						<a class="navbar-link is-active" href="#"><i class="fas fa-book-open"></i>&nbsp;Cursos e Disciplinas</a>
 		        						<div class="navbar-dropdown ">
-		        							<a class="dropdown-item " href="'.SERVER.'courses">Cursos</a>
-		        							<a class="dropdown-item " href="'.SERVER.'disciplines">Disciplinas</a>
-		        							<!--<a class="dropdown-item " href="'.SERVER.'schedule-grid">Grade de Horários</a>-->
+		        							<a class="dropdown-item " href="'.SERVER.'courses">'.$Load->WhatLink('courses').'</a>
+		        							<a class="dropdown-item " href="'.SERVER.'disciplines">'.$Load->WhatLink('disciplines').'</a>
+		        							<!--<a class="dropdown-item " href="'.SERVER.'schedule-grid">'.$Load->WhatLink('schedule-grid').'</a>-->
 		        						</div>
 		        					</div>
-									<!--<a class="navbar-item" href="'.SERVER.'events"><i class="fas fa-graduation-cap"></i>&nbsp;Eventos</a>-->';
+									<!--<a class="navbar-item" href="'.SERVER.'events"><i class="fas fa-graduation-cap"></i>&nbsp;'.$Load->WhatLink('events').'</a>-->';
 							break;
 												
 							case 4:
 								#professor
 								$menu .= '
-	    						<a class="navbar-item" href="'.SERVER.'notifies"><i class="fas fa-book-open"></i>&nbsp;Notificações</a>
+	    						<a class="navbar-item" href="'.SERVER.'notifies"><i class="fas fa-book-open"></i>&nbsp;'.$Load->WhatLink('notifies').'</a>
 								<a class="navbar-item" href="'.SERVER.'"><i class="fas fa-graduation-cap"></i>&nbsp;Formandos</a>';
 							break;
 							case 5:
 							#aluno
 								$menu .= '
-	                    		<a class="navbar-item" href="'.SERVER.'historic"><i class="fas fa-book-open"></i>&nbsp;Histórico</a>
+	                    		<a class="navbar-item" href="'.SERVER.'historic"><i class="fas fa-book-open"></i>&nbsp;'.$Load->WhatLink('historic').'</a>
 								<a class="navbar-item" href="'.SERVER.'#"><i class="far fa-file"></i>&nbsp;Documentos</a>';
 							break;
 	    			}
@@ -255,8 +264,8 @@
 							<i class="fas fa-search" aria-hidden="true"></i>&nbsp;<span><input class="input" type="search" placeholder="Procurar..."></span>
 						</a>-->
 	                    <div class="navbar-end">
-							<a class="navbar-item" href="profile"><i class="fas fa-user"></i>&nbsp;Perfil</a>
-	                    	<a class="navbar-item" href="notifies"><i class="fas fa-bell"></i>&nbsp;Notificações</a>
+							<a class="navbar-item" href="profile"><i class="fas fa-user"></i>&nbsp;'.$Load->WhatLink('profile').'</a>
+	                    	<a class="navbar-item" href="notifies"><i class="fas fa-bell"></i>&nbsp;'.$Load->WhatLink('notifies').'</a>
 	                    	<a class="navbar-item" href="#"><i class="fas fa-book"></i>&nbsp;Biblioteca</a>
 							<a class="navbar-item" href="logout"><i class="fas fa-sign-out-alt"></i>&nbsp;Sair</a>
 						</div>
@@ -279,48 +288,37 @@
     	}
 
     	# 2 - Gera a informação e um mapa rápido de acesso através do link informado
-	    function MainNavegation($link = LINK, $mess = '<ul>Você está em: &nbsp;', $str = ''){
+	    function MainNavegation($link = LINK, $mess = '<ul>Você está em: &nbsp;'){
 	    	if(!$link || $link == 'index') {
 	    		$mess .= '<li class="is-active"><a href="'.SERVER.'" aria-current="page">Início</a></li>';
 	    	} else {
-	    		switch ($link) {
-		    		case 'classroom': $str = 'Turmas'; break;
-		    		case 'courses': $str = 'Cursos'; break;
-		    		case 'disciplines': $str = 'Disciplinas'; break;
-		    		case 'employees': $str = 'Funcionários'; break;
-		    		case 'historic': $str = 'Notas'; break;
-		   			case 'notifies': $str = 'Notificações'; break;
-		    		case 'profile': $str = 'Perfil'; break;
-		    		case 'schedule-grid': $str = 'Grade'; break;
-		    		case 'students': $str = 'Estudantes'; break;
-					case 'teachers': $str = 'Professores'; break;
-	    			case 'new-user': $str = 'Usuários'; break;
-		    	}
 		    	$mess .='
 	    			<li class=""><a href="'.SERVER.'" aria-current="page">Início</a></li>
-	    			<li class="is-active"><a href="'.$link.'" aria-current="page">'.ucfirst($str).'</a></li>';
+	    			<li class="is-active"><a href="'.$link.'" aria-current="page">'.ucfirst($Load->WhatLink()).'</a></li>';
 	    	}
 	    	return $mess .= '</ul>';
 	    }
 
+
 	    # 2.1 - Mostra um menu personalizado, com mapa de acesso, através do link e do tipo de usuário informado
-    	function FooterMenu() {
+    	function FooterMenu(
+	    	$menu = '
+	    		<div class="columns">
+		    		<div class="column is-3">
+			    		<aside class="menu is-hidden-mobile">
+			        	<p class="menu-label">Gerais</p>
+				        	<ul class="menu-list">
+				                <li><a href="'.SERVER.'" class="is-active">Início</a></li>
+				                <li><a href="'.SERVER.'profile">Perfil</a></li>
+				                <li><a href="'.SERVER.'notifies">Notificações</a></li>
+				                <li><a href="#">Biblioteca Online</a></li>
+				            </ul>
+						</aside>
+					</div>
+				<div class="column is-3">'
+    	) {
     		$Load = new Load;
     		$Tables = new Tables;
-    		$menu = '
-    		<div class="columns">
-    		<div class="column is-3">
-    		<aside class="menu is-hidden-mobile">
-        	<p class="menu-label">Gerais</p>
-        	<ul class="menu-list">
-                <li><a href="'.SERVER.'" class="is-active">Início</a></li>
-                <li><a href="'.SERVER.'profile">Perfil</a></li>
-                <li><a href="'.SERVER.'notifies">Notificações</a></li>
-                <li><a href="#">Biblioteca Online</a></li>
-            </ul>
-			</aside>
-			</div>
-			<div class="column is-3">';
     		$PDO = $Load->DataBase();
     		$con = $PDO->query($Tables->SelectFrom('type_use', 'users WHERE id_use LIKE '.$_SESSION['id'].' AND status_use = 1')) or die ($PDO);
     		while($row = $con->fetch(PDO::FETCH_OBJ)){
@@ -337,10 +335,10 @@
 		    				<p class="menu-label">Administração</p>
 		                    <ul class="menu-list">
 		                        <li>
-		                            <a href="courses-disciplines">Cursos e Disciplinas</a>
+		                            <a href="#">Cursos e Disciplinas</a>
 		                            <ul>
-		                                <li><a href="'.SERVER.'courses">Curso</a></li>
-		                                <li><a href="'.SERVER.'disciplines">Disciplina</a></li>
+		                                <li><a href="'.SERVER.'courses">'.$Load->WhatLink('courses').'</a></li>
+		                                <li><a href="'.SERVER.'disciplines">'.$Load->WhatLink('disciplines').'</a></li>
 		                                <!--<li><a href="'.SERVER.'schedule-grid">Grade de Horários</a></li>-->
 		                            </ul>
 		                        </li>
@@ -410,6 +408,13 @@
 	    }
 	}
 	$Navegation = new Navegation;
+
+	#atualizar com o essencial
+	
+	
+
+    	
+
 	
 	# Classe que cataloga as funções referentes as páginas
     class Pages {

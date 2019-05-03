@@ -1,19 +1,15 @@
 <?php
+	$links = array();
+	$links[3] = '#';
+	$links[4] = 'Voltar aonde estava';
 	switch ($Login->IsLogged()) {
 		case false:
-			?>
-			<div class="column is-4 is-offset-4">
-				<div class="box">
-	       			<h3 class="title is-medium">Ops</h3>
-	        		<p class="subtitle">Esta página está inacessível, pois a sua seção não foi inicializada.</p>
-	        		<p class="links">
-	        		  <a href="login">Entrar</a> &nbsp;·&nbsp;
-	        		  <a href="#">Voltar aonde estava</a> &nbsp;·&nbsp;
-	        		  <a href="help">Ajuda</a>
-	        		</p>
-	        	</div>
-	      	</div>
-      		<?php
+			#exibir descrição do erro + página de acesso
+			$title = 'Ops';
+			$message = 'Esta página está inacessível, pois a sua seção não foi inicializada.';
+			$links[1] = 'login';
+			$links[2] = 'Entrar';
+			include('ops.php');
 		break;
 		case true:
 			#com o nome da página estaremos puxando:
@@ -34,19 +30,9 @@
 					$table = (isset($_GET['t'])) ? $_GET['t'] : '';
 					$id = (isset($_GET['id'])) ? $_GET['id'] : '';
 					if(!$table || !$id){
-						?>
-						<div class="column is-4 is-offset-4">
-							<div class="box">
-				       			<h3 class="title is-medium">Ops</h3>
-				        		<p class="subtitle">Houve problemas durante a sua requisição.</p>
-				        		<p class="links">
-				        		  <a href="index">Início</a> &nbsp;·&nbsp;
-				        		  <a href="#">Voltar aonde estava</a> &nbsp;·&nbsp;
-				        		  <a href="help">Ajuda</a>
-				        		</p>
-				        	</div>
-				      	</div>
-      					<?php
+						$message = 'Houve problemas durante a sua requisição.';
+						$links[1] = SERVER; $links[2] = 'Início';
+						include('ops.php');
       				} else {
       					$id_table = $Tables->Found_Item('id', $table);
 						$status_table = $Tables->Found_Item('status', $table);
@@ -138,8 +124,6 @@
 		            	}
 		            }
         		break;
-				case 'courses-disciplines':
-				break;
 				case 'disciplines':
 					$name_dis = $disabled = '';
 					$con = $PDO->query($Tables->SelectFrom('type_use', 'users WHERE id_use = '.$_SESSION['id'])) or die($PDO);
@@ -219,6 +203,11 @@
 							#$name_use = $row->name_use;
 						}
 					}
+				break;
+				case 'login': case 'signup': case 'forgot-pass':
+					$message = 'Esta página está inacessível, pois a sua seção foi inicializada.';
+					$links[1] = SERVER; $links[2] = 'Início';
+					include('ops.php');
 				break;
 				case 'notifies':
 					$con = $PDO->query($Tables->SelectFrom('name_use, type_use','users WHERE id_use LIKE '.$_SESSION['id'].' AND status_use = 1')) or die ($PDO);
@@ -412,9 +401,7 @@
 					$string = 'Tipo de Usuário';
 					#criar radio button
 				break;
-				case 'schedule-grid': 
-		    		
-				break;
+				case 'schedule-grid': break;
 			}
 		break;
 	}
