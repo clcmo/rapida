@@ -90,13 +90,12 @@
 	    }
 	    
 	    # 3 - Redirecionamento de URL
-	    function Link($name_page) {
+	    function Link($name_page = null) {
 	      	return header('Location: '.SERVER.''.$name_page);
 	    }
 	    
 	    # 4 - Descobrir o link para gerar o Load page
 	    function DiscoverLink($link = LINK, $sizeof = false){
-	    	$link = substr(LINK, 1);
 	    	if ($link != 'login')
 	    		$link = (isset($_GET['id'])) ? substr($link, 0, $sizeof) : $link;
 	    	else
@@ -126,31 +125,36 @@
 		}
 		
 		# 5 - Exibe a imagem gravada no BD ou a imagem gravada no site Gravatar.com
-		function Gravatar($email = MAIN_EMAIL, $s = 240, $d = 'mp', $r = 'g', $img = false, $atts = array()){
-			$Login = new Login;
+		function Gravatar($link = LINK, $email = MAIN_EMAIL, $s = 240, $d = 'mp', $r = 'g', $img = false, $atts = array()){
 			$Load = new Load;
 			$Tables = new Tables;
-			$photo = '';
 			$PDO = $Load->DataBase();
-			$link = $Load->DiscoverLink();
-			if($Login->IsLogged()){
-				#echo $link;
-				switch($link){
-					case 'employees': case 'teachers': case 'students':
-						$con = $PDO->query($Tables->SelectFrom('email', $link.', users WHERE '.$link.'.id_use = users.id_use')) or die ($PDO);
+			switch($link){
+				case 'employees': case 'teachers': case 'students':
+					$con = $PDO->query('photo, email', $link.', users WHERE '.$link.'.id_use = users.id_use and users.id_use = '.(isset($_SESSION['id'])) ? $_SESSION['id'] : $_GET['id']) or die ($PDO);
+					while($row = $con->fetch(PDO::FETCH_OBJ)) {
+						$email = $row->email;
+						$photo = isset($row->photo) ? 'uploads/'.$row->photo : '';
+					}
+				break;
+				case 'classroom':
+					$con = $PDO->query('id_stu', 'students, users WHERE students.id_use = users.id_use') or die ($PDO);
+					while($row = $con->fetch(PDO::FETCH_OBJ)) {
+						$id = $row->id_stu;
+						$con = $PDO->query('photo, email', $link.', students, users WHERE students.id_cla = '.$link.'.id_cla AND students.id_use = users.id_use and students.id_stu = '.$id) or die ($PDO);
 						while($row = $con->fetch(PDO::FETCH_OBJ)) {
-							$email = isset($row->email) ? $row->email : 'someone@somewhere.com';
+							$email = $row->email;
+							$photo = isset($row->photo) ? 'uploads/'.$row->photo : '';
 						}
-					break;
-					default:
-						$id = (isset($_SESSION['id'])) ? $_SESSION['id'] : $_GET['id'];
-						$con = $PDO->query($Tables->SelectFrom('photo, email', 'users WHERE id_use = '.$id)) or die ($PDO);
-						while($row = $con->fetch(PDO::FETCH_OBJ)) {
-							$email = isset($row->email) ? $row->email : 'someone@somewhere.com';
-							$photo = isset($row->photo) ? $row->photo : '';
-						}
-					break;
-				}
+					}
+				break;
+				case 'profile':
+					$con = $PDO->query('photo, email', 'users WHERE users.id_use = '.(isset($_SESSION['id'])) ? $_SESSION['id'] : $_GET['id']) or die ($PDO);
+					while($row = $con->fetch(PDO::FETCH_OBJ)) {
+						$email = $row->email;
+						$photo = isset($row->photo) ? 'uploads/'.$row->photo : '';
+					}
+				break;
 			}
 			if(!$photo){
 				$url = 'https://www.gravatar.com/avatar/';
@@ -169,8 +173,10 @@
 
 		function WhatLink($link = LINK){
 			switch ($link) {
+				case 'coordinators': $str = 'Coordenadores'; break;
 		    	case 'classroom': $str = 'Turmas'; break;
 		    	case 'courses': $str = 'Cursos'; break;
+		    	case 'directors': $str = 'Diretores'; break;
 		    	case 'disciplines': $str = 'Disciplinas'; break;
 		    	case 'employees': $str = 'Funcionários'; break;
 		    	case 'historic': $str = 'Notas'; break;
@@ -181,6 +187,7 @@
 				case 'teachers': $str = 'Professores'; break;
 	    		case 'new-user': $str = 'Cadastro'; break;
 		    }
+		    
 		    return $str;
 		}
 	}
@@ -226,7 +233,7 @@
 		        							<a class="dropdown-item " href="'.SERVER.'employees">'.$Load->WhatLink('employees').'</a>
 		        							<hr class="navbar-divider">
 		        							<a class="dropdown-item " href="'.SERVER.'teachers">'.$Load->WhatLink('teachers').'</a>
-		        							<a class="dropdown-item " href="'.SERVER.'#">'.$Load->WhatLink('coordenators').'</a>
+		        							<a class="dropdown-item " href="'.SERVER.'#">'.$Load->WhatLink('coordinators').'</a>
 		        							<a class="dropdown-item " href="'.SERVER.'#">'.$Load->WhatLink('directors').'</a>
 		        							<hr class="navbar-divider">
 		        							<a class="dropdown-item " href="'.SERVER.'students">'.$Load->WhatLink('students').'</a>
@@ -289,12 +296,13 @@
 
     	# 2 - Gera a informação e um mapa rápido de acesso através do link informado
 	    function MainNavegation($link = LINK, $mess = '<ul>Você está em: &nbsp;'){
+	    	$Load = new Load;
 	    	if(!$link || $link == 'index') {
 	    		$mess .= '<li class="is-active"><a href="'.SERVER.'" aria-current="page">Início</a></li>';
 	    	} else {
 		    	$mess .='
 	    			<li class=""><a href="'.SERVER.'" aria-current="page">Início</a></li>
-	    			<li class="is-active"><a href="'.$link.'" aria-current="page">'.ucfirst($Load->WhatLink()).'</a></li>';
+	    			<li class="is-active"><a href="'.$link.'" aria-current="page">'.ucfirst($Load->WhatLink($link)).'</a></li>';
 	    	}
 	    	return $mess .= '</ul>';
 	    }
@@ -399,7 +407,7 @@
     		<section class="hero is-info welcome is-small">
 			    <div class="hero-body">
 			        <div class="container">
-			        	<h1 class="title is-medium">'.$title.'</h1>
+			        	<h1 class="title is-medium is-white">'.$title.'</h1>
 			            <h2 class="subtitle">'.$subtitle.'</h2>
 			        </div>
 			    </div>
@@ -409,13 +417,6 @@
 	}
 	$Navegation = new Navegation;
 
-	#atualizar com o essencial
-	
-	
-
-    	
-
-	
 	# Classe que cataloga as funções referentes as páginas
     class Pages {
     	
@@ -648,9 +649,9 @@
 		            <thead><tr>'.$th.'</tr></thead>
 		            <tbody>';							
 					while($row = $con->fetch(PDO::FETCH_OBJ)){
-						#$name_use = $row->name_use;
+						$name_use = $row->name_use;
 						#$name_cou = $row->name_cou;
-						#$photo = ($row->photo != null) ? SERVER.'uploads/'.$row->photo : $Load->Gravatar($row->email);
+						$photo = $Load->Gravatar(LINK);
 						switch ($name_page) {
 							case 'classroom':
 								$signup_date = date('d/m/Y', strtotime($row->signup_date));
