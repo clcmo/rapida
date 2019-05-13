@@ -1,5 +1,5 @@
 <?php
 	include('header.php');
-	include('load/pages/main.php');
+	include('functions/pages/main.php');
 ?>
 <?php include('footer.php');
