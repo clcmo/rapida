@@ -24,9 +24,8 @@
 
     # 4 - Definição de Conexão
     $PDO = $Load->DataBase();
-    define('LINK',       $_SERVER['REQUEST_URI']);
-    $link = $Load->DiscoverLink();
-    define('MAIN_EMAIL', 'someone@somewhere.com');
+    define('LINK', substr($_SERVER['REQUEST_URI'], 1));
+    define('MAIN_EMAIL','someone@somewhere.com');
     $error = array();
 
     # 5 - Definições de Inserção/Edição
@@ -55,13 +54,12 @@
     $pc = (!$pg) ? 1 : $pg;
     $vi = $pc - 1;
     $vi = $vi * $vf;
-   
-    define('MAX', strlen($link));
+    define('MAX', strlen(LINK));
     $sizeof = array();
     $sizeof[1] = MAX;
     #echo $sizeof[1].' ';
     $sizeof[2] = strlen(strstr(LINK, '?id='.$id));
     #echo $sizeof[2];
-    $link = (isset($_GET['id'])) ? $Load->DiscoverLink($link, ($sizeof[1] - $sizeof[2])) : $Load->DiscoverLink();
+    $link = (isset($_GET['id'])) ? $Load->DiscoverLink(LINK, ($sizeof[1] - $sizeof[2])) : $Load->DiscoverLink();
 
    
