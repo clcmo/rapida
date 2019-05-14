@@ -9,7 +9,7 @@
 			$message = 'Esta página está inacessível, pois a sua seção não foi inicializada.';
 			$links[1] = 'login';
 			$links[2] = 'Entrar';
-			include('ops.php');
+			include('functions/ops.php');
 		break;
 		case true:
 			#com o nome da página estaremos puxando:
@@ -30,9 +30,10 @@
 					$table = (isset($_GET['t'])) ? $_GET['t'] : '';
 					$id = (isset($_GET['id'])) ? $_GET['id'] : '';
 					if(!$table || !$id){
+						$title = 'Ops';
 						$message = 'Houve problemas durante a sua requisição.';
 						$links[1] = SERVER; $links[2] = 'Início';
-						include('ops.php');
+						include('functions/ops.php');
       				} else {
       					$id_table = $Tables->Found_Item('id', $table);
 						$status_table = $Tables->Found_Item('status', $table);
@@ -52,26 +53,17 @@
 			    		} else {
 			    			$res = 'Um erro ocorreu.';
 			    		}
+			    		include('functions/sample-page.php');
       				}
 				break;
 				case 'classroom':
 					#Verifica se a tabela e o valor foram informados. Se não houver, repetir mensagem de erro
 					$id = (isset($_GET['id'])) ? $_GET['id'] : '';
 					if(!$id){
-						?>
-						<div class="column is-4 is-offset-4">
-							<div class="box">
-					   			<h3 class="title is-medium">Ops</h3>
-		    		    		<p class="subtitle">Houve problemas durante a sua requisição.</p>
-						   		<p class="links">
-						        	<a href="index">Início</a> &nbsp;·&nbsp;
-						       		<a href="#">Voltar aonde estava</a> &nbsp;·&nbsp;
-						        	<a href="help">Ajuda</a>
-						       	</p>
-						    </div>
-						</div>
-      					<?php include('footer.php');
-      				exit;
+						$title = 'Ops';
+						$message = 'Houve problemas durante a sua requisição.';
+						$links[1] = SERVER; $links[2] = 'Início';
+						include('functions/ops.php');
       				} else {
       					$script .= ', courses WHERE '.$link.'.id_cou = courses.id_cou AND id_cla = '.$id;
       					$con = $PDO->query($Tables->SelectFrom(null, $script)) or die($PDO);
@@ -107,19 +99,10 @@
 		                        $period = $row->period;
 		                    } else {
 		                       	# demais funcionários poderão ver e alterar os dados do curso
-		                        ?>
-		                        <div class="column is-4 is-offset-4">
-		                            <div class="box">
-		                                <h3 class="title is-medium">Ops</h3>
-		                                <p class="subtitle">Houve problemas durante a sua requisição.</p>
-		                                <p class="links">
-		                                    <a href="index">Início</a> &nbsp;·&nbsp;
-		                                    <a href="#">Voltar aonde estava</a> &nbsp;·&nbsp;
-		                                    <a href="help">Ajuda</a>
-		                                </p>
-		                            </div>
-		                        </div>
-		                        <?php
+		                        $title = 'Ops';
+								$message = 'Houve problemas durante a sua requisição.';
+								$links[1] = SERVER; $links[2] = 'Início';
+								include('functions/ops.php');
 		                    }
 		            	}
 		            }
@@ -143,19 +126,10 @@
 		                        if($row->id_dis){
 		                            $name_dis = $row->name_dis;
 		                        } else {
-		                            ?>
-		                            <div class="column is-4 is-offset-4">
-		                                <div class="box">
-		                                    <h3 class="title is-medium">Ops</h3>
-		                                    <p class="subtitle">Houve problemas durante a sua requisição.</p>
-		                                    <p class="links">
-		                                        <a href="index">Início</a> &nbsp;·&nbsp;
-		                                        <a href="#">Voltar aonde estava</a> &nbsp;·&nbsp;
-		                                        <a href="help">Ajuda</a>
-		                                    </p>
-		                                </div>
-		                            </div>
-		                            <?php
+		                            $title = 'Ops';
+									$message = 'Houve problemas durante a sua requisição.';
+									$links[1] = SERVER; $links[2] = 'Início';
+									include('functions/ops.php');
                         		}
                         	}
                         } else {
@@ -172,42 +146,11 @@
 					while($row = $con->fetch(PDO::FETCH_OBJ)){
 					}
 				break;
-				case 'historic':
-					#Verificar se o tipo do usuário é aluno ou não
-					$con = $PDO->query($Tables->SelectFrom('name_use, type_use', 'users WHERE id_use = '.$_SESSION['id'])) or die ($PDO);
-					while($row = $con->fetch(PDO::FETCH_OBJ)){
-						$name_use = $row->name_use;
-						switch($row->type_use){
-							case 5: $id = $_SESSION['id']; break;
-							default:
-								$id = (isset($_GET['id'])) ? $_GET['id'] : '';
-								if(!$id){
-								?>
-								<div class="column is-4 is-offset-4">
-									<div class="box">
-									    <h3 class="title is-medium">Ops</h3>
-										<p class="subtitle">Houve problemas durante a sua requisição.</p>
-							    		<p class="links">
-							    			<a href="index">Início</a> &nbsp;·&nbsp;
-									   		<a href="#">Voltar aonde estava</a> &nbsp;·&nbsp;
-									    	<a href="help">Ajuda</a>
-									   	</p>
-								 	</div>
-							   	</div>
-								<?php
-								}	
-							break;
-						}
-						$con = $PDO->query($Tables->SelectFrom(null, 'historic, students, disciplines, users WHERE historic.id_dis = disciplines.id_dis AND historic.id_stu = students.id_stu AND students.id_use = users.id_use And users.id_use = '.$id)) or die ($PDO);
-						while($row = $con->fetch(PDO::FETCH_OBJ)){
-							#$name_use = $row->name_use;
-						}
-					}
-				break;
+				case 'historic': include('functions/sample-page.php'); break;
 				case 'login': case 'signup': case 'forgot-pass':
 					$message = 'Esta página está inacessível, pois a sua seção foi inicializada.';
 					$links[1] = SERVER; $links[2] = 'Início';
-					include('ops.php');
+					include('functions/ops.php');
 				break;
 				case 'notifies':
 					$con = $PDO->query($Tables->SelectFrom('name_use, type_use','users WHERE id_use LIKE '.$_SESSION['id'].' AND status_use = 1')) or die ($PDO);
