@@ -44,11 +44,25 @@
 		?>
 	</div>
 	<div class="box content">
-		<!--Criar formato onde, a partir da seleção da turma, a página seja automaticamente redirecionada -->
-		<?php 
-			#include('load/options/courses.php');
-			#echo $link;
-			echo $Navegation->HeroMessage('Turmas', 'Visualização da Turma de '.$name_cou).'<hr/>';
-			echo $Pages->LoadSuperTablePage($link);
+		<?php
+			switch($link){
+				case 'change': case 'ops': break;
+
+				case 'historic':
+					echo $Navegation->HeroMessage().'<hr/>';
+					echo $Pages->LoadSuperTablePage();
+				break;
+
+				default:
+					
+				break;
+			}
 		?>
 	</div>
+	<p class="subtitle-is-6 has-text-centered">
+		<?php
+			switch($link){
+				case 'change': echo $res; break;
+			}
+		?>
+	</p>
