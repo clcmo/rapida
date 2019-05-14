@@ -125,37 +125,40 @@
 		}
 		
 		# 5 - Exibe a imagem gravada no BD ou a imagem gravada no site Gravatar.com
-		function Gravatar($link = LINK, $email = MAIN_EMAIL, $s = 240, $d = 'mp', $r = 'g', $img = false, $atts = array()){
+		function Gravatar($email = MAIN_EMAIL, $s = 240, $d = 'mp', $r = 'g', $img = false, $atts = array(), $photo = ''){
 			$Load = new Load;
 			$Tables = new Tables;
 			$PDO = $Load->DataBase();
-			switch($link){
+			switch (LINK) {
 				case 'employees': case 'teachers': case 'students':
-					$con = $PDO->query('photo, email', $link.', users WHERE '.$link.'.id_use = users.id_use and users.id_use = '.(isset($_SESSION['id'])) ? $_SESSION['id'] : $_GET['id']) or die ($PDO);
+					$con = $PDO->query($Tables->SelectFrom($Tables->Found_Item('id', $link).' AS id', $link.', users WHERE '.$link.'.id_use = users.id_use')) or die ($PDO);
 					while($row = $con->fetch(PDO::FETCH_OBJ)) {
-						$email = $row->email;
-						$photo = isset($row->photo) ? 'uploads/'.$row->photo : '';
+						$id = $row->id;
+						#echo $Tables->SelectFrom('photo, email', $link.', users WHERE '.$link.'.id_use = users.id_use and users.id_use = '.$id);
+						$con = $PDO->query($Tables->SelectFrom('photo, email', $link.', users WHERE '.$link.'.id_use = users.id_use and users.id_use = '.$id)) or die ($PDO);
 					}
 				break;
+
 				case 'classroom':
-					$con = $PDO->query('id_stu', 'students, users WHERE students.id_use = users.id_use') or die ($PDO);
+					$con = $PDO->query($Tables->SelectFrom('id_stu', 'students, users WHERE students.id_use = users.id_use')) or die ($PDO);
 					while($row = $con->fetch(PDO::FETCH_OBJ)) {
 						$id = $row->id_stu;
-						$con = $PDO->query('photo, email', $link.', students, users WHERE students.id_cla = '.$link.'.id_cla AND students.id_use = users.id_use and students.id_stu = '.$id) or die ($PDO);
-						while($row = $con->fetch(PDO::FETCH_OBJ)) {
-							$email = $row->email;
-							$photo = isset($row->photo) ? 'uploads/'.$row->photo : '';
-						}
+						#echo $Tables->SelectFrom('photo, email', $link.', students, users WHERE students.id_cla = '.$link.'.id_cla AND students.id_use = users.id_use and students.id_stu = '.$id);
+						$con = $PDO->query($Tables->SelectFrom('photo, email', $link.', students, users WHERE students.id_cla = '.$link.'.id_cla AND students.id_use = users.id_use and students.id_stu = '.$id)) or die ($PDO);
 					}
 				break;
-				case 'profile':
-					$con = $PDO->query('photo, email', 'users WHERE users.id_use = '.(isset($_SESSION['id'])) ? $_SESSION['id'] : $_GET['id']) or die ($PDO);
-					while($row = $con->fetch(PDO::FETCH_OBJ)) {
-						$email = $row->email;
-						$photo = isset($row->photo) ? 'uploads/'.$row->photo : '';
-					}
+				
+				case 'profile': 
+					$id = (isset($_GET['id'])) ? $_GET['id'] : $_SESSION['id'];
+					#echo $Tables->SelectFrom('photo, email', 'users WHERE id_use = '.(isset($_GET['id'])) ? $_GET['id'] : $_SESSION['id']);
+					$con = $PDO->query($Tables->SelectFrom('photo, email', 'users WHERE id_use = '.$id)) or die ($PDO);
 				break;
 			}
+			#while($row = $con->fetch(PDO::FETCH_OBJ)) {
+			#	$email = $row->email;
+			#	$photo = isset($row->photo) ? 'uploads/'.$row->photo : '';
+			#}
+			
 			if(!$photo){
 				$url = 'https://www.gravatar.com/avatar/';
 			    $url .= md5(strtolower(trim($email)));
@@ -194,7 +197,7 @@
 	$Load = new Load;
 	define('SERVER', $Load->Server());
 
-		# Classe Referente a Navegação das Páginas
+	# Classe Referente a Navegação das Páginas
 	class Navegation {
 		# 1 - Gera o Menu de topo se o usuário estiver logado. Menu irá variar de acordo com o tipo de usuário
 	    function HeroMenu(
@@ -271,10 +274,10 @@
 							<i class="fas fa-search" aria-hidden="true"></i>&nbsp;<span><input class="input" type="search" placeholder="Procurar..."></span>
 						</a>-->
 	                    <div class="navbar-end">
-							<a class="navbar-item" href="profile"><i class="fas fa-user"></i>&nbsp;'.$Load->WhatLink('profile').'</a>
-	                    	<a class="navbar-item" href="notifies"><i class="fas fa-bell"></i>&nbsp;'.$Load->WhatLink('notifies').'</a>
-	                    	<a class="navbar-item" href="#"><i class="fas fa-book"></i>&nbsp;Biblioteca</a>
-							<a class="navbar-item" href="logout"><i class="fas fa-sign-out-alt"></i>&nbsp;Sair</a>
+							<a class="navbar-item" href="'.SERVER.'profile"><i class="fas fa-user"></i>&nbsp;'.$Load->WhatLink('profile').'</a>
+	                    	<a class="navbar-item" href="'.SERVER.'notifies"><i class="fas fa-bell"></i>&nbsp;'.$Load->WhatLink('notifies').'</a>
+	                    	<a class="navbar-item" href="'.SERVER.'#"><i class="fas fa-book"></i>&nbsp;Biblioteca</a>
+							<a class="navbar-item" href="'.SERVER.'logout"><i class="fas fa-sign-out-alt"></i>&nbsp;Sair</a>
 						</div>
 					</div>
 		        </nav>';
@@ -284,9 +287,9 @@
 	                $menu .= '
 	                    </div>
 			            <div class="navbar-end">
-				    		<a class="navbar-item" href="login"><i class="fa fa-user"></i>&nbsp;Login</a>
-				    		<a class="navbar-item" href="example"><i class="fab fa-superpowers"></i>&nbsp;Exemplos</a>
-				    		<a class="navbar-item" href="#"><i class="fab fa-github"></i>&nbsp;Instale</a>
+				    		<a class="navbar-item" href="'.SERVER.'login"><i class="fa fa-user"></i>&nbsp;Login</a>
+				    		<a class="navbar-item" href="'.SERVER.'example"><i class="fab fa-superpowers"></i>&nbsp;Exemplos</a>
+				    		<a class="navbar-item" href="'.SERVER.'#"><i class="fab fa-github"></i>&nbsp;Instale</a>
 				    	</div>
 		        	</nav>';
 	            break;
@@ -302,7 +305,7 @@
 	    	} else {
 		    	$mess .='
 	    			<li class=""><a href="'.SERVER.'" aria-current="page">Início</a></li>
-	    			<li class="is-active"><a href="'.$link.'" aria-current="page">'.ucfirst($Load->WhatLink($link)).'</a></li>';
+	    			<li class="is-active"><a href="'.SERVER.''.$link.'" aria-current="page">'.ucfirst($Load->WhatLink($link)).'</a></li>';
 	    	}
 	    	return $mess .= '</ul>';
 	    }
@@ -319,7 +322,7 @@
 				                <li><a href="'.SERVER.'" class="is-active">Início</a></li>
 				                <li><a href="'.SERVER.'profile">Perfil</a></li>
 				                <li><a href="'.SERVER.'notifies">Notificações</a></li>
-				                <li><a href="#">Biblioteca Online</a></li>
+				                <li><a href="'.SERVER.'#">Biblioteca Online</a></li>
 				            </ul>
 						</aside>
 					</div>
@@ -393,7 +396,7 @@
 		                    <ul class="menu-list">
 		                    	<li><a href="'.SERVER.'notifies">Solicitar Documentos</a></li>
 		                        <li><a href="'.SERVER.'historic">Visualizar Histórico</a></li>
-		                        <li><a href="#">Rematrícula</a></li>
+		                        <li><a href="'.SERVER.'#">Rematrícula</a></li>
 		                    </ul>
 		                    </div>
 		                    </div>';
@@ -402,7 +405,35 @@
     		}
     		return $menu;
     	}
-	    function HeroMessage($title, $subtitle){
+	    function HeroMessage(){
+	    	$Load = new Load;
+	    	$Tables = new Tables;
+	    	$PDO  = $Load->DataBase();
+	    	$title = $subtitle = '';
+	    	switch(LINK){
+	    		case '': case SERVER:
+	    			$title = 'Olá, '.$_SESSION['name']; 
+	    			$subtitle = 'Tenha um bom dia!';
+	    		break;
+
+	    		case 'historic':
+					$title = $Load->WhatLink('historic');
+	    			$con = $PDO->query($Tables->SelectFrom('type_use', 'users WHERE id_use = '.$_SESSION['id'])) or die ($PDO);
+					while($row = $con->fetch(PDO::FETCH_OBJ)){
+						switch($row->type_use){
+							case 5: $name_use = $_SESSION['name']; break;
+							default: 
+								$id = (isset($_GET['id'])) ? $_GET['id'] : '';
+								$con = $PDO->query($Tables->SelectFrom('name_use', 'users WHERE id_use = '.$id)) or die ($PDO);
+								while($row = $con->fetch(PDO::FETCH_OBJ)){ 
+									$name_use = $row->name_use; 
+								}
+							break;
+						}
+					}
+	    			$subtitle = 'Histórico de notas de '.$name_use;
+	    		break;
+	    	}
 	    	$hero = '
     		<section class="hero is-info welcome is-small">
 			    <div class="hero-body">
@@ -618,13 +649,13 @@
 			            </div>';
 		}
 
-		function LoadSuperTablePage($name_page = LINK){
+		function LoadSuperTablePage($link = LINK, $th = ''){
 			$id = (isset($_GET['id'])) ? $_GET['id'] : '';
 			$Load = new Load;
 			$PDO = $Load->DataBase();
 			$Tables = new Tables;
-			$name_table = $name_page;
-			switch ($name_page) {
+			$table = '';
+			switch ($link) {
 		        case 'classroom':
 		        	$th = '<th colspan="2">Aluno</th><th>RA</th><th>Data de Matrícula</th><th>Data de Aniversário</th>';
 					$name_table = 	$name_page.', courses, students, users';
@@ -635,49 +666,71 @@
 				break;
 				case 'historic':
 					$th = '<th colspan="2">Aluno</th><th colspan="2">Notas</th><th colspan="2">Faltas</th><th colspan="2">Abonos</th><th>Média Final</th>';
-					$name_table = 	'historic, disciplines, students, users';
-					$name_table .= 	' WHERE historic.id_dis = disciplines.id_dis';
-					$name_table .= 	' AND historic.id_stu = students.id_stu';
-					$name_table .=	' AND students.id_use = users.id_use AND historic.id_his = '.$id;
+					#Verificar se o tipo do usuário é aluno ou não
+					$con = $PDO->query($Tables->SelectFrom('type_use', 'users WHERE id_use = '.$_SESSION['id'])) or die ($PDO);
+					while($row = $con->fetch(PDO::FETCH_OBJ)){
+						switch($row->type_use){
+							case 5: 
+								$id = $_SESSION['id'];
+								$name_use = $_SESSION['name'];
+							break;
+							default:
+								$id = (isset($_GET['id'])) ? $_GET['id'] : '';
+								if(!$id){
+									$title = 'Ops';
+									$message = 'Houve problemas durante a sua requisição.';
+									$links[1] = SERVER; $links[2] = 'Início';
+									$links[3] = '#';  $links[4] = 'Voltar aonde estava';
+									include('ops.php');
+									exit;
+								}
+							break;
+						}
+						$table =  $link.', students, disciplines, users';
+						$table .= ' WHERE '.$link.'.id_dis = disciplines.id_dis'; 
+						$table .= ' AND '.$link.'.id_stu = students.id_stu';
+						$table .= ' AND students.id_use = users.id_use';
+						$table .= ' And users.id_use = '.$id;
+					}
 				break;
 			}
-		    $con = $PDO->query($Tables->SelectFrom(null, $name_table)) or die ($PDO);
+			#echo $Tables->SelectFrom(null, $table);
+		    $con = $PDO->query($Tables->SelectFrom(null, $table)) or die ($PDO);
 		    #$id = $Tables->Found_Item('id', $name_page);
 		    #$name_table = $Tables->Found_Item('name', $name_page);
-		    echo '
-		    	<table class="table is-fullwidth is-striped">
-		            <thead><tr>'.$th.'</tr></thead>
-		            <tbody>';							
-					while($row = $con->fetch(PDO::FETCH_OBJ)){
-						$name_use = $row->name_use;
-						#$name_cou = $row->name_cou;
-						$photo = $Load->Gravatar(LINK);
-						switch ($name_page) {
-							case 'classroom':
-								$signup_date = date('d/m/Y', strtotime($row->signup_date));
-								$birthday_date = date('d/m/Y', strtotime($row->birthday_date));
-								$col_1 = '<p class="image is-64x64"><img class="is-rounded" src="'.$photo.'">';
-							    $col_2 = $name_use;
-							    $col_3 = $row->id_use;
-							    $col_4 = $signup_date;
-							    $col_5 = $birthday_date;
-							    $col_6 = '<a class="button is-link" href="historic?id='.$row->id_use.'">Ver Historico</a>';
-							    $col_7 = '<a class="button is-link" href="profile?id='.$row->id_use.'">Ver Perfil</a></td>';
-							    $col_8 = $col_9 = $col_10 = '';
-							break;
-							#criar tabela e acrescentar notas, faltas, abonos, formula da avaliação e média final
-							case 'historic':
-								$col_1 = '<p class="image is-64x64"><img class="is-rounded" src="'.$photo.'">';
-							    $col_2 = $name_use;
-							    $col_3 = '10';
-							    $col_4 = '7';
-							    $col_5 = '6';
-							    $col_6 = '3';
-							    $col_7 = '2';
-							    $col_8 = '2';
-							    $col_9 = '8';
-							    $col_10 = '';
-							break;
+
+		    echo '<table class="table is-fullwidth is-striped"><thead><tr>'.$th.'</tr></thead><tbody>';						
+			while($row = $con->fetch(PDO::FETCH_OBJ)){
+				$name_use = $row->name_use;
+				#$name_cou = $row->name_cou;
+				$photo = $Load->Gravatar();
+				switch ($name_page) {
+					case 'classroom':
+						$signup_date = date('d/m/Y', strtotime($row->signup_date));
+						$birthday_date = date('d/m/Y', strtotime($row->birthday_date));
+						$col_1 = '<p class="image is-64x64"><img class="is-rounded" src="'.$photo.'">';
+					    $col_2 = $name_use;
+					    $col_3 = $row->id_use;
+					    $col_4 = $signup_date;
+					    $col_5 = $birthday_date;
+					    $col_6 = '<a class="button is-link" href="historic?id='.$row->id_use.'">Ver Historico</a>';
+					    $col_7 = '<a class="button is-link" href="profile?id='.$row->id_use.'">Ver Perfil</a></td>';
+					    $col_8 = $col_9 = $col_10 = '';
+					break;
+
+					#criar tabela e acrescentar notas, faltas, abonos, formula da avaliação e média final
+					case 'historic':
+						$col_1 = '<p class="image is-64x64"><img class="is-rounded" src="'.$photo.'">';
+					    $col_2 = $name_use;
+					    $col_3 = $row->n1;
+						$col_4 = $row->n2;
+						$col_5	= $row->mp;
+						$col_6	= $row->fi;
+						$col_7	= $row->fa;
+						$col_8	= $row->f;
+						$col_9	= $row->mf;
+						$col_10	= $row->status_his;
+					break;
 						}
 						echo '
 							<tr>
