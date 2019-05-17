@@ -129,35 +129,33 @@
 			$Load = new Load;
 			$Tables = new Tables;
 			$PDO = $Load->DataBase();
+			$con = '';
+			$id = (isset($_SESSION['id'])) ? $_SESSION['id'] : '';
 			switch (LINK) {
 				case 'employees': case 'teachers': case 'students':
 					$con = $PDO->query($Tables->SelectFrom($Tables->Found_Item('id', $link).' AS id', $link.', users WHERE '.$link.'.id_use = users.id_use')) or die ($PDO);
 					while($row = $con->fetch(PDO::FETCH_OBJ)) {
-						$id = $row->id;
-						#echo $Tables->SelectFrom('photo, email', $link.', users WHERE '.$link.'.id_use = users.id_use and users.id_use = '.$id);
-						$con = $PDO->query($Tables->SelectFrom('photo, email', $link.', users WHERE '.$link.'.id_use = users.id_use and users.id_use = '.$id)) or die ($PDO);
+						$con = $PDO->query($Tables->SelectFrom('photo, email', $link.', users WHERE '.$link.'.id_use = users.id_use and users.id_use = '.$row->id)) or die ($PDO);
 					}
 				break;
 
 				case 'classroom':
-					$con = $PDO->query($Tables->SelectFrom('id_stu', 'students, users WHERE students.id_use = users.id_use')) or die ($PDO);
+					$con = $PDO->query($Tables->SelectFrom('id_stu AS id', 'students, users WHERE students.id_use = users.id_use')) or die ($PDO);
 					while($row = $con->fetch(PDO::FETCH_OBJ)) {
-						$id = $row->id_stu;
-						#echo $Tables->SelectFrom('photo, email', $link.', students, users WHERE students.id_cla = '.$link.'.id_cla AND students.id_use = users.id_use and students.id_stu = '.$id);
-						$con = $PDO->query($Tables->SelectFrom('photo, email', $link.', students, users WHERE students.id_cla = '.$link.'.id_cla AND students.id_use = users.id_use and students.id_stu = '.$id)) or die ($PDO);
+						$con = $PDO->query($Tables->SelectFrom('photo, email', $link.', students, users WHERE students.id_cla = '.$link.'.id_cla AND students.id_use = users.id_use and students.id_stu = '.$row->id)) or die ($PDO);
 					}
 				break;
 				
-				case 'profile': 
-					$id = (isset($_GET['id'])) ? $_GET['id'] : $_SESSION['id'];
-					#echo $Tables->SelectFrom('photo, email', 'users WHERE id_use = '.(isset($_GET['id'])) ? $_GET['id'] : $_SESSION['id']);
+				case 'profile':
+					$id = (isset($_GET['id'])) ? $_GET['id'] : $id;
 					$con = $PDO->query($Tables->SelectFrom('photo, email', 'users WHERE id_use = '.$id)) or die ($PDO);
+					while($row = $con->fetch(PDO::FETCH_OBJ)) {
+						$email = $row->email;
+						$photo = isset($row->photo) ? 'uploads/'.$row->photo : '';
+					}
 				break;
 			}
-			#while($row = $con->fetch(PDO::FETCH_OBJ)) {
-			#	$email = $row->email;
-			#	$photo = isset($row->photo) ? 'uploads/'.$row->photo : '';
-			#}
+			
 			
 			if(!$photo){
 				$url = 'https://www.gravatar.com/avatar/';
