@@ -29,7 +29,7 @@
     $error = array();
 
     # 5 - Definições de Inserção/Edição
-    $id = (isset($_SESSION['id'])) ? $_SESSION['id'] : (isset($_GET['id'])) ? $_GET['id'] : '';
+    $id = (isset($_GET['id'])) ? $_GET['id'] : (isset($_SESSION['id'])) ? $_SESSION['id'] : '';
     $email = isset($_GET['email']) ? $_GET['email'] : '';
     $placeholder = isset($_GET['email']) ? $_GET['email'] : 'Informe seu email';
     $picture = isset($_GET['email']) ? $Load->Gravatar($_GET['email']) : $Load->Gravatar();
@@ -37,15 +37,8 @@
     $password_conf = 'Repita corretamente';
 
     switch ($id) {
-        case true:
-            $selected_type = 'editar';
-            $type_button = 'edit';
-        break;
-        
-        case false:
-            $selected_type = 'cadastrar';
-            $type_button = 'save';
-        break;
+        case true: $selected_type = 'editar'; $type_button = 'edit'; break;
+        case false: $selected_type = 'cadastrar'; $type_button = 'save'; break;
     }
 
     # 6 - Definições de Paginação
@@ -57,9 +50,5 @@
     define('MAX', strlen(LINK));
     $sizeof = array();
     $sizeof[1] = MAX;
-    #echo $sizeof[1].' ';
     $sizeof[2] = strlen(strstr(LINK, '?id='.$id));
-    #echo $sizeof[2];
     $link = (isset($_GET['id'])) ? $Load->DiscoverLink(LINK, ($sizeof[1] - $sizeof[2])) : $Load->DiscoverLink();
-
-   

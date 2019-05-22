@@ -94,9 +94,8 @@
 			            $con = $PDO->query($Tables->SelectFrom(null, $script)) or die ($PDO);
 			            while($row = $con->fetch(PDO::FETCH_OBJ)){
 		                    #Verificar se a id do curso e o Get id são iguais
-		                    if($row->id_cou){
-		                        $name_cou = $row->name_cou;
-		                        $period = $row->period;
+		                    if($row->id_cou){ 
+		                    	$name_cou = $row->name_cou; $period = $row->period;
 		                    } else {
 		                       	# demais funcionários poderão ver e alterar os dados do curso
 		                        $title = 'Ops';
@@ -146,7 +145,7 @@
 					while($row = $con->fetch(PDO::FETCH_OBJ)){
 					}
 				break;
-				case 'historic': include('functions/sample-page.php'); break;
+				case 'historic': case 'schedule-grid': case 'reserve': include('functions/sample-page.php'); break;
 				case 'login': case 'signup': case 'forgot-pass':
 					$message = 'Esta página está inacessível, pois a sua seção foi inicializada.';
 					$links[1] = SERVER; $links[2] = 'Início';
