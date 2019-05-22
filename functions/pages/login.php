@@ -98,7 +98,7 @@
 		                  
 		                $_SESSION['id'] = $user['id_use'];
 		                $_SESSION['name'] = $user['name_use'];
-		                $load->Link('profile');
+		                $Load->Link('profile');
 		                //$password = $Tables->HashStr();
 		                //echo 'Sua nova senha é '.$password;
 		                //echo 'Sua nova senha será encaminhada por email';
@@ -190,7 +190,7 @@
 		            $_SESSION['id'] = $user['id_use'];
 		            $_SESSION['name'] = $user['name_use'];
 		            #redireciona para a página de perfil aonde ele finalizará o cadastro  
-		            header ('Location: profile');
+		            $Load->Link('profile');
 		          }
 		        }
     		break;
