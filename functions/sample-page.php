@@ -6,6 +6,34 @@
 		<?php
 			switch($link){
 				case SERVER: case 'change': case 'documents': case 'ops': break;
+				case 'reserve': case 'schedule-grid':
+				?>
+				<div class="column">
+					<div class="tabs is-right">
+					  	<ul>
+					    	<li class="is-active">
+					      		<a href="">
+					        		<span class="icon is-small"><i class="fas fa-chalkboard" aria-hidden="true"></i></span>
+					        		<span>Todos</span>
+					        	</a>
+					        </li>
+					        <li>
+					        	<a href="reserve">
+					        		<span class="icon is-small"><i class="fas fa-chalkboard-teacher" aria-hidden="true"></i></span>
+					        		<span class="content is-link">Reserva de Sala</span>
+					    		</a>
+					    	</li>
+					    	<li>
+					    		<a href="reserve">
+					    			<span class="icon is-small"><i class="fas fa-chalkboard" aria-hidden="true"></i></span>
+					    			<span class="content is-danger">Manutenção</span>
+					    		</a>
+					    	</li>
+						</ul>
+					</div>
+				</div>
+				<?php
+				break;
 				default:
 		?>
 		<div class="column">
@@ -48,7 +76,7 @@
 			switch($link){
 				case 'change': case 'ops': break;
 
-				case 'historic':
+				case 'historic': case 'schedule-grid': case 'reserve': 
 					echo $Navegation->HeroMessage().'<hr/>';
 					echo $Pages->LoadSuperTablePage();
 				break;
