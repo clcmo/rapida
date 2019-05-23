@@ -75,14 +75,11 @@
 		<?php
 			switch($link){
 				case 'change': case 'ops': break;
-
-				case 'historic': case 'schedule-grid': case 'reserve': 
+				case 'classroom': case 'historic': case 'schedule-grid': case 'reserve': 
 					echo $Navegation->HeroMessage().'<hr/>';
 					echo $Pages->LoadSuperTablePage();
 				break;
-
 				default:
-					
 				break;
 			}
 		?>

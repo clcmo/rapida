@@ -57,20 +57,28 @@
       				}
 				break;
 				case 'classroom':
-					#Verifica se a tabela e o valor foram informados. Se não houver, repetir mensagem de erro
-					$id = (isset($_GET['id'])) ? $_GET['id'] : '';
-					if(!$id){
-						$title = 'Ops';
-						$message = 'Houve problemas durante a sua requisição.';
-						$links[1] = SERVER; $links[2] = 'Início';
-						include('functions/ops.php');
-      				} else {
-      					$script .= ', courses WHERE '.$link.'.id_cou = courses.id_cou AND id_cla = '.$id;
-      					$con = $PDO->query($Tables->SelectFrom(null, $script)) or die($PDO);
-      					while($row = $con->fetch(PDO::FETCH_OBJ)){
-      						$name_cou = $row->name_cou;
-      					}
-      				}
+					switch ($Load->IsUserTheseType()) {
+						case true:
+							$script .= ', courses, students, users WHERE '.$link.'.id_cou = courses.id_cou 
+							AND classroom.id_cla = students.id_cla 
+							AND students.id_use = users.id_use AND users.id_use = '.$_SESSION['id'];
+						break;
+						
+						case false:
+							$id = (isset($_GET['id'])) ? $_GET['id'] : '';
+							if(!$id){
+								$title = 'Ops';
+								$message = 'Houve problemas durante a sua requisição.';
+								$links[1] = SERVER; $links[2] = 'Início';
+								include('functions/ops.php');
+	      					} else $script .= ', courses WHERE '.$link.'.id_cou = courses.id_cou AND id_cla = '.$id;
+	      				break;
+					}
+					$con = $PDO->query($Tables->SelectFrom(null, $script)) or die($PDO);
+	      			while($row = $con->fetch(PDO::FETCH_OBJ)){
+	      				$name_cou = $row->name_cou;
+	      			}
+      				include('functions/sample-page.php');
 				break;
 				case 'courses':
 					$name_cou = 'Informe o nome do curso';
