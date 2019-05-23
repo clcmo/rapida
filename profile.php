@@ -10,7 +10,7 @@
 			    </div>
 			</div>
 			<div class="box content">
-				<?php echo $Navegation->HeroMessage(ucfirst('perfil'), 'Informe os dados para '.$selected_type); ?>
+				<?php echo $Navegation->HeroMessage(ucfirst('perfil'), ); ?>
 				<hr/>
 				<section class="info-tiles">
 					<form action="#" method="post">
