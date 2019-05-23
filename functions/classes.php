@@ -17,15 +17,14 @@
 	    }
 	    
 	    # 1 - Carregar todos os dados (ou específicos) de uma tabela através do string informado
-	    function SelectFrom($item = null, $name_table_and_cond, $limit = array()){
+	    function SelectFrom($item = null, $name_table, $limit = array()){
 	    	$Tables = new Tables;
 	    	switch ($item) {
-	    		case 'COUNT': $sql = 'SELECT COUNT('.$Tables->Found_Item('id', $name_table_and_cond).') AS qt'; break;
+	    		case 'COUNT': $sql = 'SELECT COUNT('.$name_table.'.'.$Tables->Found_Item('id', $name_table).') AS qt'; break;
 	    		case null: $sql = 'SELECT *'; break;
 	    		default: $sql = 'SELECT '.$item; break;
 	    	}
-	    	$sql .= (!$limit) ? ' FROM '.$name_table_and_cond : ' FROM '.$name_table_and_cond.' LIMIT '.$limit[1].', '.$limit[2];
-	    	return $sql;
+	    	return $sql .= (!$limit) ? ' FROM '.$name_table : ' FROM '.$name_table.' LIMIT '.$limit[1].', '.$limit[2];
 	    }
 	    
 	    # 2 - Cria o Hash da Senha, usando MD5 e SHA-1
@@ -39,19 +38,25 @@
 	    }
 	    
 	    # 4 - Conta os registros de uma tabela ou de uma busca //a aprimorar
-	    function CountViewTable($type = null, $name_table, $item = null){
+	    function CountViewTable($type = null, $name_table = LINK, $item = null){
 	    	$Load = new Load;
 	    	$Tables = new Tables;
 	      	$PDO = $Load->DataBase();
+	      	$sizeof = array();
+	      	$sizeof[1] = strlen($name_table);
+	      	$sizeof[2] = strlen(strstr($name_table, ', '));
+	      	$calc = ($sizeof[1] - $sizeof[2]);
+	      	#echo $calc;
+	      	$name_table_2 = substr($name_table, 0, $calc);
 	      	switch ($type) {
 	      		case 'search':
 	      			$q = isset($_GET['q']) ? $_GET['q'] : '';
-	      			$qt = count($PDO->prepare($Tables->SelectFrom('COUNT', $name_table)." WHERE ".$item." LIKE '%".$q."%' ORDER BY ".$item) or die ($PDO));
+	      			$qt = count($PDO->prepare($Tables->SelectFrom('COUNT', $name_table_2)." WHERE ".$item." LIKE '%".$q."%' ORDER BY ".$item));
 	      		break;
-	      		
 	      		case null:
 	      		default:
-	      			$con = $PDO->query($Tables->SelectFrom('COUNT', $name_table)) or die ($PDO);
+	      			#echo $Tables->SelectFrom('COUNT('.$name_table_2.'.'.$Tables->Found_Item('id', $name_table_2).') AS qt', $name_table);
+	      			$con = $PDO->query($Tables->SelectFrom('COUNT('.$name_table_2.'.'.$Tables->Found_Item('id', $name_table_2).') AS qt', $name_table)) or die ($PDO);
 	      			while($row = $con->fetch(PDO::FETCH_OBJ)){
 	        			$qt = $row->qt;
 	      			}
@@ -67,7 +72,7 @@
 	    	$PDO = $Load->DataBase();
 	    	$con = $PDO->query('DELETE FROM '.$name_table.' WHERE '.$Tables->FoundId($name_table).' = '.$Tables->SearchId($name_table)) or die ($PDO);
 	    	if ($con) {
-	    	  return $Load->GoToLink($name_table);
+	    	  return $Load->Link($name_table);
 	    	} else {
 	    	  //return messageShow('error', $_SERVER['REQUEST_URI'], $str);
 	    	}
@@ -128,35 +133,29 @@
 		function Gravatar($email = MAIN_EMAIL, $s = 240, $d = 'mp', $r = 'g', $img = false, $atts = array(), $photo = ''){
 			$Load = new Load;
 			$Tables = new Tables;
+			$Login = new Login;
 			$PDO = $Load->DataBase();
+			switch ($Login->IsLogged()) {
+				case false: $email = (isset($_GET['email'])) ? $_GET['email'] : $email; break;
+				default: break;
+			}
 			$con = '';
-			$id = (isset($_SESSION['id'])) ? $_SESSION['id'] : '';
+			$id = (isset($_GET['id'])) ? $_GET['id'] : $_SESSION['id'];
 			switch (LINK) {
-				case 'employees': case 'teachers': case 'students':
-					$con = $PDO->query($Tables->SelectFrom($Tables->Found_Item('id', $link).' AS id', $link.', users WHERE '.$link.'.id_use = users.id_use')) or die ($PDO);
-					while($row = $con->fetch(PDO::FETCH_OBJ)) {
-						$con = $PDO->query($Tables->SelectFrom('photo, email', $link.', users WHERE '.$link.'.id_use = users.id_use and users.id_use = '.$row->id)) or die ($PDO);
-					}
-				break;
-
 				case 'classroom':
-					$con = $PDO->query($Tables->SelectFrom('id_stu AS id', 'students, users WHERE students.id_use = users.id_use')) or die ($PDO);
-					while($row = $con->fetch(PDO::FETCH_OBJ)) {
-						$con = $PDO->query($Tables->SelectFrom('photo, email', $link.', students, users WHERE students.id_cla = '.$link.'.id_cla AND students.id_use = users.id_use and students.id_stu = '.$row->id)) or die ($PDO);
-					}
+					$con = $PDO->query($Tables->SelectFrom(null, 'students, users WHERE students.id_use = users.id_use')) or die ($PDO);
 				break;
-				
+				case 'employees': case 'teachers': case 'students':
+					$con = $PDO->query($Tables->SelectFrom($Tables->Found_Item('id', LINK).' AS id', LINK.', users WHERE '.LINK.'.id_use = users.id_use')) or die ($PDO);
+				break;
 				case 'profile':
-					$id = (isset($_GET['id'])) ? $_GET['id'] : $id;
-					$con = $PDO->query($Tables->SelectFrom('photo, email', 'users WHERE id_use = '.$id)) or die ($PDO);
-					while($row = $con->fetch(PDO::FETCH_OBJ)) {
-						$email = $row->email;
-						$photo = isset($row->photo) ? 'uploads/'.$row->photo : '';
-					}
+					#$con = $PDO->query($Tables->SelectFrom(null, 'users WHERE id_use = '.$id)) or die ($PDO);
 				break;
 			}
-			
-			
+			#while($row = $con->fetch(PDO::FETCH_OBJ)) {
+			#	$email = $row->email;
+			#	$photo = isset($row->photo) ? 'uploads/'.$row->photo : '';
+			#}
 			if(!$photo){
 				$url = 'https://www.gravatar.com/avatar/';
 			    $url .= md5(strtolower(trim($email)));
@@ -174,6 +173,7 @@
 
 		function WhatLink($link = LINK){
 			switch ($link) {
+				case null: case SERVER: $str = ''; break;
 				case 'coordinators': $str = 'Coordenadores'; break;
 		    	case 'classroom': $str = 'Turmas'; break;
 		    	case 'courses': $str = 'Cursos'; break;
@@ -191,9 +191,23 @@
 		    	case 'students': $str = 'Estudantes'; break;
 				case 'teachers': $str = 'Professores'; break;
 	    		case 'new-user': $str = 'Cadastro'; break;
+	    		case 'users' : $str = 'Usuários'; break;
 		    }
 		    return $str;
 		}
+
+		#7 - retorna se usuário é ou não de tal tipo selecionado
+        function IsUserTheseType($type_use = 5){
+        	$Load = new Load;
+        	$Tables = new Tables;
+        	$id = isset($_GET['id']) ? $_GET['id'] : $_SESSION['id'];
+        	$PDO = $Load->DataBase();
+        	$con = $PDO->query($Tables->SelectFrom('type_use', 'users WHERE id_use = '.$id)) or die($PDO);
+        	while ($row = $con->fetch(PDO::FETCH_OBJ)) {
+        		$type = $row->type_use;
+        	}
+        	return $type;
+        }
 	}
 	$Load = new Load;
 	define('SERVER', $Load->Server());
@@ -312,7 +326,6 @@
 	    	return $mess .= '</ul>';
 	    }
 
-
 	    # 2.1 - Mostra um menu personalizado, com mapa de acesso, através do link e do tipo de usuário informado
     	function FooterMenu(
 	    	$menu = '
@@ -407,6 +420,7 @@
     		}
     		return $menu;
     	}
+
 	    function HeroMessage(){
 	    	$Load = new Load;
 	    	$Tables = new Tables;
@@ -416,6 +430,26 @@
 	    		case '': case SERVER:
 	    			$title = 'Olá, '.$_SESSION['name']; 
 	    			$subtitle = 'Tenha um bom dia!';
+	    		break;
+	    		case 'classroom':
+	    			$title = 'Turmas';
+	    			switch ($Load->IsUserTheseType()) {
+						case true:
+							$script = LINK.', courses, students, users WHERE '.LINK.'.id_cou = courses.id_cou 
+							AND classroom.id_cla = students.id_cla 
+							AND students.id_use = users.id_use AND users.id_use = '.$_SESSION['id'];
+						break;
+						case false: $script .= ', courses WHERE '.LINK.'.id_cou = courses.id_cou AND id_cla = '.$_GET['id']; break;
+					}
+					$con = $PDO->query($Tables->SelectFrom(null, $script)) or die($PDO);
+	      			while($row = $con->fetch(PDO::FETCH_OBJ)){
+	      				$name_cou = $row->name_cou;
+	      			}
+	    			$subtitle = 'Visualização da Turma de '.$name_cou;
+	    		break;
+	    		case 'profile':
+	    			$title = $Load->WhatLink();
+	    			$subtitle = 'Informe os dados para editar';
 	    		break;
 	    		case 'reserve':
 	    			$title = 'Reserva de Sala';
@@ -443,7 +477,6 @@
 					}
 					$subtitle = 'Visualização da grade de horários para '.$name_cou;
 	    		break;
-
 	    		case 'historic':
 					$title = $Load->WhatLink('historic');
 	    			$con = $PDO->query($Tables->SelectFrom('type_use', 'users WHERE id_use = '.$_SESSION['id'])) or die ($PDO);
@@ -478,107 +511,104 @@
 
 	# Classe que cataloga as funções referentes as páginas
     class Pages {
-    	
-		function LoadTablePage($name_page = LINK){
-			#$str = substr($name_page, 1, (MAX-5));
+		function LoadTablePage($link = LINK){
 			$Load = new Load;
 			$PDO = $Load->DataBase();
 			$Tables = new Tables;
-			$script = $name_page;
-			$type_table = $Tables->Found_Item('type', $name_page);
-			$id = $Tables->Found_Item('id', $name_page);
-			$name_table = $Tables->Found_Item('name', $name_page);
-			switch ($name_page) {
-			    case 'classroom':
+			$script = $link;
+			switch ($link) {
+				default:
+					$id = $Tables->Found_Item('id', $link);
+					$type_table = $Tables->Found_Item('type', $link);
+					$name_table = $Tables->Found_Item('name', $link);
+					$status_table = $Tables->Found_Item('status', $link);
+					$count = $Tables->CountViewTable(null, $link);
+				break;
+				case 'classroom':
+					switch($Load->IsUserTheseType()){
+						case true:
+							$script .= ', students, users, courses 
+								WHERE '.$link.'.id_cou = courses.id_cou 
+								AND '.$link.'.id_cla = students.id_cla AND students.id_use = users.id_use
+								AND users.id_use = '.$_SESSION['id'];
+						break;
+						case false: 
+							$script .= ', courses WHERE '.$link.'.id_cou = courses.id_cou';
+						break;
+					}
 			        $th = '<th></th><th>Nome do Curso</th><th>Tipo de Curso</th>';
-					$script .= ', courses WHERE '.$name_page.'.id_cou = courses.id_cou';
-					$titulo = 'Turmas';
 					$icon = '<i class="fas fa-users"></i>';
 					$type_table = $Tables->Found_Item('type', 'courses');
 					$name_table = $Tables->Found_Item('name', 'courses');
 				break;
 				case 'courses':
-					$th = '
-						<th></th>
-						<th>Nome</th>
-						<th>Tipo de Curso</th>
-						<th>Período</th>';
-					$titulo = 'Cursos';
+					$th = '<th></th><th>Nome</th><th>Tipo de Curso</th><th>Período</th>';
 					$icon = '<i class="fas fa-pencil-alt"></i>';
-					$type_table = $Tables->Found_Item('type', $name_page);
 				break;
 				case 'disciplines': 
-					$th = '
-						<th>Nome</th>
-						<th>Nome do Curso</th>
-						<th>Professor</th>';
-					$name_table .= ', `courses`, `teachers`, `users` WHERE disciplines.id_cou = courses.id_cou AND disciplines.id_tea = teachers.id_tea AND teachers.id_use = users.id_use';
-					$titulo = 'Disciplinas';
+					$th = '<th>Nome</th><th>Nome do Curso</th><th>Professor</th>';
+					$name_table .= ', courses, teachers, users WHERE '.$link.'.id_cou = courses.id_cou AND '.$link.'.id_tea = teachers.id_tea AND teachers.id_use = users.id_use';
 					$icon = '<i class="fas fa-chalkboard"></i>';
 					$type_table = $Tables->Found_Item('type', 'courses');
 				break;
 				case 'notifies':
-					$th = '<th></th><th>Titulo</th><th>Tipo da Notificação</th><th>Nome do Usuário</th>';
 					$con = $PDO->query($Tables->SelectFrom('type_use', 'users WHERE id_use LIKE '.$_SESSION['id'].' AND status_use = 1')) or die ($PDO);
-					$script .= ', users WHERE users.id_use = '.$name_page.'.id_use';
-					$titulo = 'Notificações';
-					$icon = '<i class="fas fa-bell"></i>';
 					while($row = $con->fetch(PDO::FETCH_OBJ)){
 						switch ($row->type_use){
-							case 2: break;
-							case 4: case 5: $script .=' AND users.id_use = '.$_SESSION['id']; break;
-							default: break;
+							case 4: case 5: 
+								$script .= ', users WHERE users.id_use = '.$link.'.id_use AND users.id_use = '.$_SESSION['id'];
+							break;
+							default: 
+								$script .= ', users WHERE users.id_use = '.$link.'.id_use';
+							break;
 						}
-						
 					}
+					$th = '<th></th><th>Titulo</th><th>Tipo da Notificação</th><th>Nome do Usuário</th>';
+					$icon = '<i class="fas fa-bell"></i>';
 				break;
 				case 'users':
 					$th = '<th></th><th>Nome</th><th>Tipo do Usuário</th><th></th>';
-					$titulo = 'usuários';
 					$icon = '<i class="fas fa-users"></i>';
 				break;
 			}
-			;
 			#echo $script;
 			$con = $PDO->query($Tables->SelectFrom(null, $script)) or die ($PDO);
-			#echo $Tables->CountViewTable(null, $script);
-			$cont = $Tables->CountViewTable(null, $script);
+			$count = $Tables->CountViewTable(null, $script);
 			echo '
-			    	<div class="card events-card">
-			            <header class="card-header">
-			                <p class="card-header-title">'.ucfirst($titulo).'</p>
-			                <a href="'.$name_page.'" class="card-header-icon" aria-label="more options"><span class="icon"><i class="fa fa-angle-down" aria-hidden="true"></i></span></a>
-			            </header>
-			            <div class="card-table">
-			                <div class="content">
-			                    <table class="table is-fullwidth is-striped">
-			                    	<thead><tr>'.$th.'</tr></thead>
-			                    	<tbody>';							
-								    while($row = $con->fetch(PDO::FETCH_OBJ)){
-								    	$status_table = $Tables->Found_Item('status', $name_page);
-								    	switch ($row->$status_table) {
-											case 1:
-												$action_link = 'change?t='.$name_page.'?id='.$row->$id;
-												$action_color = 'danger';
-												$action_button = '<i class="fas fa-minus-circle"></i>';
-											break;
-											case 2: 
-												$action_link = 'change?t='.$name_page.'?id='.$row->$id;
-												$action_color = 'success';
-												$action_button = '<i class="fas fa-check-square">';
-											break;
-										}
-								    	switch ($name_page) {
-								    		case 'classroom': 
-								    			$col_1 = '<a href="'.$name_page.'?id='.$row->$id.'" class="button is-link is-small">'.$icon.'</a>';
-								    			$col_2 = $row->name_cou;
-								    			$type = ($row->$type_table == 1) ? 'Ensino Médio' : 'Ensino Modular';
-								    			$col_3 = '<a class="button is-light is-inverted is-small">'.$type.'</a>';
-												$col_4 = '<a href="'.$action_link.'" class="button is-'.$action_color.' is-small">'.$action_button.'</a>';
-												$col_5 = '';
+			    <div class="card events-card">
+			        <header class="card-header">
+			            <p class="card-header-title">'.ucfirst($Load->WhatLink($link)).'</p>
+			            <a href="'.$link.'" class="card-header-icon" aria-label="more options"><span class="icon"><i class="fa fa-angle-down" aria-hidden="true"></i></span></a>
+			        </header>
+			        <div class="card-table">
+			            <div class="content">
+			                <table class="table is-fullwidth is-striped">
+			                	<thead><tr>'.$th.'</tr></thead>
+			                    <tbody>';
+			                    while($row = $con->fetch(PDO::FETCH_OBJ)){
+									switch($Load->IsUserTheseType()){
+										case true: $action_button = $action_color = $action_link = ''; break;
+										case false:
+											switch ($row->$status_table) {
+												case 1: $action_link = 'change?t='.$link.'?id='.$row->$id; $action_color = 'danger'; $action_button = '<i class="fas fa-minus-circle"></i>';
+												break;
+												case 2: $action_link = 'change?t='.$link.'?id='.$row->$id; $action_color = 'success'; $action_button = '<i class="fas fa-check-square">';
+												break;
+											}
+										break;
+									}
+								    switch ($link) {
+								    	case 'classroom':
+								    		$link = ($Load->IsUserTheseType()) ? $link : $link.'?id='.$row->$id;
+								    		$col_1 = '<a href="'.$link.'" class="button is-link is-small">'.$icon.'</a>';
+								    		$col_2 = $row->name_cou;
+								    		$type = ($row->type_cou == 1) ? 'Ensino Médio' : 'Ensino Modular';
+								    		$col_3 = '<a class="button is-light is-inverted is-small">'.$type.'</a>';
+											$col_4 = ($action_link != null) ? '<a href="'.$action_link.'" class="button is-'.$action_color.' is-small">'.$action_button.'</a>' : '';
+											$col_5 = '';
 								    		break;
 								    		case 'courses':
-								    			$col_1 = '<a href="'.$name_page.'?id='.$row->$id.'" class="button is-link is-small">'.$icon.'</a>';
+								    			$col_1 = '<a href="'.$link.'?id='.$row->$id.'" class="button is-link is-small">'.$icon.'</a>';
 								    			$col_2 = $row->$name_table;
 								    			$type = ($row->$type_table == 1) ? 'Ensino Médio' : 'Ensino Modular';
 								    			$col_3 = '<a class="button is-light is-inverted is-small">'.$type.'</a>';
@@ -595,13 +625,13 @@
 								    			$col_1 = $row->$name_table;
 								    			$col_2 = '<a href="courses?n='.$row->name_cou.'">'.$row->name_cou.'</a>';
 								    			$col_3 = '<a href="courses?n='.$row->name_use.'">'.$row->name_use.'</a>';
-								    			$col_4 = '<a href="'.$name_page.'?id='.$row->$id.'" class="button is-link is-small">'.$icon.'</a>';
+								    			$col_4 = '<a href="'.$link.'?id='.$row->$id.'" class="button is-link is-small">'.$icon.'</a>';
 								    			$col_5 = '<a href="'.$action_link.'" class="button is-'.$action_color.' is-small">'. $action_button.'</a>';
 								    		break;
 								    		case 'notifies':
-								    			$col_1 = '<a href="'.$name_page.'?id='.$row->$id.'" class="button is-link is-small">'.$icon.'</a>';
+								    			$col_1 = '<a href="'.$link.'?id='.$row->$id.'" class="button is-link is-small">'.$icon.'</a>';
 												$col_2 = $row->$name_table;
-												switch ($row->$type_table) {						
+												switch ($row->$type_table) {				
 													case 1: $type = 'Solicitação'; $color = 'is-primary'; break;
 													case 2: $type = 'Revisão'; $color = 'is-warning'; break;
 													case 3: $type = 'Matrícula'; $color = 'is-success'; break;
@@ -614,23 +644,21 @@
 												$col_4 = $row->name_use;
 												switch ($row->$status_table) {
 													case 1:
-														$action_link = 'get_doc?t='.$name_page.'?id='.$row->$id;
+														$action_link = 'get_doc?t='.$link.'?id='.$row->$id;
 														$action_color = 'success';
 														$action_button = '<i class="fas fa-file"></i>&nbsp;Gerar';
 													break;
 													case 2: 
-														$action_link = 'view_doc?t='.$name_page.'?id='.$row->$id;
+														$action_link = 'view_doc?t='.$link.'?id='.$row->$id;
 														$action_color = 'primary';
 														$action_button = '<i class="fas fa-file">&nbsp;Ver';
 													break;
 												}
-												#$col_5 = '<a href="'.$action_link.'" class="button is-'.$action_color.' is-small">'.$action_button.'</a>';
 												$col_5 = '';
 								    		break;
 								    		case 'users':
-								    			#$photo = ($row->photo) ? SERVER.'uploads/'.$row->photo : $Load->Gravatar($row->email);
 								    			$col_1 = '<a href="'.SERVER.'profile?id='.$row->id_use.'" class="button is-link is-small"><i class="fas fa-pencil-alt"></i></a>';
-								    			$col_2 = $row->$name_table;
+								    			$col_2 = $row->name_use;
 								    			switch ($row->type_use) {
 								    				case 1: $type = 'Diretor'; break;
 								    				case 2: $type = 'Coordenador'; break;
@@ -658,10 +686,7 @@
 			                        </table>
 			                    </div>
 			                </div>
-			                <footer class="card-footer">
-			                	<a class="card-footer-item">Exibindo '.$cont.' de '.$cont.' resultados.</a>
-			                </footer>
-			            </div>';
+			                <footer class="card-footer"><a class="card-footer-item">Exibindo '.$count.' resultados.</a></footer></div>';
 		}
 
 		function LoadSuperTablePage($link = LINK, $th = ''){
@@ -669,19 +694,27 @@
 			$Load = new Load;
 			$PDO = $Load->DataBase();
 			$Tables = new Tables;
-			$col = array();
+			$table = $link;
 			switch ($link) {
 		        case 'classroom':
 		        	$th = '<th colspan="2">Aluno</th><th>RA</th><th>Data de Matrícula</th><th>Data de Aniversário</th>';
-					$name_table = 	$name_page.', courses, students, users';
-					$name_table .= ' WHERE '.$name_page.'.id_cla = '.$id;
-					$name_table .= ' AND '.$name_page.'.id_cou = courses.id_cou';
-					$name_table .= ' AND students.id_cla = '.$name_page.'.id_cla';
-					$name_table .= ' AND students.id_use = users.id_use AND users.type_use = 5';
+		        	switch ($Load->IsUserTheseType()) {
+						case true:
+							$table .= ', courses, students, users WHERE '.$link.'.id_cou = courses.id_cou 
+							AND classroom.id_cla = students.id_cla 
+							AND students.id_use = users.id_use AND users.id_use = '.$_SESSION['id'];
+						break;
+						case false: 
+							$table .= ', courses, students, users';
+							$table .= ' WHERE '.$link.'.id_cla = '.$id;
+							$table .= ' AND '.$link.'.id_cou = courses.id_cou';
+							$table .= ' AND students.id_cla = '.$link.'.id_cla';
+							$table .= ' AND students.id_use = users.id_use AND users.type_use = 5';
+						break;
+					}
 				break;
 				case 'historic':
 					$th = '<th colspan="2">Aluno</th><th colspan="2">Notas</th><th colspan="2">Faltas</th><th colspan="2">Abonos</th><th>Média Final</th>';
-					#Verificar se o tipo do usuário é aluno ou não
 					$con = $PDO->query($Tables->SelectFrom('type_use', 'users WHERE id_use = '.$_SESSION['id'])) or die ($PDO);
 					while($row = $con->fetch(PDO::FETCH_OBJ)){
 						switch($row->type_use){
@@ -698,16 +731,16 @@
 								}
 							break;
 						}
-						$table =  $link.', students, disciplines, users';
+						$table .= ', students, disciplines, users';
 						$table .= ' WHERE '.$link.'.id_dis = disciplines.id_dis'; 
 						$table .= ' AND '.$link.'.id_stu = students.id_stu';
 						$table .= ' AND students.id_use = users.id_use';
 						$table .= ' And users.id_use = '.$id;
 					}
 				break;
-				case 'reserve':
-					$th = '<th>Horário</th><th id="1">Segunda</th><th id="2">Terça</th><th id="3">Quarta</th><th id="4">Quinta</th><th id="5">Sexta</th><th id="6">Sábado</th>';
-					$table = $link;
+				case 'reserve': 
+					$th = '<th style="width: 50%">Dia e Horário</th><th>Laboratório</th>';
+					$table .= ' ORDER BY day_class';
 				break;
 				case 'schedule-grid':
 					$th = '<th>Horário</th><th id="1">Segunda</th><th id="2">Terça</th><th id="3">Quarta</th><th id="4">Quinta</th><th id="5">Sexta</th><th id="6">Sábado</th>';
@@ -719,7 +752,7 @@
 								$table .= ' WHERE classroom.id_cla = students.id_cla';
 								$table .= ' AND classroom.id_cou = courses.id_cou';
 								$table .= ' AND disciplines.id_cou = courses.id_cou';
-								$table .= ' AND students.id_use = users.id_use AND users.id_use = '.$row->id_use;
+								$table .= ' AND students.id_use = users.id_use AND users.id_use = '.$_SESSION['id'];
 							break;
 							default:
 								$id = (isset($_GET['id'])) ? $_GET['id'] : '';
@@ -735,24 +768,23 @@
 					}
 				break;
 			}
+			echo '<table class="table is-fullwidth is-striped"><thead><tr>'.$th.'</tr></thead>';
+			echo $Tables->SelectFrom(null, $table);
 		    $con = $PDO->query($Tables->SelectFrom(null, $table)) or die ($PDO);						
 			while($row = $con->fetch(PDO::FETCH_OBJ)){
-				echo '
-					<table class="table is-fullwidth is-striped">
-						<thead><tr>'.$th.'</tr></thead>
-						<tbody>';
-							switch ($link) {
-								case 'classroom':
-									echo '
-										<th><p class="image is-64x64"><img class="is-rounded" src="'.$Load->Gravatar().'"></th>
-										<th>'.$row->name_use.'</th>
-										<td>'.$row->id_use.'</td>
-										<td>'.date('d/m/Y', strtotime($row->signup_date)).'</td>
-										<td>'.date('d/m/Y', strtotime($row->birthday_date)).'</td>
-										<td><a class="button is-link" href="historic?id='.$row->id_use.'">Ver Historico</a></td>
-										<td><a class="button is-link" href="profile?id='.$row->id_use.'">Ver Perfil</a></td>';
-								break;
-								case 'historic':
+				echo '<tbody><tr>';
+				switch ($link) {
+					case 'classroom':
+						echo '
+							<th><p class="image is-64x64"><img class="is-rounded" src="'.$Load->Gravatar().'"></th>
+							<th>'.$row->name_use.'</th>
+							<td>'.$row->id_use.'</td>
+							<td>'.date('d/m/Y', strtotime($row->signup_date)).'</td>
+							<td>'.date('d/m/Y', strtotime($row->birthday_date)).'</td>
+							<td><a class="button is-link" href="historic?id='.$row->id_use.'">Ver Historico</a></td>
+							<td><a class="button is-link" href="profile?id='.$row->id_use.'">Ver Perfil</a></td>';
+					break;
+					case 'historic':
 									echo '
 										<th><p class="image is-64x64"><img class="is-rounded" src="'.$Load->Gravatar().'"></th>
 										<th>'.$row->name_use.'</th>
@@ -764,67 +796,69 @@
 										<td>'.$row->f.'</td>
 										<td>'.$row->mf.'</td>
 										<td>'.$row->status_his.'</td>';
-								break;
-								case 'reserve':
-									$stmt = $PDO->prepare($Tables->SelectFrom(null, $table.' WHERE day_class = :day_class'));
-									$stmt->bindParam(':day_class', $row->day_class);
-									$stmt->execute();
-			            			$reserves = $stmt->fetchAll(PDO::FETCH_ASSOC);
-			            			if (count($reserves) <= 0) {
-			            				echo '<tr><td>Aconteceu um erro</td></tr>'; exit;
-			            			}
-			            			$res = $reserves[0];
-			            			echo '<tr><th>'.$res['time_start'].' - '.$res['time_end'].'</th><td>'.$res['classroom'].'</td></tr>';
-								break;
-								case 'schedule-grid':
-									$start = array();
-									switch ($row->period) {
-										case 'I':
-											$classes = 11;
-											$start[1] = "07:30";
-											$start[2] = "08:20";
-											$start[3] = "09:10";
-											$start[4] = "10:00";
-											$start[5] = "10:20";
-											$start[6] = "11:10";
-											$start[7] = "12:00";
-											$start[8] = "13:00";
-											$start[9] = "13:50";
-											$start[10] = "14:40";
-											$start[11] = "15:30";
-										break;
-										case 'T':
-											$start[1] = "13:00";
-											$start[2] = $end[1] = "13:50";
-											$start[3] = $end[2] = "14:40";
-											$break_start = $end[3] = "15:30";
-											$start[4] = $break_end = "15:45";
-											$start[5] = $end[4] = "16:35";
-											$start[6] = $end[5] = "17:25";
-											$lunch_start = $end[6] = "18:00";
-											$lunch_end = "19:00";
-										break;
-										case 'N':
-											$start[1] = "19:00";
-											$start[2] = $end[1] = "19:50";
-											$break_start = $end[2] = "20:40";
-											$start[3] = $break_end = "21:00";
-											$start[4] = $end[3] = "21:50";
-											$end[4] = "22:40";
-										break;
-										case 'M': break;
-									}
-									for($i = 1; $i < $classes; $i++){
-										echo '<tr><th>'.$start[$i].' - '.$start[$i+1].'</th>';
-										$query = $PDO->query($Tables->SelectFrom(null, $table.' AND disciplines.time_start = "'.$start[$i].':00"')) or die ($PDO);
-										while($row = $query->fetch(PDO::FETCH_OBJ)){
-											echo '<td><a href="disciplines?id='.$row->id_dis.'">'.$row->name_dis.'<br/>'.$row->classroom.'</td></tr>';
-										}
-									}
-								break;
-							    }
-							    echo '</tbody></table>';
-					        }
+					break;
+					case 'reserve':
+						switch($row->day_class){
+			        	   	case 1: $day_class = 'Segunda'; break;
+			        	   	case 2: $day_class = 'Terça'; break;
+			        	   	case 3: $day_class = 'Quarta'; break;
+			        	   	case 4: $day_class = 'Quinta'; break;
+			        	   	case 5: $day_class = 'Sexta'; break;
+			        	   	case 6: $day_class = 'Sábado'; break;
+			        	}
+						echo '<td>'.$day_class.'</br>'.$row->time_start.' - '.$row->time_end.'</td><td>'.$row->classroom.'</td>';
+					break;
+					case 'schedule-grid':
+						$start = array();
+						switch ($row->period) {
+							case 'I':
+								$classes = 11;
+								$start[1] = "07:30";
+								$start[2] = "08:20";
+								$start[3] = "09:10";
+								$start[4] = "10:00";
+								$start[5] = "10:20";
+								$start[6] = "11:10";
+								$start[7] = "12:00";
+								$start[8] = "13:00";
+								$start[9] = "13:50";
+								$start[10] = "14:40";
+								$start[11] = "15:30";
+							break;
+							case 'T':
+								$classes = 9;
+								$start[1] = "13:00";
+								$start[2] = "13:50";
+								$start[3] = "14:40";
+								$start[4] = "15:30";
+								$start[5] = "15:45";
+								$start[6] = "16:35";
+								$start[7] = "17:25";
+								$start[8] = "18:00";
+								$start[9] = "19:00";
+							break;
+							case 'N':
+								$classes = 6;
+								$start[1] = "19:00";
+								$start[2] = "19:50";
+								$start[3] = "20:40";
+								$start[4] = "21:00";
+								$start[5] = "21:50";
+								$start[6] = "22:40";
+							break;
+							case 'M': break;
+						}
+						for($i = 1; $i < $classes; $i++){
+							echo '<tr><th>'.$start[$i].' - '.$start[$i+1].'</th>';
+							$query = $PDO->query($Tables->SelectFrom(null, $table.' AND disciplines.time_start = "'.$start[$i].':00" ORDER by day_class')) or die ($PDO);
+							while($row = $query->fetch(PDO::FETCH_OBJ)){
+								echo '<td><a href="disciplines?id='.$row->id_dis.'">'.$row->name_dis.'<br/>'.$row->classroom.'</td></tr>';
+							}
+						}
+					break;
+				}
+			}
+			echo '</tr></tbody></table>';
 		}
 
 		function LoadArticlePage($name_page = LINK){
