@@ -9,7 +9,7 @@
 			$message = 'Esta página está inacessível, pois a sua seção não foi inicializada.';
 			$links[1] = 'login';
 			$links[2] = 'Entrar';
-			include('ops.php');
+			include('functions/ops.php');
 		break;
 		case true:
 			#com o nome da página estaremos puxando:
@@ -32,7 +32,7 @@
 					if(!$table || !$id){
 						$message = 'Houve problemas durante a sua requisição.';
 						$links[1] = SERVER; $links[2] = 'Início';
-						include('ops.php');
+						include('funcions/ops.php');
       				} else {
       					$id_table = $Tables->Found_Item('id', $table);
 						$status_table = $Tables->Found_Item('status', $table);
@@ -207,7 +207,7 @@
 				case 'login': case 'signup': case 'forgot-pass':
 					$message = 'Esta página está inacessível, pois a sua seção foi inicializada.';
 					$links[1] = SERVER; $links[2] = 'Início';
-					include('ops.php');
+					include('functions/ops.php');
 				break;
 				case 'notifies':
 					$con = $PDO->query($Tables->SelectFrom('name_use, type_use','users WHERE id_use LIKE '.$_SESSION['id'].' AND status_use = 1')) or die ($PDO);

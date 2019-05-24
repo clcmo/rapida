@@ -187,7 +187,7 @@
 	$Load = new Load;
 	define('SERVER', $Load->Server());
 
-		# Classe Referente a Navegação das Páginas
+	# Classe Referente a Navegação das Páginas
 	class Navegation {
 		# 1 - Gera o Menu de topo se o usuário estiver logado. Menu irá variar de acordo com o tipo de usuário
 	    function HeroMenu(
@@ -299,7 +299,6 @@
 	    	return $mess .= '</ul>';
 	    }
 
-
 	    # 2.1 - Mostra um menu personalizado, com mapa de acesso, através do link e do tipo de usuário informado
     	function FooterMenu(
 	    	$menu = '
@@ -394,6 +393,7 @@
     		}
     		return $menu;
     	}
+
 	    function HeroMessage($title, $subtitle){
 	    	$hero = '
     		<section class="hero is-info welcome is-small">
@@ -410,11 +410,6 @@
 	$Navegation = new Navegation;
 
 	#atualizar com o essencial
-	
-	
-
-    	
-
 	
 	# Classe que cataloga as funções referentes as páginas
     class Pages {
@@ -775,27 +770,31 @@
 						
 						switch ($row->type_use) {
 							case 1:
-								$tag = 'is-primary';
-								$tipo = 'Aluno';
-								$string = 'turma';
-								$input = '';
+								
 							break;
 							case 2:
+								
+							break;
+								
+							case 3:
 								$tag = 'is-warning';
 								$tipo = 'Funcionário';
 								$string = 'area';
 								$input = '';
 							break;
-								
-							case 3:
+
+							case 4:
 								$tag = 'is-success';
 								$tipo = 'Professor';
 								$string = 'area';
 								$input = '';
 							break;
-							case 4:
-							break;
+							
 							case 5:
+								$tag = 'is-primary';
+								$tipo = 'Aluno';
+								$string = 'turma';
+								$input = '';
 							break;
 						}
 
@@ -852,36 +851,34 @@
 			$Tables = new Tables;
 			$Load = new load;
 			$PDO = $Load->DataBase();
+			$script = $name_page;
 			switch ($name_page) {
 				case 'courses':
-					$name_translated = 'Cursos';
-					$script = $name_page.' WHERE status_cou = 1';
+					$script .=' WHERE status_cou = 1';
 					$name_table = $Tables->Found_Item('name', $name_page);
 					$id_table = $Tables->Found_Item('id', $name_page);
 					$icon = '<i class="fas fa-chalkboard"></i>';
 				break;
 				
 				case 'teachers':
-					$name_translated = 'Professor';
-					$script = $name_page.', users WHERE '.$name_page.'.id_use = users.id_use AND status_use = 1';
-					$icon = '<i class="fas fa-user"></i>';
+					$script .=', users WHERE '.$name_page.'.id_use = users.id_use AND status_use = 1';
 					$name_table = $Tables->Found_Item('name', 'users');
 					$id_table = $Tables->Found_Item('id', $name_page);
+					$icon = '<i class="fas fa-user"></i>';
 				break;
 			}
-	
 			$query = $PDO->query($Tables->SelectFrom(null, $script)) or die ($PDO);
-			
 			echo'
 				<div class="field" id="'.$name_page.'">
-			        <label class="label">'.$name_translated.'</label>
+			        <label class="label">'.$Load->WhatLink($name_page).'</label>
 			        <div class="control has-icons-left">
 			            <div class="select is-hovered is-link">
-			            	<select name="'.$name_page.'">';
+			            	<select name="'.$id_table.'">';
 				            	while($row = $query->fetch(PDO::FETCH_OBJ)){
 				            		echo '<option value="'.$row->$id_table.'">'.$row->$name_table.'</option>';
 				            	}
-			            echo '</select>
+			            	echo '
+			            	</select>
 			            </div>
 			            <span class="icon is-small is-left">'.$icon.'</span>
 			        </div>
