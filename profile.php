@@ -2,7 +2,7 @@
 	include ('header.php');
 	$selected_type = 'editar'; $disabled = '';
 	#Restringir acesso de edição para alunos
-	include('load/pages/main.php');
+	include('functions/pages/main.php');
 ?>
 			<div class="columns">
 			    <div class="column">
@@ -10,7 +10,7 @@
 			    </div>
 			</div>
 			<div class="box content">
-				<?php echo $Navegation->HeroMessage(ucfirst('perfil'), 'Informe os dados para '.$selected_type); ?>
+				<?php echo $Navegation->HeroMessage(ucfirst('perfil'), ); ?>
 				<hr/>
 				<section class="info-tiles">
 					<form action="#" method="post">

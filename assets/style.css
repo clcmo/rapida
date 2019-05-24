@@ -116,6 +116,7 @@ body {
 }
 
 .box .title.is-medium { color: #333; }
+.box .title.is-medium.is-white { color: #fff; }
 
 /** FOOTER */
 .bulma {

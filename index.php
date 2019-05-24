@@ -9,7 +9,7 @@
                     </div>
                 </div>
                 <div class="box content">
-                    <?php echo $Navegation->HeroMessage('Olá, '.$_SESSION['name'], 'Tenha um bom dia!'); ?>
+                    <?php echo $Navegation->HeroMessage(); ?>
                     <div class="columns">
                         <div class="column">
                             <?php echo $Pages->LoadTablePage('notifies'); echo $Pages->LoadTablePage('classroom'); ?>

@@ -1,6 +1,7 @@
-<?php 
+<?php
+	include('functions/main.php');
 	session_start();
 	session_destroy();
-	header('Location: '.SERVER);
+	$Load->Link();
 	exit;
 ?>
