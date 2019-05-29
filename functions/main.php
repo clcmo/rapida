@@ -15,12 +15,6 @@
     define('YEAR',       date('Y'));
     define('TODAY',      date(YEAR.'-m-d'));
     define('DATE',       date((YEAR-15).'-m-d'));
-    define('TITLE',      'Rápida');
-	define('DESC',       'Sistemas Acadêmicos');
-    define('TITLE_HEAD',  TITLE.' | '.DESC);
-	define('AUTHOR',     'Camila L. Oliveira');
-    define('AUTHOR_URL', 'http://projetos.camilaloliveira.com/');
-    define('FOOTER',     'Copyright &copy; '.YEAR.'&nbsp;<a href="'.AUTHOR_URL.'" class="text-bold" style="text-decoration: none" target="_blank"><img class="bulma" src="'.SERVER.'assets/brand/logo_milla_b.png"></a>. Todos os direitos reservados.');
 
     # 4 - Definição de Conexão
     $PDO = $Load->DataBase();
@@ -52,3 +46,13 @@
     $sizeof[1] = MAX;
     $sizeof[2] = strlen(strstr(LINK, '?id='.$id));
     $link = (isset($_GET['id'])) ? $Load->DiscoverLink(LINK, ($sizeof[1] - $sizeof[2])) : $Load->DiscoverLink();
+
+    define('TITLE',      'Rápida');
+	define('DESC',       $Load->WhatLink($link));
+    define('TITLE_HEAD',  TITLE.' | '.DESC);
+	define('AUTHOR',     'Camila L. Oliveira');
+    define('AUTHOR_URL', 'http://projetos.camilaloliveira.com/');
+    $footer = (!$Login->IsLogged()) ? '' : '<p/>';
+    define('FOOTER',     'Copyright &copy; '.YEAR.'&nbsp;<a href="'.AUTHOR_URL.'" class="text-bold" target="_blank">Camila L. Oliveira</a>.'.$footer.'&nbsp;Todos os direitos reservados.');
+
+    
