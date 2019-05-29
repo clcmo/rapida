@@ -10,7 +10,7 @@
 			    </div>
 			</div>
 			<div class="box content">
-				<?php echo $Navegation->HeroMessage(ucfirst('perfil'), ); ?>
+				<?php echo $Navegation->HeroMessage(); ?>
 				<hr/>
 				<section class="info-tiles">
 					<form action="#" method="post">
