@@ -234,7 +234,7 @@
 		    	<div class="hero-head">
 		        		<nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
 						  	<div class="navbar-brand">
-							    <a class="navbar-item is-logo" href="'.SERVER.'"><img class="logo" src="'.SERVER.'/assets/brand/Logo_ETEC_Transparent.png" /></a>
+							    <a class="navbar-item is-logo" href="'.SERVER.'">rÁpidA</a>
 							    <div class="navbar-burger burger" data-target="navMenubd-example">
 							    	<span></span>
 							    	<span></span>
