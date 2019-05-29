@@ -33,3 +33,5 @@ RewriteRule ^([^\.]+)$ $1.php [NC,L]
 RewriteCond %{REQUEST_URI} ^/404/$ [OR]
 RewriteCond %{REQUEST_URI} ^/500/$
 RewriteRule ^(.*)$ error.php [L]
+
+AddType application/x-httpd-php .css
