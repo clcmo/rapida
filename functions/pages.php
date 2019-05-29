@@ -268,8 +268,8 @@
 			    		}
 			    		include('models/sample-page.php');
       				}
-				break;
-				case 'classroom':
+			break;
+			case 'classroom':
 					switch ($Load->IsUserTheseType()) {
 						case true:
 							$script .= ', courses, students, users WHERE '.$link.'.id_cou = courses.id_cou 
@@ -292,8 +292,8 @@
 	      				$name_cou = $row->name_cou;
 	      			}
       				include('models/sample-page.php');
-				break;
-				case 'courses':
+			break;
+			case 'courses':
 					$name_cou = 'Informe o nome do curso';
 					$checked1 = $checked2 = $disabled = '';
             		$con = $PDO->query($Tables->SelectFrom('type_use', 'users WHERE id_use = '.$_SESSION['id'])) or die($PDO);
@@ -326,8 +326,8 @@
 		                    }
 		            	}
 		            }
-        		break;
-				case 'disciplines':
+        	break;
+			case 'disciplines':
 					$name_dis = $disabled = '';
 					$con = $PDO->query($Tables->SelectFrom('type_use', 'users WHERE id_use = '.$_SESSION['id'])) or die($PDO);
 					while($row = $con->fetch(PDO::FETCH_OBJ)){
@@ -358,16 +358,16 @@
                         }
                     } 
                     # demais funcionários poderão ver e alterar os dados do curso
-        		break;
-        		case 'events':
-        		break;
-				case 'employees': case 'students': case 'teachers': case 'directors' : case 'coordinators': 
+        	break;
+        	case 'events':
+        	break;
+			case 'employees': case 'students': case 'teachers': case 'directors' : case 'coordinators': 
 					$con = $PDO->query($Tables->SelectFrom(null, $link.', users WHERE '.$link.'.id_use = users.id_use')) or die ($PDO);
 					while($row = $con->fetch(PDO::FETCH_OBJ)){
 					}
-				break;
-				case 'historic': case 'schedule-grid': case 'reserve': include('models/sample-page.php'); break;
-				case 'notifies':
+			break;
+			case 'historic': case 'schedule-grid': case 'reserve': include('models/sample-page.php'); break;
+			case 'notifies':
 					$con = $PDO->query($Tables->SelectFrom('name_use, type_use','users WHERE id_use LIKE '.$_SESSION['id'].' AND status_use = 1')) or die ($PDO);
 					while($row = $con->fetch(PDO::FETCH_OBJ)){
 						$name_use = $row->name_use;
@@ -387,8 +387,8 @@
 							$name_not = $row->name_not;	
 						}
 					}
-				break;
-				case 'profile':
+			break;
+			case 'profile':
 					#puxar a tabela de usuário e o id
 					$id = (isset($_GET['id'])) ? $_GET['id'] : $_SESSION['id'];
 					$script = 'users WHERE id_use = '.$id;
@@ -528,8 +528,8 @@
 								  			</div>
 								  		</div>';
 								}
-							break;
-							default:
+						break;
+						default:
 								$string = 'Area';
 								$found_area = $Tables->Found_Item('area', $table);
 								$query = $PDO->query($Tables->SelectFrom($found_area, 'users, '.$table.' WHERE users.id_use LIKE '.$id.' AND users.status_use = 1 AND '.$table.'.id_use = users.id_use')) or die ($PDO);
@@ -543,8 +543,8 @@
 							break;
 						}
 					}
-				break;
-				case 'new-user':
+			break;
+			case 'new-user':
 					$name_use = '';
 					$year = date('Y', strtotime(TODAY));
 					$signup_date = date('d/m/Y', strtotime(TODAY));
@@ -558,8 +558,7 @@
 					$type = 'usuário';
 					$string = 'Tipo de Usuário';
 					#criar radio button
-				break;
-
+			break;
 		}
       break;
     }
