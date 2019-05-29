@@ -140,7 +140,7 @@
 				default: break;
 			}
 			$con = '';
-			$id = (isset($_GET['id'])) ? $_GET['id'] : $_SESSION['id'];
+			#$id = (isset($_GET['id'])) ? $_GET['id'] : $_SESSION['id'];
 			switch (LINK) {
 				case 'classroom':
 					$con = $PDO->query($Tables->SelectFrom(null, 'students, users WHERE students.id_use = users.id_use')) or die ($PDO);
@@ -181,6 +181,7 @@
 		    	case 'disciplines': $str = 'Disciplinas'; break;
 		    	case 'documents': $str = 'Documentos'; break;
 		    	case 'employees': $str = 'Funcionários'; break;
+		    	case 'forgot-pass': $str = 'Esqueceu a Senha'; break;
 		    	case 'historic': $str = 'Notas'; break;
 		    	case 'login': $str = 'Entrar'; break;
 		    	case 'logout': $str = 'Sair'; break;
@@ -188,10 +189,13 @@
 		    	case 'profile': $str = 'Perfil'; break;
 		    	case 'reserve': $str = 'Reserva'; break;
 		    	case 'schedule-grid': $str = 'Horários'; break;
+		    	case 'signup': $str = 'Cadastrar'; break;
 		    	case 'students': $str = 'Estudantes'; break;
 				case 'teachers': $str = 'Professores'; break;
+				case 'terms': $str = 'Termos'; break;
 	    		case 'new-user': $str = 'Cadastro'; break;
 	    		case 'users' : $str = 'Usuários'; break;
+	    		case 'assets/style.css': $str = ''; break;
 		    }
 		    return $str;
 		}
@@ -208,6 +212,16 @@
         	}
         	return $type;
         }
+
+        function Background($folder = '../assets/backgrounds/', $i = 0){
+			$archives = glob("$folder{*.jpg,*.JPG,*.png,*.gif,*.bmp}", GLOB_BRACE);
+			$images = array();
+			foreach($archives as $img){
+			    $images[] = $img;
+			    $i++;
+			}
+			return $images[rand(1, $i)];
+		}
 	}
 	$Load = new Load;
 	define('SERVER', $Load->Server());
@@ -220,7 +234,7 @@
 		    	<div class="hero-head">
 		        		<nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
 						  	<div class="navbar-brand">
-							    <a class="navbar-item is-logo" href="'.SERVER.'">rÁpidA</a>
+							    <a class="navbar-item is-logo" href="'.SERVER.'"><img class="logo" src="'.SERVER.'/assets/brand/Logo_ETEC_Transparent.png" /></a>
 							    <div class="navbar-burger burger" data-target="navMenubd-example">
 							    	<span></span>
 							    	<span></span>
@@ -304,8 +318,6 @@
 	                    </div>
 			            <div class="navbar-end">
 				    		<a class="navbar-item" href="'.SERVER.'login"><i class="fa fa-user"></i>&nbsp;'.$Load->WhatLink('login').'</a>
-				    		<a class="navbar-item" href="'.SERVER.'example"><i class="fab fa-superpowers"></i>&nbsp;Exemplos</a>
-				    		<a class="navbar-item" href="'.SERVER.'#"><i class="fab fa-github"></i>&nbsp;Instale</a>
 				    	</div>
 		        	</nav>';
 	            break;
@@ -421,10 +433,7 @@
     		return $menu;
     	}
 
-<<<<<<< HEAD
-	    function HeroMessage($title, $subtitle){
-=======
-	    function HeroMessage(){
+		function HeroMessage(){
 	    	$Load = new Load;
 	    	$Tables = new Tables;
 	    	$PDO  = $Load->DataBase();
@@ -498,7 +507,7 @@
 	    			$subtitle = 'Histórico de notas de '.$name_use;
 	    		break;
 	    	}
->>>>>>> origin/master
+
 	    	$hero = '
     		<section class="hero is-info welcome is-small">
 			    <div class="hero-body">
@@ -513,11 +522,6 @@
 	}
 	$Navegation = new Navegation;
 
-<<<<<<< HEAD
-	#atualizar com o essencial
-	
-=======
->>>>>>> origin/master
 	# Classe que cataloga as funções referentes as páginas
     class Pages {
 		function LoadTablePage($link = LINK){
