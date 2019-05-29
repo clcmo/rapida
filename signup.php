@@ -1,4 +1,4 @@
 <?php
   include('header.php');
-  include('functions/pages/login.php');
+  include('functions/pages.php');
   include('footer.php');
