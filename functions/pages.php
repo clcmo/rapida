@@ -237,7 +237,7 @@
 		        $links[4] = 'Voltar aonde estava';
 		        include('models/ops.php');
 		    break;
-		    				case 'change':
+		    case 'change':
 					#Verifica se a tabela e o valor foram informados. Se não houver, repetir mensagem de erro
 					$res = '';
 					$table = (isset($_GET['t'])) ? $_GET['t'] : '';
