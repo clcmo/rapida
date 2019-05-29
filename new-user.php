@@ -1,7 +1,7 @@
 <?php
 	include ('header.php');
 	$checked1 = $checked2 = $checked3 = $checked4 = $checked5 = '';
-	include('functions/pages/main.php');
+	include('functions/pages.php');
 ?>
 <div class="columns">
     <div class="column">
