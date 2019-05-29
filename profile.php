@@ -2,7 +2,7 @@
 	include ('header.php');
 	$selected_type = 'editar'; $disabled = '';
 	#Restringir acesso de edição para alunos
-	include('functions/pages/main.php');
+	include('functions/pages.php');
 ?>
 			<div class="columns">
 			    <div class="column">
