@@ -437,14 +437,12 @@
 	    	$Load = new Load;
 	    	$Tables = new Tables;
 	    	$PDO  = $Load->DataBase();
-	    	$title = $subtitle = '';
+	    	$title = (LINK != '') ? $Load->WhatLink() : 'Olá, '.$_SESSION['name']; 
+	    	$subtitle = '';
 	    	switch(LINK){
-	    		case '': case SERVER:
-	    			$title = 'Olá, '.$_SESSION['name']; 
-	    			$subtitle = 'Tenha um bom dia!';
-	    		break;
+	    		case '': case SERVER: $subtitle = 'Tenha um bom dia!'; break;
 	    		case 'classroom':
-	    			$title = 'Turmas';
+	    			#$title = 'Turmas';
 	    			switch ($Load->IsUserTheseType()) {
 						case true:
 							$script = LINK.', courses, students, users WHERE '.LINK.'.id_cou = courses.id_cou 
@@ -459,10 +457,9 @@
 	      			}
 	    			$subtitle = 'Visualização da Turma de '.$name_cou;
 	    		break;
-	    		case 'profile':
-	    			$title = $Load->WhatLink();
-	    			$subtitle = 'Informe os dados para editar';
-	    		break;
+	    		case 'new-user': $subtitle = 'Informe os dados para cadastrar'; break;
+	    		case 'notifies': $subtitle = 'Informe os dados para gerar sua notificação'; break;
+	    		case 'profile': $subtitle = 'Informe os dados para editar'; break;
 	    		case 'reserve':
 	    			$title = 'Reserva de Sala';
 	    			$subtitle = 'Reserva de sala para manutenção periódica';
@@ -490,7 +487,6 @@
 					$subtitle = 'Visualização da grade de horários para '.$name_cou;
 	    		break;
 	    		case 'historic':
-					$title = $Load->WhatLink('historic');
 	    			$con = $PDO->query($Tables->SelectFrom('type_use', 'users WHERE id_use = '.$_SESSION['id'])) or die ($PDO);
 					while($row = $con->fetch(PDO::FETCH_OBJ)){
 						switch($row->type_use){
