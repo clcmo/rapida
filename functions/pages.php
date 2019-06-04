@@ -1,5 +1,6 @@
 <?php
 	#unificando pages/login and main.php
+	$title = $Load->WhatLink();
 	$links = array();
 	$links[3] = '#';
 	$links[4] = 'Voltar aonde estava';
@@ -12,7 +13,6 @@
 				$links[3] = SERVER.'forgot-pass'; 
 				$links[4] = 'Recuperar Senha';
 
-    			$title = 'Login';
         		$message = 'Informe os dados para entrar
 			          <figure class="image is-128x128 avatar"><img class="is-rounded" src="'.$picture.'"></figure>
 			          <form method="post" action="">
@@ -66,7 +66,6 @@
 		        $links[3] = 'signup'; 
 		        $links[4] = 'Cadastrar';
 
-    			$title = 'Recuperar';
 		        $message = 'Informe o e-mail para recuperar seu acesso
 		          <figure class="image is-128x128 avatar"><img class="is-rounded" src="'.$picture.'"></figure>
 		          <form method="post" action="">
@@ -120,7 +119,7 @@
 		        $links[2] = 'Entrar';
 		        $links[3] = 'forgot-pass'; 
 		        $links[4] = 'Recuperar Senha';
-				$title = 'Cadastrar';
+
 		        $message = 'Informe os dados para cadastrar
 		            <figure class="image is-128x128 avatar"><img class="is-rounded" src="'.$Load->Gravatar().'"></figure>
 		            <form method="post" action="" method="POST">
@@ -254,18 +253,21 @@
 						while($row = $query->fetch(PDO::FETCH_OBJ)){
 							$sql = 'UPDATE '.$table;
 							switch ($row->$status_table) {
-								case 1: $sql .= 'SET '.$status_table = '2'; break; #desativa
-								case 2: $sql .= 'SET '.$status_table = '1'; break; #ativa
+								case 1: 
+									$sql .= 'SET '.$status_table = '2'; 
+								break; #desativa
+								case 2: 
+									$sql .= 'SET '.$status_table = '1'; 
+								break; #ativa
 							}
 							$sql .= ' WHERE '.$id_table.' = '.$id;
 						}
 						$stmt = $PDO->prepare($sql);
 						$result = $stmt->execute();
-			    		if ($result){
+			    		if ($result)
 			    			$res = 'Alterado com sucesso.';
-			    		} else {
+			    		else 
 			    			$res = 'Um erro ocorreu.';
-			    		}
 			    		include('models/sample-page.php');
       				}
 			break;
@@ -276,13 +278,13 @@
 							AND classroom.id_cla = students.id_cla 
 							AND students.id_use = users.id_use AND users.id_use = '.$_SESSION['id'];
 						break;
-						
 						case false:
 							$id = (isset($_GET['id'])) ? $_GET['id'] : '';
 							if(!$id){
 								$title = 'Ops';
 								$message = 'Houve problemas durante a sua requisição.';
-								$links[1] = SERVER; $links[2] = 'Início';
+								$links[1] = SERVER; 
+								$links[2] = 'Início';
 								include('models/ops.php');
 	      					} else $script .= ', courses WHERE '.$link.'.id_cou = courses.id_cou AND id_cla = '.$id;
 	      				break;
@@ -315,15 +317,15 @@
 			            $con = $PDO->query($Tables->SelectFrom(null, $script)) or die ($PDO);
 			            while($row = $con->fetch(PDO::FETCH_OBJ)){
 		                    #Verificar se a id do curso e o Get id são iguais
-		                    if($row->id_cou){ 
-		                    	$name_cou = $row->name_cou; $period = $row->period;
-		                    } else {
+		                    if($row->id_cou)
+		                    	$name_cou = $row->name_cou; 
+		                    	$period = $row->period;
+		                    else
 		                       	# demais funcionários poderão ver e alterar os dados do curso
 		                        $title = 'Ops';
 								$message = 'Houve problemas durante a sua requisição.';
 								$links[1] = SERVER; $links[2] = 'Início';
 								include('models/ops.php');
-		                    }
 		            	}
 		            }
         	break;
