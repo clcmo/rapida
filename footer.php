@@ -15,16 +15,6 @@
 						</div>
 					</div>
 				</footer>
-				<!-- plugins:js -->
-				<!--<script async type="text/javascript" src="assets/js/bulma.js"></script>-->
-				<!-- endinject -->
-				<!-- Plugin js for all those pages-->
-				<!--<script src="assets/node_modules/dropify/dist/js/dropify.min.js"></script>-->
-				<!-- End plugin js for all those page-->
-				<!-- Custom js for all pages-->
-				<!--<script src="assets/js/dropify.js"></script>-->
-				<!--<script src="assets/js/menu.js"></script>-->
-				<!-- End custom js for all pages-->
         	<?php
         	break;
 
@@ -41,3 +31,13 @@
 				<?php
 	       	break;
         }
+    ?>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script src="<?php echo SERVER; ?>assets/js/cep.js"></script>
+	<script src="<?php echo SERVER; ?>assets/js/cpf.js"></script>
+	<script type="text/javascript">
+	    function Cancel(){
+	        location.reload();
+	    }
+	</script>
+</div>

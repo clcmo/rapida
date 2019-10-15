@@ -73,7 +73,19 @@
     if(isset($_POST['send'])) {
         # Resgata variáveis do formulário
         $email = isset($_POST['email']) ? $_POST['email'] : '';
-        # Redireciona para a página de Login
-        $Load->Link('login');                 
+
+        $stmt = $PDO->prepare(
+            $Tables->SelectFrom(null, 'users 
+                WHERE email = :email 
+                AND status_use = 1', 0, 1));
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if (count($users) <= 0) {
+            $Load->Link('signup?email='.$email);
+        } else {
+            # Redireciona para a página de Login
+            $Load->Link('login?email='.$email);    
+        }           
     }
     include('footer.php');

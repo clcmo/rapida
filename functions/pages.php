@@ -136,13 +136,14 @@
 		        $links[4] = 'Recuperar Senha';
 
 		        $title = ($Load->WhatLink() != 'signup') ? $Load->WhatLink('signup') : $title;
+		        $name_use = ($email) ? substr($email, 0, strlen(strstr($email, '@'))) : '';
 
 		        $message = 'Informe os dados para cadastrar
 		            <figure class="image is-128x128 avatar"><img class="is-rounded" src="'.$picture.'"></figure>
 		            <form method="post" action="">
 						<div class="field">
 			                <div class="control">
-			                	<input class="input is-large" type="text" name="name_use" placeholder="Seu Nome" autofocus="">
+			                	<input class="input is-large" type="text" name="name_use" placeholder="'.$name_use.'" value="'.$name_use.'" autofocus="">
 			                </div>
 		              	</div>
 		              	<div class="field">
@@ -195,7 +196,7 @@
 			        	# Resgata variáveis do formulário
 			        	$type_use = isset($_POST['type_use']) ? $_POST['type_use'] : '';
 			        	$name_use = isset($_POST['name_use']) ? $_POST['name_use'] : '';
-			        	$login = isset($_POST['login']) ? $_POST['login'] : strstr($name_use, ' ');
+			        	$login = strstr($name_use, ' ');
 			        	$password = isset($_POST['password']) ? $_POST['password'] : '';
 			        	$password_conf = isset($_POST['password_conf']) ? $_POST['password_conf'] : '';
 			        	$email = isset($_POST['email']) ? $_POST['email'] : '';
@@ -203,48 +204,57 @@
 			        	$birthday_date = isset($_POST['birthday_date']) ? $_POST['birthday_date'] : '';
 
 			        	# Verifica se os campos estão vazios e exibe uma mensagem de erro
-			        	if (empty($name_use) || empty($password) || empty($password_conf) || empty($email) || empty($cep) || empty($birthday_date))
+			        	if (empty($name_use) || empty($password) || empty($password_conf) || empty($email) || empty($cep) || empty($birthday_date)){
 			          		$message .= 'Informe o email e a senha.<br/>';
+			          		exit;
+			        	}
 
-			        	if($password != $password_conf)
+			        	if($password != $password_conf){
 			          		$message .= 'As duas senhas não conferem.<br/>';
+			          		exit;
+			        	}
 
 			        	# Verifica se o usuário existe e exibe ou uma mensagem de erro ou vai ao cadastro
 			        	$stmt = $PDO->prepare($Tables->SelectFrom(null, 'users WHERE email = :email AND status_use = 1', 0, 1));
 			            $stmt->bindParam(':email', $email);
 			            $stmt->execute();
 			            $con = $stmt->fetchAll(PDO::FETCH_ASSOC);
-			         	if(count($con) == 1)
-			          		$message .= '
+			         	if(count($con) == 1){
+			         		$message .= '
 			          		E-mail já existe. 
 			          		Deseja <strong><a href="forgot-pass?email='.$email.'">recuperar sua senha</a></strong> 
-			          		ou <strong><a href="login?email='.$email.'">fazer login</a></strong>?<br/>'; 
-			          
+			          		ou <strong><a href="login?email='.$email.'">fazer login</a></strong>?<br/>';
+			          		exit;
+			         	}
+			          		
 			          	# Gerar a critografia da senha
 			          	$password = $Tables->HashStr($password);
 			          	$photo = $Load->Gravatar($email);
 			          	$status_use = '1';
-			          	$signup_date = date('Y-m-d', strtotime(TODAY));
-
+			          	#$signup_date = date('Y-m-d H:i:s', strtotime(TODAY));
 
 			          	$stmt = $PDO->prepare("
 			          		INSERT INTO users (type_use, status_use, signup_date, name_use, login, password, email, photo, cep, birthday_date) 
 			          		VALUES (:type_use, :status_use, :signup_date, :name_use, :login, :password, :email, :photo, :cep, :birthday_date)");
-			          	$stmt->bindParam(':type_use', $type_use);
-			          	$stmt->bindParam(':status_use', $status_use);
-			          	$stmt->bindParam(':signup_date', $signup_date);
-			          	$stmt->bindParam(':name_use', $name_use);
-			          	$stmt->bindParam(':login', $login);
-			          	$stmt->bindParam(':password', $password);
-			          	$stmt->bindParam(':email', $email);
-			          	$stmt->bindParam(':photo', $photo);
-			          	$stmt->bindParam(':cep', $cep);
-			          	$stmt->bindParam(':birthday_date', $birthday_date);
+			          	
+						$stmt->bindParam(':type_use', $type_use, PDO::PARAM_STR);
+			          	$stmt->bindParam(':status_use', $status_use, PDO::PARAM_STR);
+			          	#$stmt->bindParam(':signup_date', $signup_date, PDO::PARAM_STR);
+			          	$stmt->bindParam(':name_use', $name_use, PDO::PARAM_STR);
+			          	$stmt->bindParam(':login', $login, PDO::PARAM_STR);
+			          	$stmt->bindParam(':password', $password, PDO::PARAM_STR);
+			          	$stmt->bindParam(':email', $email, PDO::PARAM_STR);
+			          	$stmt->bindParam(':photo', $photo, PDO::PARAM_STR);
+			          	$stmt->bindParam(':cep', $cep, PDO::PARAM_STR);
+			          	$stmt->bindParam(':birthday_date', $birthday_date, PDO::PARAM_STR);			          	
 			          	$result = $stmt->execute();
-			          	if ($result)
-			            	$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-				            if (count($users) <= 0)
+
+			          	if ($result){
+			          		$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+				            if (count($users) <= 0){
 				               	$message .= 'Ops, houve um erro aqui.<br/>';
+				               	exit;
+				            }
 				            # Busca os resultados e os cataloga com a variável $_SESSION
 				            $user = $users[0];
 				            $_SESSION['logged_in'] = true;
@@ -252,6 +262,9 @@
 				            $_SESSION['name'] = $user['name_use'];
 				            #redireciona para a página de início
 				            $Load->Link();
+			          	} else {
+			          		print_r($stmt->errorInfo());
+			          	}
 			        }
 			    $message .= '</p>';
     		break;
@@ -298,8 +311,12 @@
 					while($row = $query->fetch(PDO::FETCH_OBJ)){
 						$sql = 'UPDATE '.$table;
 						switch ($row->$status_table) {
-							case 1: $sql .= 'SET '.$status_table = '2'; break; #desativa
-							case 2: $sql .= 'SET '.$status_table = '1'; break; #ativa
+							case 1: 
+								$sql .= 'SET '.$status_table = '2'; 
+							break; #desativa
+							case 2: 
+								$sql .= 'SET '.$status_table = '1'; 
+							break; #ativa
 						}
 						$sql .= ' WHERE '.$id_table.' = '.$id;
 					}
@@ -405,10 +422,6 @@
         	case 'events':
         	break;
 			case 'employees': case 'students': case 'teachers': case 'directors' : case 'coordinators': 
-					$con = $PDO->query($Tables->SelectFrom(null, $link.', users WHERE '.$link.'.id_use = users.id_use')) or die ($PDO);
-					while($row = $con->fetch(PDO::FETCH_OBJ)){
-					}
-			break;
 			case 'historic': case 'schedule-grid': case 'reserve': include('models/sample-page.php'); break;
 			case 'notifies':
 					$con = $PDO->query($Tables->SelectFrom('name_use, type_use','users WHERE id_use LIKE '.$_SESSION['id'].' AND status_use = 1')) or die ($PDO);
@@ -432,49 +445,49 @@
 					}
 			break;
 			case 'profile':
-				$selected_type = 'editar'; $disabled = '';
-					#puxar a tabela de usuário e o id
-					$id = (isset($_GET['id'])) ? $_GET['id'] : $_SESSION['id'];
-					$script = 'users WHERE id_use = '.$id;
-					$id_table = $Tables->Found_Item('id', 'users');
-					$con = $PDO->query($Tables->SelectFrom(null, $script)) or die ($PDO);
-					while($row = $con->fetch(PDO::FETCH_OBJ)){
-						$name_use = $row->name_use;
-						$year = ($row->signup_date) ? date('Y', strtotime($row->signup_date)) : '';
-						$signup_date = ($row->signup_date) ? date('Y-m-d', strtotime($row->signup_date)) : '';
-						$email = ($row->email) ? $row->email : '';
-						$login = ($row->login) ? $row->login : '';
-						$photo = ($row->photo) ? SERVER.'uploads/'.$row->photo : $Load->Gravatar($email);
-						$cep = ($row->cep) ? $row->cep : '';
-						$address = ($row->address) ? $row->address : '';
-						$number = ($row->number) ? $row->number : '';
-						$neighborhood = ($row->neighborhood) ? $row->neighborhood : '';
-						$city = ($row->city) ? $row->city : '';
-						$state = ($row->state) ? $row->state : '';
-						$rg = ($row->rg) ? $row->rg : '';
-						$cpf = ($row->cpf) ? $row->cpf : '';
-						$phone = ($row->phone) ? $row->phone : '';
-						$birthday_date = ($row->birthday_date) ? date('Y-m-d', strtotime($row->birthday_date)) : '';
-						$birthday_year = ($row->birthday_date) ? date('Y', strtotime($row->birthday_date)) : '0';
+				$selected_type = 'editar';
+				$type_button = 'edit';
+				$disabled = '';
+				$id = (isset($_GET['id'])) ? $_GET['id'] : $_SESSION['id'];
+				$id_table = $Tables->Found_Item('id', 'users');
+				$con = $PDO->query($Tables->SelectFrom(null, 'users WHERE id_use = '.$id)) or die ($PDO);
 
-						$data = $name_par = $phone_par = $rg_par = $cpf_par = $area = '';
+				while($row = $con->fetch(PDO::FETCH_OBJ)){
+					$name_use = $row->name_use;
+					$year = ($row->signup_date) ? date('Y', strtotime($row->signup_date)) : '';
+					$signup_date = ($row->signup_date) ? date('Y-m-d', strtotime($row->signup_date)) : '';
+					$email = ($row->email) ? $row->email : '';
+					$login = ($row->login) ? $row->login : '';
+					$photo = ($row->photo) ? $row->photo : $Load->Gravatar();
+					$cep = ($row->cep) ? $row->cep : '';
+					$address = ($row->address) ? $row->address : '';
+					$number = ($row->number) ? $row->number : '';
+					$neighborhood = ($row->neighborhood) ? $row->neighborhood : '';
+					$city = ($row->city) ? $row->city : '';
+					$state = ($row->state) ? $row->state : '';
+					$rg = ($row->rg) ? $row->rg : '';
+					$cpf = ($row->cpf) ? $row->cpf : '';
+					$phone = ($row->phone) ? $row->phone : '';
+					$birthday_date = ($row->birthday_date) ? date('Y-m-d', strtotime($row->birthday_date)) : '';
+					$birthday_year = ($row->birthday_date) ? date('Y', strtotime($row->birthday_date)) : '0';
+					$data = $name_par = $phone_par = $rg_par = $cpf_par = $area = '';
 
-						switch ($row->type_use) {
-							case 1:	
-								$type = 'Diretor';
-								$table = 'director';
-								$string = 'Area';
-								$query = '';
-								$input = '';
-							break;
-							case 2: 
-								$type = 'Coordenador';
-								$string = 'Curso';
-								$table = 'coordenators';
-								$query = '';
-								$input = '';
-							break;
-							case 3:
+					switch ($row->type_use) {
+						case 1:
+							$type = 'Diretor';
+							$table = 'director';
+							$string = 'Area';
+							$query = '';
+							$input = '';
+						break;
+						case 2: 
+							$type = 'Coordenador';
+							$string = 'Curso';
+							$table = 'coordenators';
+							$query = '';
+							$input = '';
+						break;
+						case 3:
 								$type = 'Funcionário';
 								$table = 'employees';
 								$string = 'Area';
@@ -487,8 +500,8 @@
 					  					<span class="icon is-small is-left"><i class="fas fa-user"></i></span>
 										<span class="icon is-small is-right"><i class="fas fa-check"></i></span>
 									</div>';
-							break;
-							case 4: 
+						break;
+						case 4: 
 								$type = 'Professor';
 								$table = 'teachers';
 								$string = 'Area';
@@ -501,8 +514,8 @@
 					  					<span class="icon is-small is-left"><i class="fas fa-user"></i></span>
 										<span class="icon is-small is-right"><i class="fas fa-check"></i></span>
 									</div>';
-							break;
-							case 5: 
+						break;
+						case 5: 
 								$type = 'Aluno';
 								$string = 'Turma';
 								$table = 'students';
@@ -571,10 +584,9 @@
 								  			</div>
 								  			</div>
 								  		</div>';
-								  	include('models/sample-page.php');
 								}
-							break;
-							default:
+						break;
+						default:
 								$string = 'Area';
 								$found_area = $Tables->Found_Item('area', $table);
 								$query = $PDO->query($Tables->SelectFrom($found_area, 'users, '.$table.' WHERE users.id_use LIKE '.$id.' AND users.status_use = 1 AND '.$table.'.id_use = users.id_use')) or die ($PDO);
@@ -585,28 +597,27 @@
 					  					<span class="icon is-small is-left"><i class="fas fa-user"></i></span>
 										<span class="icon is-small is-right"><i class="fas fa-check"></i></span>
 									</div>';
-							break;
-						}
+						break;
 					}
+				}
+				include('models/sample-page.php');
 			break;
 			case 'new-user':
 				$checked1 = $checked2 = $checked3 = $checked4 = $checked5 = '';
-					$name_use = '';
-					$year = date('Y', strtotime(TODAY));
-					$signup_date = date('Y-m-d', strtotime(TODAY));
-					$email = isset($_GET['email']) ? $_GET['email'] : '';
-					$login = '';
-					$photo = $Load->Gravatar(MAIN_EMAIL);
-					$cep = $address = $number = $neighborhood = $city = $state = $rg = $cpf = $phone = '';
-					$birthday_date = date('Y-m-d', strtotime(TODAY));
-					$birthday_year = date('Y', strtotime(TODAY));
-					$data = $name_par = $phone_par = $rg_par = $cpf_par = $area = '';
-					$type = 'usuário';
-					$string = 'Tipo de Usuário';
-					#criar radio button
+				$name_use = '';
+				$year = date('Y', strtotime(TODAY));
+				$signup_date = date('Y-m-d', strtotime(TODAY));
+				$email = isset($_GET['email']) ? $_GET['email'] : '';
+				$login = '';
+				$photo = $Load->Gravatar(MAIN_EMAIL);
+				$cep = $address = $number = $neighborhood = $city = $state = $rg = $cpf = $phone = '';
+				$birthday_date = date('Y-m-d', strtotime(TODAY));
+				$birthday_year = date('Y', strtotime(TODAY));
+				$data = $name_par = $phone_par = $rg_par = $cpf_par = $area = '';
+				$type = 'usuário';
+				$string = 'Tipo de Usuário';
 				include('models/sample-page.php');
 			break;
-
 		}
       break;
     }

@@ -4,8 +4,8 @@
 	# Definições
     # 1 - Conexão com DB
 	define('DB_HOST', 'localhost');
-	define('DB_USER', 'clc');
-	define('DB_PASS', 'yMcgoImF85t6wdTH');
+	define('DB_USER', 'etec');
+	define('DB_PASS', 'EtecWeb245');
 	define('DB_NAME', 'clcmo_sys_rapida');
 
 	# 2 - Definição do Usuário logado
@@ -23,7 +23,8 @@
     $error = array();
 
     # 5 - Definições de Inserção/Edição
-    $id = (isset($_GET['id'])) ? $_GET['id'] : (isset($_SESSION['id'])) ? $_SESSION['id'] : '';
+    #$id = (isset($_GET['id'])) ? $_GET['id'] : (isset($_SESSION['id'])) ? $_SESSION['id'] : '';
+    $id = (isset($_GET['id'])) ? $_GET['id'] : '';
     $email = isset($_GET['email']) ? $_GET['email'] : '';
     $placeholder = isset($_GET['email']) ? $_GET['email'] : 'Informe seu email';
     $picture = isset($_GET['email']) ? $Load->Gravatar($_GET['email']) : $Load->Gravatar();
@@ -31,8 +32,14 @@
     $password_conf = 'Repita corretamente';
 
     switch ($id) {
-        case true: $selected_type = 'editar'; $type_button = 'edit'; break;
-        case false: $selected_type = 'cadastrar'; $type_button = 'save'; break;
+        case true: 
+            $selected_type = 'editar'; 
+            $type_button = 'edit'; 
+        break;
+        case false: 
+            $selected_type = 'cadastrar'; 
+            $type_button = 'save'; 
+        break;
     }
 
     # 6 - Definições de Paginação
@@ -53,6 +60,6 @@
 	define('AUTHOR',     'Camila L. Oliveira');
     define('AUTHOR_URL', 'http://projetos.camilaloliveira.com/');
     $footer = (!$Login->IsLogged()) ? '' : '<p/>';
-    define('FOOTER',     'Copyright &copy; '.YEAR.'&nbsp;<a href="'.AUTHOR_URL.'" class="text-bold" target="_blank">Camila L. Oliveira</a>.'.$footer.'&nbsp;Todos os direitos reservados.');
+    define('FOOTER',     'Copyright &copy; '.YEAR.'&nbsp;<a href="https://etecdebarueri.com.br" class="text-bold" target="_blank">Etec de Barueri</a>.'.$footer.'&nbsp;Design de&nbsp;<a href="'.AUTHOR_URL.'" class="text-bold" target="_blank">Camila L. Oliveira</a>.'.$footer.'&nbsp;Todos os direitos reservados.');
 
     

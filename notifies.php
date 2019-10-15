@@ -1,6 +1,6 @@
 <?php
     include ('header.php');
-    include('functions/pages.php')
+    include('functions/pages.php');
 ?>
             <div class="columns">
                 <div class="column">
